@@ -8,9 +8,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
+      <ProjectReference Include="..\TeachBoard.Application\TeachBoard.Application.csproj" />
+      <ProjectReference Include="..\TeachBoard.Domain\TeachBoard.Domain.csproj" />
+      <ProjectReference Include="..\TeachBoard.Persistence\TeachBoard.Persistence.csproj" />
     </ItemGroup>
 
 </Project>
