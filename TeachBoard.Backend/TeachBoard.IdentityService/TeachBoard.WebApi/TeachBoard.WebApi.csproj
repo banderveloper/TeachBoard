@@ -13,4 +13,9 @@
       <ProjectReference Include="..\TeachBoard.Persistence\TeachBoard.Persistence.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Middleware" />
+      <Folder Include="Models" />
+    </ItemGroup>
+
 </Project>

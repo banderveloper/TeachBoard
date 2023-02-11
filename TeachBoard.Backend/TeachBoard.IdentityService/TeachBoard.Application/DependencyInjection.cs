@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Reflection;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace TeachBoard.Application;
 
@@ -8,8 +10,8 @@ public static class DependencyInjection
     // builder.Services.AddApplication()
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        // ... inject mediatr and services
-
+        services.AddMediatR(Assembly.GetExecutingAssembly());
+        
         return services;
     }
 }
