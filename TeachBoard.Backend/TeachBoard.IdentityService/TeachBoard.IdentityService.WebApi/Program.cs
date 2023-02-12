@@ -1,3 +1,4 @@
+using System.Net.Mime;
 using System.Reflection;
 using System.Text.Json;
 using Microsoft.Extensions.Options;
@@ -5,6 +6,7 @@ using TeachBoard.IdentityService.Application;
 using TeachBoard.IdentityService.Application.Configurations;
 using TeachBoard.IdentityService.Application.Mappings;
 using TeachBoard.IdentityService.Persistence;
+using TeachBoard.IdentityService.WebApi.Models.Validation;
 
 var builder = WebApplication.CreateBuilder();
 
@@ -35,6 +37,16 @@ builder.Services.AddControllers()
         // lowercase for json keys
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+    })
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var result = new ValidationFailedResult(context.ModelState);
+            result.ContentTypes.Add(MediaTypeNames.Application.Json);
+
+            return result;
+        };
     });
 
 // Swagger

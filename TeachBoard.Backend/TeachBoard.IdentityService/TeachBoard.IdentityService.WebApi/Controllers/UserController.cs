@@ -3,12 +3,14 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.IdentityService.Application.CQRS.Commands.CreatePendingUser;
 using TeachBoard.IdentityService.WebApi.Models.Auth;
+using TeachBoard.IdentityService.WebApi.Models.Validation;
 
 namespace TeachBoard.IdentityService.WebApi.Controllers;
 
 [ApiController]
 [Route("users")]
 [Produces("application/json")]
+[ValidateModel]
 public class UserController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -30,10 +32,10 @@ public class UserController : ControllerBase
     /// <response code="200">Success. Pending user created</response>
     /// <response code="401">Unathorized</response>
     /// <response code="422">Invalid model</response>
-    [HttpPost("createpending")]
+    [HttpPost("pending/create")]
     [ProducesResponseType(typeof(RegisterCodeModel),StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<RegisterCodeModel>> CreatePendingUser([FromBody] CreatePendingUserModel model)
     {
         if (!ModelState.IsValid)
@@ -41,7 +43,7 @@ public class UserController : ControllerBase
 
         var command = _mapper.Map<CreatePendingUserCommand>(model);
 
-        // Send command which create pending user and return register code
+        // Send command which create pending user and return register code and expiration date
         var registerCodeModel = await _mediator.Send(command);
 
         return Ok(registerCodeModel);
