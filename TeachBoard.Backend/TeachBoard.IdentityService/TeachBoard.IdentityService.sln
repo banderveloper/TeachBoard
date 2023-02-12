@@ -8,13 +8,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentatio
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C140FD87-88C7-47B8-96DE-93914A9D4CF6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeachBoard.Domain", "TeachBoard.Domain\TeachBoard.Domain.csproj", "{2109500D-C975-4DAF-9147-A94B1F528048}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeachBoard.IdentityService.Domain", "TeachBoard.IdentityService.Domain\TeachBoard.IdentityService.Domain.csproj", "{2109500D-C975-4DAF-9147-A94B1F528048}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeachBoard.Application", "TeachBoard.Application\TeachBoard.Application.csproj", "{EA757D4A-DDC6-42BA-900C-E307DF0A057F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeachBoard.IdentityService.Application", "TeachBoard.IdentityService.Application\TeachBoard.IdentityService.Application.csproj", "{EA757D4A-DDC6-42BA-900C-E307DF0A057F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeachBoard.Persistence", "TeachBoard.Persistence\TeachBoard.Persistence.csproj", "{DF9B13B4-3A3B-469C-A623-AD2350287C7F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeachBoard.IdentityService.Persistence", "TeachBoard.IdentityService.Persistence\TeachBoard.IdentityService.Persistence.csproj", "{DF9B13B4-3A3B-469C-A623-AD2350287C7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeachBoard.WebApi", "TeachBoard.WebApi\TeachBoard.WebApi.csproj", "{B399D5F9-C3C5-41E5-A4A2-A64529CAC79F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeachBoard.IdentityService.WebApi", "TeachBoard.IdentityService.WebApi\TeachBoard.IdentityService.WebApi.csproj", "{B399D5F9-C3C5-41E5-A4A2-A64529CAC79F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
