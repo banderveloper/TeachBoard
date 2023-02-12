@@ -9,8 +9,6 @@ namespace TeachBoard.IdentityService.Persistence;
 public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
     public DbSet<User> Users { get; set; }
-    public DbSet<Role> Roles { get; set; }
-    public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<RefreshSession> RefreshSessions { get; set; }
     public DbSet<PendingUser> PendingUsers { get; set; }
 
@@ -23,6 +21,5 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     {
         // apply custom fluent api configurations
         modelBuilder.ApplyConfiguration(new UserConfiguration());
-        modelBuilder.ApplyConfiguration(new RoleConfiguration());
     }
 }

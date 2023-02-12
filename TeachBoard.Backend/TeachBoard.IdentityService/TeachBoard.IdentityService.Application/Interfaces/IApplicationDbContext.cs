@@ -7,8 +7,6 @@ namespace TeachBoard.IdentityService.Application.Interfaces;
 public interface IApplicationDbContext
 {
     DbSet<User> Users { get; set; }
-    DbSet<Role> Roles { get; set; }
-    DbSet<UserRole> UserRoles { get; set; }
     DbSet<RefreshSession> RefreshSessions { get; set; }
     DbSet<PendingUser> PendingUsers { get; set; }
 

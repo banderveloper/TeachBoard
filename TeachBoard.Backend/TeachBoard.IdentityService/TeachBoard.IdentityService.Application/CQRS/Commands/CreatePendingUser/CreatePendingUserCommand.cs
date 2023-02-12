@@ -1,9 +1,12 @@
 ﻿using MediatR;
+using TeachBoard.IdentityService.Domain.Enums;
 
 namespace TeachBoard.IdentityService.Application.CQRS.Commands.CreatePendingUser;
 
+// Command for CreatePendingUserCommandHandler
 public class CreatePendingUserCommand : IRequest<RegisterCodeModel>
 {
+    public Role Role { get; set; }
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
     public string? Patronymic { get; set; }

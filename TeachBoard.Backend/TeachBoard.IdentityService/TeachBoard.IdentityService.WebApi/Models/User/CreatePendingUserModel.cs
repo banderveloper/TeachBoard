@@ -2,11 +2,15 @@
 using AutoMapper;
 using TeachBoard.IdentityService.Application.CQRS.Commands.CreatePendingUser;
 using TeachBoard.IdentityService.Application.Mappings;
+using TeachBoard.IdentityService.Domain.Enums;
 
-namespace TeachBoard.IdentityService.WebApi.Models.Auth;
+namespace TeachBoard.IdentityService.WebApi.Models.User;
 
 public class CreatePendingUserModel : IMappable
 {
+    [EnumDataType(typeof(Role), ErrorMessage = "Invalid role, 0-4 expected")]
+    public Role Role { get; set; } = Role.Unspecified;
+    
     [MinLength(3, ErrorMessage = "First name too short")]
     public string? FirstName { get; set; }
 

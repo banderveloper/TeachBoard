@@ -19,7 +19,8 @@ public class CreatePendingUserCommandHandler : IRequestHandler<CreatePendingUser
         {
             RegisterCode = GenerateRegisterCode(),
             ExpiresAt = DateTime.Now.AddDays(3),
-            
+            Role = request.Role,
+
             Email = request.Email,
             FirstName = request.FirstName,
             LastName = request.LastName,
