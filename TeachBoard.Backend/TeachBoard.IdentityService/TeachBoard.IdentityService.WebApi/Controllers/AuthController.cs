@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using TeachBoard.IdentityService.Application.CQRS.Commands.CreatePendingUser;
-using TeachBoard.IdentityService.WebApi.Models.Auth;
+using TeachBoard.IdentityService.WebApi.Models.Validation;
 
 namespace TeachBoard.IdentityService.WebApi.Controllers;
 
 [ApiController]
 [Route("auth")]
 [Produces("application/json")]
+[ValidateModel]
 public class AuthController : ControllerBase
 {
     private readonly IMapper _mapper;
@@ -19,4 +19,6 @@ public class AuthController : ControllerBase
         _mapper = mapper;
         _mediator = mediator;
     }
+    
+    
 }

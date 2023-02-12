@@ -6,9 +6,15 @@ using TeachBoard.IdentityService.Application;
 using TeachBoard.IdentityService.Application.Configurations;
 using TeachBoard.IdentityService.Application.Mappings;
 using TeachBoard.IdentityService.Persistence;
+using TeachBoard.IdentityService.WebApi.Middleware;
 using TeachBoard.IdentityService.WebApi.Models.Validation;
 
 var builder = WebApplication.CreateBuilder();
+
+// JWT configuration registration
+builder.Services.Configure<JwtConfiguration>(builder.Configuration.GetSection("Jwt"));
+builder.Services.AddSingleton(resolver =>
+    resolver.GetRequiredService<IOptions<JwtConfiguration>>().Value);
 
 // Connection configuration registration
 builder.Services.Configure<ConnectionConfiguration>(builder.Configuration.GetSection("ConnectionStrings"));
@@ -40,6 +46,7 @@ builder.Services.AddControllers()
     })
     .ConfigureApiBehaviorOptions(options =>
     {
+        // custom validation error response
         options.InvalidModelStateResponseFactory = context =>
         {
             var result = new ValidationFailedResult(context.ModelState);
@@ -81,6 +88,8 @@ catch (Exception ex)
 }
 
 var app = builder.Build();
+
+app.UseCustomExceptionHandler();
 
 app.UseSwagger();
 app.UseSwaggerUI(config =>
