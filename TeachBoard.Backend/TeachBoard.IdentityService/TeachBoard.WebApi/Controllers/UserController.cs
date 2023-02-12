@@ -20,8 +20,20 @@ public class UserController : ControllerBase
         _mapper = mapper;
     }
     
-    
+    /// <summary>
+    /// Create new pending user
+    /// </summary>
+    /// 
+    /// <param name="model">Create pending user model with personal data of user</param>
+    /// <returns>Register code and expiration date</returns>
+    ///
+    /// <response code="200">Success. Pending user created</response>
+    /// <response code="401">Unathorized</response>
+    /// <response code="422">Invalid model</response>
     [HttpPost("createpending")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<RegisterCodeModel>> CreatePendingUser([FromBody] CreatePendingUserModel model)
     {
         if (!ModelState.IsValid)

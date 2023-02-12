@@ -37,6 +37,16 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
     });
 
+// Swagger
+builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(config =>
+{
+    // xml comments
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    config.IncludeXmlComments(xmlPath);
+});
+
 // Automapper
 builder.Services.AddAutoMapper(config =>
 {
@@ -59,6 +69,15 @@ catch (Exception ex)
 }
 
 var app = builder.Build();
+
+app.UseSwagger();
+app.UseSwaggerUI(config =>
+{
+    // get to swagger UI using root uri
+    config.RoutePrefix = string.Empty;
+
+    config.SwaggerEndpoint("swagger/v1/swagger.json", "TeachBoard.IdentityService API");
+});
 
 // Activate "AllowAll" CORS policy
 app.UseCors("AllowAll");
