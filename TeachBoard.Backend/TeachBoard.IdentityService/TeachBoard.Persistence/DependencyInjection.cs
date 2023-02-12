@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TeachBoard.Application.Configurations;
+using TeachBoard.Application.Interfaces;
 
 namespace TeachBoard.Persistence;
 
@@ -19,6 +20,10 @@ public static class DependencyInjection
         {
             options.UseSqlite(connectionConfiguration.Sqlite);
         });
+        
+        // bind db context interface to class
+        services.AddScoped<IApplicationDbContext>(provider =>
+            provider.GetService<ApplicationDbContext>());
 
         return services;
     }

@@ -63,9 +63,6 @@ var app = builder.Build();
 // Activate "AllowAll" CORS policy
 app.UseCors("AllowAll");
 
-app.MapGet("/hello", async context =>
-{
-    await context.Response.WriteAsync("Hello world");
-});
+app.MapControllers();
 
 app.Run();
