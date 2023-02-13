@@ -41,6 +41,10 @@ public class CustomExceptionHandlerMiddleware
                 statusCode = HttpStatusCode.BadRequest;
                 result = refreshTokenException;
                 break;
+            case WrongPasswordException wrongPasswordException:
+                statusCode = HttpStatusCode.Forbidden;
+                result = wrongPasswordException;
+                break;
             default:
                 Console.WriteLine(exception);
                 break;
