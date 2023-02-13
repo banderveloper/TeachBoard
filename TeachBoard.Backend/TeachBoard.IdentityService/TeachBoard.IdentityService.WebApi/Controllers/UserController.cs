@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.IdentityService.Application.CQRS.Commands.ApprovePendingUser;
 using TeachBoard.IdentityService.Application.CQRS.Commands.CreatePendingUser;
+using TeachBoard.IdentityService.Application.Exceptions;
 using TeachBoard.IdentityService.WebApi.Models.User;
 using TeachBoard.IdentityService.WebApi.Models.Validation;
 
@@ -51,8 +52,19 @@ public class UserController : ControllerBase
         return Ok(registerCodeModel);
     }
     
+    /// <summary>
+    /// Approve pending user
+    /// </summary>
+    /// 
+    /// <param name="model">Approve pending user created by administrator</param>
+    ///
+    /// <response code="200">Success. User approved</response>
+    /// <response code="404">Pending user with given register code not found (register_code_not_found)</response>
+    /// <response code="422">Invalid model</response>
     [HttpPost("pending/approve")]
-    [AllowAnonymous]
+    [ProducesResponseType(typeof(void),StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<IActionResult> ApprovePendingUser([FromBody] ApprovePendingUserModel model)
     {
         if (!ModelState.IsValid)
