@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using TeachBoard.IdentityService.Application.Configurations;
 using TeachBoard.IdentityService.Application.CQRS.Commands.SetRefreshSession;
 using TeachBoard.IdentityService.Application.CQRS.Queries.GetUserByCredentials;
+using TeachBoard.IdentityService.Application.Exceptions;
 using TeachBoard.IdentityService.Application.Services;
 using TeachBoard.IdentityService.WebApi.Models.Auth;
 using TeachBoard.IdentityService.WebApi.Models.Validation;
@@ -35,25 +36,22 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
-    /// Логин пользователя и создании сессии. Получение JWT-токенов доступа и рефреша.
+    /// User login and session creation
     /// </summary>
+    ///
+    /// <remarks>With access token in body, returns http-only cookie (TeachBoard-Refresh-Token) with refresh token</remarks>
     /// 
-    /// <remarks>
-    /// Указывается ИЛИ телефон, ИЛИ почта. Если и то и другое будет пустым - ответ 400
-    /// </remarks>
+    /// <param name="requestModel">User credentials login model</param>
     /// 
-    /// <param name="requestModel">Модель входа в аккаунт</param>
-    /// <returns>JWT access token в теле, refresh token в http-only cookie (X-Refresh-Token) при успехе. Модель ошибки при неудаче</returns>
-    /// 
-    /// <response code="200">Успешный вход</response>
-    /// <response code="400">И телефон и почта не указаны</response>
-    /// <response code="404">Пользователь с такими учетными данными не найден.</response>
-    /// <response code="422">Невалидная модель (например не указаны обязательные поля)</response>
+    /// <response code="200">Successful login</response>
+    /// <response code="403">Incorrect password (wrong_password)</response>
+    /// <response code="404">User with given username not found (user_not_found)</response>
+    /// <response code="422">Invalid model</response>
     [HttpPost("login")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(void),StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<LoginResponseModel>> Login([FromBody] LoginRequestModel requestModel)
     {
         if (!ModelState.IsValid)
