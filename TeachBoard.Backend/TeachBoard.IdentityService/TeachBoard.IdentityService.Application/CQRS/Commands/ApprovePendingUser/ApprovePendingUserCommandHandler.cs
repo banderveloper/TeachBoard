@@ -30,7 +30,15 @@ public class ApprovePendingUserCommandHandler : IRequestHandler<ApprovePendingUs
                 ErrorDescription = $"Pending user approval error. Register code {request.RegisterCode} not found"
             };
 
-
+        // if pending user expired - exception
+        if (pendingUser.ExpiresAt < DateTime.Now)
+            throw new DataExpiredException
+            {
+                Error = "pending_user_expired",
+                ErrorDescription = $"Pending user expired {pendingUser.ExpiresAt.ToUniversalTime()}"
+            };
+        
+        
         // trying to find existing user with given login
         var userByUsername = await _context.Users
             .FirstOrDefaultAsync(user => user.UserName == request.UserName,

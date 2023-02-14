@@ -45,6 +45,10 @@ public class CustomExceptionHandlerMiddleware
                 statusCode = HttpStatusCode.Forbidden;
                 result = wrongPasswordException;
                 break;
+            case DataExpiredException dataExpiredException:
+                statusCode = HttpStatusCode.Gone;
+                result = dataExpiredException;
+                break;
             default:
                 Console.WriteLine(exception);
                 break;

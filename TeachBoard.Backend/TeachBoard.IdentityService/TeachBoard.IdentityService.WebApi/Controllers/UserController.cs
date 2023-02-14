@@ -62,11 +62,13 @@ public class UserController : ControllerBase
     /// <response code="200">Success. User approved</response>
     /// <response code="404">Pending user with given register code not found (register_code_not_found)</response>
     /// <response code="409">User with given username already exists (username_already_exists)</response>
+    /// <response code="410">Pending user expired (pending_user_expired)</response>
     /// <response code="422">Invalid requestModel</response>
     [HttpPost("pending/approve")]
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status410Gone)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<IActionResult> ApprovePendingUser([FromBody] ApprovePendingUserRequestModel requestModel)
     {
