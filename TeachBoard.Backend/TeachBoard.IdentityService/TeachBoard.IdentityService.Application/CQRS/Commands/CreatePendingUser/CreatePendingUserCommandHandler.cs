@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using TeachBoard.IdentityService.Application.Configurations;
 using TeachBoard.IdentityService.Application.Exceptions;
 using TeachBoard.IdentityService.Domain.Entities;
 using TeachBoard.IdentityService.Application.Interfaces;
@@ -9,10 +10,16 @@ namespace TeachBoard.IdentityService.Application.CQRS.Commands.CreatePendingUser
 public class CreatePendingUserCommandHandler : IRequestHandler<CreatePendingUserCommand, RegisterCodeModel>
 {
     private readonly IApplicationDbContext _context;
+    private readonly PendingUserConfiguration _pendingConfiguration;
+    
     private static readonly Random _random = new();
+    
 
-    public CreatePendingUserCommandHandler(IApplicationDbContext context)
-        => _context = context;
+    public CreatePendingUserCommandHandler(IApplicationDbContext context, PendingUserConfiguration pendingConfiguration)
+    {
+        _context = context;
+        _pendingConfiguration = pendingConfiguration;
+    }
 
 
     public async Task<RegisterCodeModel> Handle(CreatePendingUserCommand request, CancellationToken cancellationToken)
@@ -39,7 +46,7 @@ public class CreatePendingUserCommandHandler : IRequestHandler<CreatePendingUser
         var pendingUser = new PendingUser
         {
             RegisterCode = GenerateRegisterCode(),
-            ExpiresAt = DateTime.Now.AddDays(3),
+            ExpiresAt = DateTime.Now.AddHours(_pendingConfiguration.LifetimeHours),
             Role = request.Role,
 
             Email = request.Email,

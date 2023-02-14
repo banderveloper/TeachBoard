@@ -1,30 +1,17 @@
 using System.Net.Mime;
 using System.Reflection;
 using System.Text.Json;
-using Microsoft.Extensions.Options;
 using TeachBoard.IdentityService.Application;
-using TeachBoard.IdentityService.Application.Configurations;
 using TeachBoard.IdentityService.Application.Mappings;
 using TeachBoard.IdentityService.Persistence;
+using TeachBoard.IdentityService.WebApi;
 using TeachBoard.IdentityService.WebApi.Middleware;
 using TeachBoard.IdentityService.WebApi.Models.Validation;
 
 var builder = WebApplication.CreateBuilder();
 
-// JWT configuration registration
-builder.Services.Configure<JwtConfiguration>(builder.Configuration.GetSection("Jwt"));
-builder.Services.AddSingleton(resolver =>
-    resolver.GetRequiredService<IOptions<JwtConfiguration>>().Value);
-
-// Connection configuration registration
-builder.Services.Configure<ConnectionConfiguration>(builder.Configuration.GetSection("ConnectionStrings"));
-builder.Services.AddSingleton(resolver =>
-    resolver.GetRequiredService<IOptions<ConnectionConfiguration>>().Value);
-
-// Cookie configuration registration
-builder.Services.Configure<CookieConfiguration>(builder.Configuration.GetSection("Cookie"));
-builder.Services.AddSingleton(resolver =>
-    resolver.GetRequiredService<IOptions<CookieConfiguration>>().Value);
+// DI for custom configuration class
+builder.Services.AddCustomConfiguration(builder.Configuration);
 
 // DI from another layers
 builder.Services.AddApplication().AddPersistence();
