@@ -18,6 +18,7 @@ public static class DependencyInjection
         services.AddScoped<JwtProvider>();
 
         services.AddHostedService<PendingUsersCleaner>();
+        services.AddHostedService<RefreshSessionsCleaner>();
         
         return services;
     }
