@@ -1,4 +1,6 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
+using TeachBoard.IdentityService.Application.Exceptions;
 using TeachBoard.IdentityService.Domain.Entities;
 using TeachBoard.IdentityService.Application.Interfaces;
 
@@ -7,7 +9,7 @@ namespace TeachBoard.IdentityService.Application.CQRS.Commands.CreatePendingUser
 public class CreatePendingUserCommandHandler : IRequestHandler<CreatePendingUserCommand, RegisterCodeModel>
 {
     private readonly IApplicationDbContext _context;
-    private static readonly Random _random = new Random();
+    private static readonly Random _random = new();
 
     public CreatePendingUserCommandHandler(IApplicationDbContext context)
         => _context = context;
@@ -15,6 +17,25 @@ public class CreatePendingUserCommandHandler : IRequestHandler<CreatePendingUser
 
     public async Task<RegisterCodeModel> Handle(CreatePendingUserCommand request, CancellationToken cancellationToken)
     {
+        // if phone or email entered - check it is not exists at db
+        if (request.PhoneNumber is not null || request.Email is not null)
+        {
+            // get user with given email OR phone
+            var existingPendingUser = await _context.PendingUsers
+                .FirstOrDefaultAsync(pu => pu.Email == request.Email || pu.PhoneNumber == request.PhoneNumber,
+                    cancellationToken);
+
+            // if found - exception
+            if (existingPendingUser is not null)
+                throw new AlreadyExistsException
+                {
+                    Error =
+                        existingPendingUser.Email == request.Email ? "email_already_exists" : "phone_already_exists",
+                    ErrorDescription = "Pending user with given property already exists"
+                };
+        }
+
+        // if does not exists - create
         var pendingUser = new PendingUser
         {
             RegisterCode = GenerateRegisterCode(),
