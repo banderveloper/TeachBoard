@@ -21,6 +21,11 @@ builder.Services.Configure<ConnectionConfiguration>(builder.Configuration.GetSec
 builder.Services.AddSingleton(resolver =>
     resolver.GetRequiredService<IOptions<ConnectionConfiguration>>().Value);
 
+// Cookie configuration registration
+builder.Services.Configure<CookieConfiguration>(builder.Configuration.GetSection("Cookie"));
+builder.Services.AddSingleton(resolver =>
+    resolver.GetRequiredService<IOptions<CookieConfiguration>>().Value);
+
 // DI from another layers
 builder.Services.AddApplication().AddPersistence();
 
