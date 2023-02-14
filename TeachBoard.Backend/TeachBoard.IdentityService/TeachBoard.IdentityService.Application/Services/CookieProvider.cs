@@ -17,7 +17,12 @@ public class CookieProvider
     public void AddRefreshCookieToResponse(HttpResponse response, Guid refreshToken)
     {
         response.Cookies.Append(_cookieConfiguration.RefreshCookieName, refreshToken.ToString(),
-            new CookieOptions { HttpOnly = true, SameSite = SameSiteMode.Lax });
+            new CookieOptions
+            {
+                HttpOnly = true, 
+                SameSite = SameSiteMode.Lax, 
+                Expires = new DateTimeOffset(DateTime.Now.AddHours(_cookieConfiguration.RefreshCookieLifetimeHours))
+            });
     }
 
     // Extract refresh token from http-only cookie
