@@ -11,8 +11,8 @@ public class ApprovePendingUserRequestModel : IMappable
     public string RegisterCode { get; set; } = string.Empty;
     
     [Required(ErrorMessage = "Username is required.")] 
-    // [RegularExpression(@"^[a-zA-Z0-9](_(?!(\.|_))|\.(?!(_|\.))|[a-zA-Z0-9]){5,18}[a-zA-Z0-9]$", 
-    //     ErrorMessage = "Username is invalid. Use only latin letters, numbers and _, length 6-18 symbols")]
+    [RegularExpression(@"^[A-Za-z][A-Za-z0-9_]{5,17}$", 
+        ErrorMessage = "Username is invalid. Use only latin letters, numbers and _, length 6-18 symbols")]
     public string UserName { get; set; } = string.Empty;
     
     [Required(ErrorMessage = "Password is required")]
