@@ -2,8 +2,11 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.IdentityService.Application.Configurations;
+using TeachBoard.IdentityService.Application.CQRS.Commands.DeleteRefreshSessionByToken;
 using TeachBoard.IdentityService.Application.CQRS.Commands.SetRefreshSession;
+using TeachBoard.IdentityService.Application.CQRS.Commands.UpdateRefreshSession;
 using TeachBoard.IdentityService.Application.CQRS.Queries.GetUserByCredentials;
+using TeachBoard.IdentityService.Application.CQRS.Queries.GetUserById;
 using TeachBoard.IdentityService.Application.Exceptions;
 using TeachBoard.IdentityService.Application.Services;
 using TeachBoard.IdentityService.WebApi.Models.Auth;
@@ -48,11 +51,11 @@ public class AuthController : ControllerBase
     /// <response code="404">User with given username not found (user_not_found)</response>
     /// <response code="422">Invalid model</response>
     [HttpPost("login")]
-    [ProducesResponseType(typeof(void),StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
-    public async Task<ActionResult<LoginResponseModel>> Login([FromBody] LoginRequestModel requestModel)
+    public async Task<ActionResult<AccessTokenModel>> Login([FromBody] LoginRequestModel requestModel)
     {
         if (!ModelState.IsValid)
             return UnprocessableEntity(ModelState);
@@ -60,21 +63,96 @@ public class AuthController : ControllerBase
         // get user by username and password
         var getUserQuery = _mapper.Map<GetUserByCredentialsQuery>(requestModel);
         var user = await _mediator.Send(getUserQuery);
-        
+
         // create/update refresh session by user id ang get new refresh token
-        var setSessionCommand = new SetRefreshSessionCommand {UserId = user.Id};
-        var refreshToken = await _mediator.Send(setSessionCommand);
-        
+        var setSessionCommand = new SetRefreshSessionCommand { UserId = user.Id };
+        var session = await _mediator.Send(setSessionCommand);
+
         // add refresh token to http-only cookie
-        _cookieProvider.AddRefreshCookieToResponse(HttpContext.Response, refreshToken);
-        
+        _cookieProvider.AddRefreshCookieToResponse(HttpContext.Response, session.RefreshToken);
+
         // generate access token for user
         var accessToken = _jwtProvider.GenerateUserJwt(user);
-        
-        return Ok(new LoginResponseModel
+
+        return Ok(new AccessTokenModel
         {
             AccessToken = accessToken,
-            ExpiresAt = DateTime.Now.AddMinutes(_jwtConfiguration.MinutesToExpiration)
+            Expires = _jwtConfiguration.Expire
         });
+    }
+
+
+    /// <summary>
+    /// Session and tokens update
+    /// </summary>
+    /// 
+    /// <remarks>
+    /// Takes TeachBoard-Refresh-Token, and if session exists - update it and return new tokens
+    /// </remarks>
+    /// 
+    /// <param>Refresh token in cookie TeachBoard-Refresh-Token</param>
+    /// <response code="200">Successful session update</response>
+    /// <response code="404">Session connected to given refresh token not found (session_not_found) / User connected to session not found (user_not_found)</response>
+    /// <response code="406">Did not pass refresh token at TeachBoard-Refresh-Token (refresh_token_not_found)</response>
+    [HttpPost("refresh")]
+    [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status406NotAcceptable)]
+    public async Task<ActionResult<AccessTokenModel>> Refresh()
+    {
+        // get refresh token from http-only cookie
+        var refreshToken = _cookieProvider.GetRefreshTokenFromCookie(Request);
+
+        // update refresh session. If request refresh token incorrect - exception
+        // if everything ok - get all session, including user id
+        var updateSessionCommand = new UpdateRefreshSessionCommand { RefreshToken = refreshToken };
+        var refreshSession = await _mediator.Send(updateSessionCommand);
+
+        // get user of this session
+        var getUserQuery = new GetUserByIdQuery { UserId = refreshSession.UserId };
+        var user = await _mediator.Send(getUserQuery);
+
+        // add refresh token to http-only cookie
+        _cookieProvider.AddRefreshCookieToResponse(HttpContext.Response, refreshSession.RefreshToken);
+
+        // generation new access token and return it
+        var accessToken = _jwtProvider.GenerateUserJwt(user);
+
+        return Ok(new AccessTokenModel
+        {
+            AccessToken = accessToken,
+            Expires = _jwtConfiguration.Expire
+        });
+    }
+
+    /// <summary>
+    /// Logout and session stop
+    /// </summary>
+    /// 
+    /// <remarks>
+    /// Takes TeachBoard-Refresh-Token, and if session exists - delete binded session
+    /// </remarks>
+    /// 
+    /// <param>Refresh token in cookie TeachBoard-Refresh-Token</param>
+    /// <response code="200">Successful logout</response>
+    /// <response code="404">Session connected to given refresh token not found (session_not_found)</response>
+    /// <response code="406">Did not pass refresh token at TeachBoard-Refresh-Token (refresh_token_not_found)</response>
+    [HttpPost("logout")]
+    [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status406NotAcceptable)]
+    public async Task<IActionResult> Logout()
+    {
+        // get refresh token from http-only cookie
+        var refreshToken = _cookieProvider.GetRefreshTokenFromCookie(Request);
+        
+        // delete session by refresh token from db
+        var deleteCommand = new DeleteRefreshSessionByTokenCommand { RefreshToken = refreshToken };
+        await _mediator.Send(deleteCommand);
+
+        // delete cookie
+        Response.Cookies.Delete("TeachBoard-Refresh-Token");
+
+        return Ok();
     }
 }

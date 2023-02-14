@@ -38,7 +38,7 @@ public class CustomExceptionHandlerMiddleware
                 result = alreadyExistsException;
                 break;
             case RefreshTokenException refreshTokenException:
-                statusCode = HttpStatusCode.BadRequest;
+                statusCode = HttpStatusCode.NotAcceptable;
                 result = refreshTokenException;
                 break;
             case WrongPasswordException wrongPasswordException:

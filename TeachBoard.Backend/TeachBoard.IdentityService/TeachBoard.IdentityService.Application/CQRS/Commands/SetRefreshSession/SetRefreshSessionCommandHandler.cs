@@ -6,7 +6,7 @@ using TeachBoard.IdentityService.Domain.Entities;
 namespace TeachBoard.IdentityService.Application.CQRS.Commands.SetRefreshSession;
 
 // Create or update refresh session. Returns new refresh token
-public class SetRefreshSessionCommandHandler : IRequestHandler<SetRefreshSessionCommand, Guid>
+public class SetRefreshSessionCommandHandler : IRequestHandler<SetRefreshSessionCommand, RefreshSession>
 {
     private readonly IApplicationDbContext _context;
 
@@ -15,7 +15,7 @@ public class SetRefreshSessionCommandHandler : IRequestHandler<SetRefreshSession
         _context = context;
     }
 
-    public async Task<Guid> Handle(SetRefreshSessionCommand request, CancellationToken cancellationToken)
+    public async Task<RefreshSession> Handle(SetRefreshSessionCommand request, CancellationToken cancellationToken)
     {
         // try to get existing user session by user id
         var existingSession = await _context.RefreshSessions
@@ -34,15 +34,16 @@ public class SetRefreshSessionCommandHandler : IRequestHandler<SetRefreshSession
         // if not exists - create
         else
         {
-            _context.RefreshSessions.Add(new RefreshSession
+            existingSession = new RefreshSession
             {
                 UserId = request.UserId,
                 RefreshToken = newRefreshToken
-            });
+            };
+            _context.RefreshSessions.Add(existingSession);
         }
         
         await _context.SaveChangesAsync(cancellationToken);
 
-        return newRefreshToken;
+        return existingSession;
     }
 }

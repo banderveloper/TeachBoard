@@ -13,7 +13,7 @@ public class CookieProvider
     }
 
     // Extract refresh token from http-only cookie
-    public string GetRefreshTokenFromCookie(HttpRequest request)
+    public Guid GetRefreshTokenFromCookie(HttpRequest request)
     {
         // Try to extract refresh token from cookie. If it is absent - exception
         if (!request.Cookies.TryGetValue("TeachBoard-Refresh-Token", out var refreshToken))
@@ -23,6 +23,6 @@ public class CookieProvider
                 ErrorDescription = "Expected refresh token in httponly cookie does not exists"
             };
 
-        return refreshToken;
+        return Guid.Parse(refreshToken);
     }
 }
