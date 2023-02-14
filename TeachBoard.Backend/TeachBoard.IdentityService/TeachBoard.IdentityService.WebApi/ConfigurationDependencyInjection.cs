@@ -28,6 +28,11 @@ public static class ConfigurationDependencyInjection
         services.Configure<PendingUserConfiguration>(configuration.GetSection("PendingUser"));
         services.AddSingleton(resolver =>
             resolver.GetRequiredService<IOptions<PendingUserConfiguration>>().Value);
+        
+        // Background service configuration registration
+        services.Configure<BackgroundServicesConfiguration>(configuration.GetSection("BackgroundServices"));
+        services.AddSingleton(resolver =>
+            resolver.GetRequiredService<IOptions<BackgroundServicesConfiguration>>().Value);
 
         return services;
     }

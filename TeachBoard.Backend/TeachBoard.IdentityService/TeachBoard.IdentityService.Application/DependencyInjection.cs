@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using TeachBoard.IdentityService.Application.Services;
+using TeachBoard.IdentityService.Application.Services.Background;
 
 namespace TeachBoard.IdentityService.Application;
 
@@ -15,6 +16,8 @@ public static class DependencyInjection
 
         services.AddScoped<CookieProvider>();
         services.AddScoped<JwtProvider>();
+
+        services.AddHostedService<PendingUsersCleaner>();
         
         return services;
     }
