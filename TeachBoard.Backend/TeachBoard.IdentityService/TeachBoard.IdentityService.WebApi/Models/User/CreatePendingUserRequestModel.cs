@@ -6,7 +6,7 @@ using TeachBoard.IdentityService.Domain.Enums;
 
 namespace TeachBoard.IdentityService.WebApi.Models.User;
 
-public class CreatePendingUserModel : IMappable
+public class CreatePendingUserRequestModel : IMappable
 {
     [EnumDataType(typeof(Role), ErrorMessage = "Invalid role, 0-4 expected")]
     public Role Role { get; set; } = Role.Unspecified;
@@ -34,6 +34,6 @@ public class CreatePendingUserModel : IMappable
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<CreatePendingUserModel, CreatePendingUserCommand>();
+        profile.CreateMap<CreatePendingUserRequestModel, CreatePendingUserCommand>();
     }
 }

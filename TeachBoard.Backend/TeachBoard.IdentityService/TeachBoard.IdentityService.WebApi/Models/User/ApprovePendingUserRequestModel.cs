@@ -5,7 +5,7 @@ using TeachBoard.IdentityService.Application.Mappings;
 
 namespace TeachBoard.IdentityService.WebApi.Models.User;
 
-public class ApprovePendingUserModel : IMappable
+public class ApprovePendingUserRequestModel : IMappable
 {
     [Required(ErrorMessage = "Register code is required. It was given by administrator")] 
     public string RegisterCode { get; set; } = string.Empty;
@@ -20,6 +20,6 @@ public class ApprovePendingUserModel : IMappable
     
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<ApprovePendingUserModel, ApprovePendingUserCommand>();
+        profile.CreateMap<ApprovePendingUserRequestModel, ApprovePendingUserCommand>();
     }
 }

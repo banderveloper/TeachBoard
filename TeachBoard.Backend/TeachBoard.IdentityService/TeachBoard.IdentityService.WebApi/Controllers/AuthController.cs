@@ -8,6 +8,7 @@ using TeachBoard.IdentityService.Application.CQRS.Commands.UpdateRefreshSession;
 using TeachBoard.IdentityService.Application.CQRS.Queries.GetUserByCredentials;
 using TeachBoard.IdentityService.Application.CQRS.Queries.GetUserById;
 using TeachBoard.IdentityService.Application.Exceptions;
+using TeachBoard.IdentityService.Application.Extensions;
 using TeachBoard.IdentityService.Application.Services;
 using TeachBoard.IdentityService.WebApi.Models.Auth;
 using TeachBoard.IdentityService.WebApi.Models.Validation;
@@ -55,7 +56,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
-    public async Task<ActionResult<AccessTokenModel>> Login([FromBody] LoginRequestModel requestModel)
+    public async Task<ActionResult<AccessTokenResponseModel>> Login([FromBody] LoginRequestModel requestModel)
     {
         if (!ModelState.IsValid)
             return UnprocessableEntity(ModelState);
@@ -74,10 +75,10 @@ public class AuthController : ControllerBase
         // generate access token for user
         var accessToken = _jwtProvider.GenerateUserJwt(user);
 
-        return Ok(new AccessTokenModel
+        return Ok(new AccessTokenResponseModel
         {
             AccessToken = accessToken,
-            Expires = _jwtConfiguration.Expire
+            Expires = DateTime.Now.AddMinutes(_jwtConfiguration.MinutesToExpiration).ToUnixTimestamp()
         });
     }
 
@@ -98,7 +99,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status406NotAcceptable)]
-    public async Task<ActionResult<AccessTokenModel>> Refresh()
+    public async Task<ActionResult<AccessTokenResponseModel>> Refresh()
     {
         // get refresh token from http-only cookie
         var refreshToken = _cookieProvider.GetRefreshTokenFromCookie(Request);
@@ -118,10 +119,10 @@ public class AuthController : ControllerBase
         // generation new access token and return it
         var accessToken = _jwtProvider.GenerateUserJwt(user);
 
-        return Ok(new AccessTokenModel
+        return Ok(new AccessTokenResponseModel
         {
             AccessToken = accessToken,
-            Expires = _jwtConfiguration.Expire
+            Expires = DateTime.Now.AddMinutes(_jwtConfiguration.MinutesToExpiration).ToUnixTimestamp()
         });
     }
 
@@ -145,7 +146,7 @@ public class AuthController : ControllerBase
     {
         // get refresh token from http-only cookie
         var refreshToken = _cookieProvider.GetRefreshTokenFromCookie(Request);
-        
+
         // delete session by refresh token from db
         var deleteCommand = new DeleteRefreshSessionByTokenCommand { RefreshToken = refreshToken };
         await _mediator.Send(deleteCommand);
