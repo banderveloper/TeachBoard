@@ -33,11 +33,11 @@ public class UserController : ControllerBase
     /// <returns>Register code and expiration date</returns>
     ///
     /// <response code="200">Success. Pending user created</response>
-    /// <response code="401">Unathorized</response>
+    /// <response code="409">Pending user with given phone/email already exists (phone_already_exists / email_already_exists)</response>
     /// <response code="422">Invalid requestModel</response>
     [HttpPost("pending/create")]
     [ProducesResponseType(typeof(RegisterCodeModel), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<RegisterCodeModel>> CreatePendingUser(
         [FromBody] CreatePendingUserRequestModel requestModel)
@@ -61,10 +61,12 @@ public class UserController : ControllerBase
     ///
     /// <response code="200">Success. User approved</response>
     /// <response code="404">Pending user with given register code not found (register_code_not_found)</response>
+    /// <response code="409">User with given username already exists (username_already_exists)</response>
     /// <response code="422">Invalid requestModel</response>
     [HttpPost("pending/approve")]
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<IActionResult> ApprovePendingUser([FromBody] ApprovePendingUserRequestModel requestModel)
     {

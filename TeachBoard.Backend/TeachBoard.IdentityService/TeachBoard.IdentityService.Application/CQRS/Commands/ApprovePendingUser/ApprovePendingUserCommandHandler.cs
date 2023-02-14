@@ -29,7 +29,22 @@ public class ApprovePendingUserCommandHandler : IRequestHandler<ApprovePendingUs
                 Error = "register_code_not_found",
                 ErrorDescription = $"Pending user approval error. Register code {request.RegisterCode} not found"
             };
-        
+
+
+        // trying to find existing user with given login
+        var userByUsername = await _context.Users
+            .FirstOrDefaultAsync(user => user.UserName == request.UserName,
+                cancellationToken);
+
+        // if it is exists - already exists exception
+        if (userByUsername is not null)
+            throw new AlreadyExistsException
+            {
+                Error = "username_already_exists",
+                ErrorDescription = $"User with username {request.UserName} already exists"
+            };
+
+
         // Create user account from pending
         var newUser = new User
         {
@@ -49,7 +64,7 @@ public class ApprovePendingUserCommandHandler : IRequestHandler<ApprovePendingUs
 
         // Remove pending user because we created real user from it
         _context.PendingUsers.Remove(pendingUser);
-        
+
         // Save it all
         await _context.SaveChangesAsync(cancellationToken);
 
