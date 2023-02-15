@@ -147,4 +147,23 @@ public class StudentControllerIntegrationTests : IClassFixture<TestingWebAppFact
         Assert.Equal("group_not_found", notFoundModel.Error);
         Assert.Equal("groupId", notFoundModel.ReasonField);
     }
+    
+    [Fact]
+    public async Task Create_OnInvalidUserId_Returns422UnprocessableEntity()
+    {
+        // Arrange
+        var postRequest = new HttpRequestMessage(HttpMethod.Post, "members/students/create");
+        var requestBody = new CreateStudentRequestModel { UserId = -5, GroupId = 1 };
+
+        postRequest.Content = JsonContent.Create(
+            requestBody,
+            MediaTypeHeaderValue.Parse("application/json")
+        );
+
+        // Act
+        var response = await _client.SendAsync(postRequest);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.UnprocessableEntity, response.StatusCode);
+    }
 }
