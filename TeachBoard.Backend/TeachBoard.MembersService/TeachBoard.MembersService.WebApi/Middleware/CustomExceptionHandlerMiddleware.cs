@@ -29,14 +29,14 @@ public class CustomExceptionHandlerMiddleware
 
         switch (exception)
         {
-            // case NotFoundException notFoundException:
-            //     statusCode = HttpStatusCode.NotFound;
-            //     result = notFoundException;
-            //     break;
-            // case AlreadyExistsException alreadyExistsException:
-            //     statusCode = HttpStatusCode.Conflict;
-            //     result = alreadyExistsException;
-            //     break;
+            case NotFoundException notFoundException:
+                statusCode = HttpStatusCode.NotFound;
+                result = notFoundException;
+                break;
+            case AlreadyExistsException alreadyExistsException:
+                statusCode = HttpStatusCode.Conflict;
+                result = alreadyExistsException;
+                break;
             // case RefreshTokenException refreshTokenException:
             //     statusCode = HttpStatusCode.NotAcceptable;
             //     result = refreshTokenException;

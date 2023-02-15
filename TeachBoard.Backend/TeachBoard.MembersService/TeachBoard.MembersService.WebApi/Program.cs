@@ -1,13 +1,13 @@
 using System.Net.Mime;
-using System.Reflection;
 using System.Text.Json;
+using System.Reflection;
 using Microsoft.Extensions.Options;
 using TeachBoard.MembersService.Application;
-using TeachBoard.MembersService.Application.Configurations;
-using TeachBoard.MembersService.Application.Mappings;
 using TeachBoard.MembersService.Persistence;
 using TeachBoard.MembersService.WebApi.Middleware;
+using TeachBoard.MembersService.Application.Mappings;
 using TeachBoard.MembersService.WebApi.Models.Validation;
+using TeachBoard.MembersService.Application.Configurations;
 
 var builder = WebApplication.CreateBuilder();
 

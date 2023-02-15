@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using TeachBoard.MembersService.Application.Validation;
 
 namespace TeachBoard.MembersService.WebApi.Controllers;
@@ -9,9 +11,12 @@ namespace TeachBoard.MembersService.WebApi.Controllers;
 [Produces("application/json")]
 public class StudentController : ControllerBase
 {
-    [HttpGet]
-    public IActionResult Test()
+    private readonly IMediator _mediator;
+    private readonly IMapper _mapper;
+
+    public StudentController(IMediator mediator, IMapper mapper)
     {
-        return Ok("Hello world");
+        _mediator = mediator;
+        _mapper = mapper;
     }
 }
