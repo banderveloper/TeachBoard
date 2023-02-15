@@ -5,6 +5,8 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);1591</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
@@ -17,6 +19,11 @@
       <ProjectReference Include="..\TeachBoard.MembersService.Application\TeachBoard.MembersService.Application.csproj" />
       <ProjectReference Include="..\TeachBoard.MembersService.Domain\TeachBoard.MembersService.Domain.csproj" />
       <ProjectReference Include="..\TeachBoard.MembersService.Persistence\TeachBoard.MembersService.Persistence.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+      <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     </ItemGroup>
 
 </Project>
