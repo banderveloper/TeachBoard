@@ -39,4 +39,21 @@ public class StudentController : ControllerBase
 
         return Ok(student);
     }
+
+    /// <summary>
+    /// Get students by group id
+    /// </summary>
+    /// <param name="id">Group id</param>
+    /// <response code="200">Success. Array of students returns</response>
+    /// <response code="404">Students with given group id not found (students_not_found)</response>
+    [HttpGet("getbygroupid/{id:int}")]
+    [ProducesResponseType(typeof(StudentsListModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<StudentsListModel>> GetStudentsByGroupId(int id)
+    {
+        var query = new GetStudentsByGroupIdQuery { GroupId = id };
+        var students = await _mediator.Send(query);
+
+        return Ok(students);
+    }
 }
