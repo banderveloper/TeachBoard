@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using TeachBoard.MembersService.Application.Features.Students;
 using TeachBoard.MembersService.Application.Validation;
+using TeachBoard.MembersService.Domain.Entities;
 
 namespace TeachBoard.MembersService.WebApi.Controllers;
 
@@ -18,5 +20,14 @@ public class StudentController : ControllerBase
     {
         _mediator = mediator;
         _mapper = mapper;
+    }
+
+    [HttpGet("getbyid/{id:int}")]
+    public async Task<ActionResult<Student>> GetStudentById(int id)
+    {
+        var query = new GetStudentByIdQuery { StudentId = id };
+        var student = await _mediator.Send(query);
+
+        return Ok(student);
     }
 }
