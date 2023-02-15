@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using TeachBoard.MembersService.Application.Exceptions;
 using TeachBoard.MembersService.Application.Features.Students;
 using TeachBoard.MembersService.Application.Validation;
 using TeachBoard.MembersService.Domain.Entities;
@@ -22,7 +23,15 @@ public class StudentController : ControllerBase
         _mapper = mapper;
     }
 
+    /// <summary>
+    /// Get student by id
+    /// </summary>
+    /// <param name="id">Student id</param>
+    /// <response code="200">Success. Student returns.</response>
+    /// <response code="404">Student with given id not found (student_not_found)</response>
     [HttpGet("getbyid/{id:int}")]
+    [ProducesResponseType(typeof(Student), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Student>> GetStudentById(int id)
     {
         var query = new GetStudentByIdQuery { StudentId = id };

@@ -9,7 +9,7 @@ using TeachBoard.MembersService.Application.Mappings;
 using TeachBoard.MembersService.WebApi.Models.Validation;
 using TeachBoard.MembersService.Application.Configurations;
 
-var builder = WebApplication.CreateBuilder();
+var builder = WebApplication.CreateBuilder(args);
 
 // Connection configuration registration
 builder.Services.Configure<ConnectionConfiguration>(builder.Configuration.GetSection("ConnectionStrings"));
@@ -101,3 +101,9 @@ app.UseCors("AllowAll");
 app.MapControllers();
 
 app.Run();
+
+
+// for integration tests
+public partial class Program
+{
+}

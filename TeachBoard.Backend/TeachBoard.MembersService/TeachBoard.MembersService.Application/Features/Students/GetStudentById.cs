@@ -28,7 +28,8 @@ public class GetStudentByIdQueryHandler : IRequestHandler<GetStudentByIdQuery, S
             throw new NotFoundException
             {
                 Error = "student_not_found",
-                ErrorDescription = $"Student with id {request.StudentId} not found"
+                ErrorDescription = $"Student with id {request.StudentId} not found",
+                ReasonField = "id"
             };
 
         return student;
