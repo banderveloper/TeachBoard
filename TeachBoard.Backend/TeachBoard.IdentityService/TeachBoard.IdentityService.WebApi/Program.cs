@@ -8,7 +8,7 @@ using TeachBoard.IdentityService.WebApi;
 using TeachBoard.IdentityService.WebApi.Middleware;
 using TeachBoard.IdentityService.WebApi.Models.Validation;
 
-var builder = WebApplication.CreateBuilder();
+var builder = WebApplication.CreateBuilder(args);
 
 // DI for custom configuration class
 builder.Services.AddCustomConfiguration(builder.Configuration);
@@ -98,3 +98,9 @@ app.UseCors("AllowAll");
 app.MapControllers();
 
 app.Run();
+
+
+// For intergration tests
+public partial class Program
+{
+};
