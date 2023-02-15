@@ -5,6 +5,7 @@ using TeachBoard.MembersService.Application.Exceptions;
 using TeachBoard.MembersService.Application.Features.Students;
 using TeachBoard.MembersService.Application.Validation;
 using TeachBoard.MembersService.Domain.Entities;
+using TeachBoard.MembersService.WebApi.Models.Student;
 
 namespace TeachBoard.MembersService.WebApi.Controllers;
 
@@ -55,5 +56,27 @@ public class StudentController : ControllerBase
         var students = await _mediator.Send(query);
 
         return Ok(students);
+    }
+
+    /// <summary>
+    /// Create student
+    /// </summary>
+    /// <param name="model">Student creation model</param>
+    /// <response code="200">Success. Student created</response>
+    /// <response code="404">Group with given group id not found (group_not_found)</response>
+    /// <response code="409">Student with given user id already exists (student_already_exists)</response>
+    [HttpPost("create")]
+    [ProducesResponseType(typeof(Student), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<Student>> CreateStudent([FromBody] CreateStudentRequestModel model)
+    {
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(model);
+
+        var command = new CreateStudentCommand { GroupId = model.GroupId, UserId = model.UserId };
+        var student = await _mediator.Send(command);
+
+        return student;
     }
 }
