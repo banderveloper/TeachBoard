@@ -16,7 +16,7 @@ using TeachBoard.IdentityService.WebApi.Models.Validation;
 namespace TeachBoard.IdentityService.WebApi.Controllers;
 
 [ApiController]
-[Route("auth")]
+[Route("identity/auth")]
 [Produces("application/json")]
 [ValidateModel]
 public class AuthController : ControllerBase
