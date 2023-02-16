@@ -20,7 +20,7 @@ public class StudentControllerIntegrationTests : IClassFixture<TestingWebAppFact
     {
         // Arrange
         // Act
-        var response = await _client.GetAsync($"members/students/getbyid/1");
+        var response = await _client.GetAsync($"members/student/getbyid/1");
         response.EnsureSuccessStatusCode();
         
         var student = await response.Content.ReadFromJsonAsync<Student>();
@@ -35,7 +35,7 @@ public class StudentControllerIntegrationTests : IClassFixture<TestingWebAppFact
     {
         // Arrange
         // Act
-        var response = await _client.GetAsync($"members/students/getbyid/50000");
+        var response = await _client.GetAsync($"members/student/getbyid/50000");
         var notFoundModel = await response.Content.ReadFromJsonAsync<NotFoundException>();
 
         // Assert
@@ -49,7 +49,7 @@ public class StudentControllerIntegrationTests : IClassFixture<TestingWebAppFact
     {
         // Arrange
         // Act
-        var response = await _client.GetAsync($"members/students/getbygroupid/1");
+        var response = await _client.GetAsync($"members/student/getbygroupid/1");
         response.EnsureSuccessStatusCode();
 
         var studentsModel = await response.Content.ReadFromJsonAsync<StudentsListModel>();
@@ -67,7 +67,7 @@ public class StudentControllerIntegrationTests : IClassFixture<TestingWebAppFact
     {
         // Arrange
         // Act
-        var response = await _client.GetAsync($"members/students/getbygroupid/50000");
+        var response = await _client.GetAsync($"members/student/getbygroupid/50000");
         var notFoundModel = await response.Content.ReadFromJsonAsync<NotFoundException>();
 
         // Assert
@@ -80,7 +80,7 @@ public class StudentControllerIntegrationTests : IClassFixture<TestingWebAppFact
     public async Task Create_OnCorrectRequestData_ReturnsStudent()
     {
         // Arrange
-        var postRequest = new HttpRequestMessage(HttpMethod.Post, "members/students/create");
+        var postRequest = new HttpRequestMessage(HttpMethod.Post, "members/student/create");
         var requestBody = new CreateStudentRequestModel { UserId = 4, GroupId = 2 };
 
         postRequest.Content = JsonContent.Create(
@@ -104,7 +104,7 @@ public class StudentControllerIntegrationTests : IClassFixture<TestingWebAppFact
     public async Task Create_OnExistingUserId_ReturnsAlreadyExistsModel()
     {
         // Arrange
-        var postRequest = new HttpRequestMessage(HttpMethod.Post, "members/students/create");
+        var postRequest = new HttpRequestMessage(HttpMethod.Post, "members/student/create");
         var requestBody = new CreateStudentRequestModel { UserId = 1, GroupId = 2 };
 
         postRequest.Content = JsonContent.Create(
@@ -128,7 +128,7 @@ public class StudentControllerIntegrationTests : IClassFixture<TestingWebAppFact
     public async Task Create_OnWrongGroupId_ReturnsNotFoundModel()
     {
         // Arrange
-        var postRequest = new HttpRequestMessage(HttpMethod.Post, "members/students/create");
+        var postRequest = new HttpRequestMessage(HttpMethod.Post, "members/student/create");
         var requestBody = new CreateStudentRequestModel { UserId = 4, GroupId = 9000 };
 
         postRequest.Content = JsonContent.Create(
@@ -152,7 +152,7 @@ public class StudentControllerIntegrationTests : IClassFixture<TestingWebAppFact
     public async Task Create_OnInvalidUserId_Returns422UnprocessableEntity()
     {
         // Arrange
-        var postRequest = new HttpRequestMessage(HttpMethod.Post, "members/students/create");
+        var postRequest = new HttpRequestMessage(HttpMethod.Post, "members/student/create");
         var requestBody = new CreateStudentRequestModel { UserId = -5, GroupId = 1 };
 
         postRequest.Content = JsonContent.Create(
