@@ -100,4 +100,34 @@ public class FeedbackController : ControllerBase
 
         return Ok(feedback);
     }
+
+    /// <summary>
+    /// Get feedbacks by student id
+    /// </summary>
+    /// <response code="200">Success. Feedbacks returns</response>
+    /// <response code="404">Feedbacks with given student id not found (feedbacks_not_found)</response>
+    [HttpGet("getbystudentid/{id:int}")]
+    [ProducesResponseType(typeof(FeedbacksListModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<FeedbacksListModel>> GetFeedbacksByStudentId(int id)
+    {
+        var feedbacksModel = await _mediator.Send(new GetFeedbacksByStudentIdQuery { StudentId = id });
+        
+        return Ok(feedbacksModel);
+    }
+    
+    /// <summary>
+    /// Get feedbacks by teacher id
+    /// </summary>
+    /// <response code="200">Success. Feedbacks returns</response>
+    /// <response code="404">Feedbacks with given teacher id not found (feedbacks_not_found)</response>
+    [HttpGet("getbyteacherid/{id:int}")]
+    [ProducesResponseType(typeof(FeedbacksListModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<FeedbacksListModel>> GetFeedbacksByTeacherId(int id)
+    {
+        var feedbacksModel = await _mediator.Send(new GetFeedbacksByTeacherIdQuery { TeacherId = id });
+        
+        return Ok(feedbacksModel);
+    }
 }

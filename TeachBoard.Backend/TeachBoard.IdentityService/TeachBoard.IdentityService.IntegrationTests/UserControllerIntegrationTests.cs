@@ -49,6 +49,7 @@ public class UserControllerIntegrationTests : IClassFixture<TestingWebAppFactory
         Assert.True(registerCodeResponse.RegisterCode.Length == 8);
         Assert.True(registerCodeResponse.ExpiresAt > DateTime.Now);
     }
+    
 
     /// <summary>
     /// Test: Get HTTP404 trying get user with unreal id

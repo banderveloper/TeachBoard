@@ -45,8 +45,3 @@ public class
     }
 }
 
-// Return model
-public class FeedbacksListModel
-{
-    public IList<Feedback> Feedbacks { get; set; }
-}
