@@ -30,7 +30,7 @@ public class TeacherController : ControllerBase
     [HttpGet("getbyid/{id:int}")]
     [ProducesResponseType(typeof(Teacher), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Student>> GetTeacherById(int id)
+    public async Task<ActionResult<Student>> GetById(int id)
     {
         var query = new GetTeacherByIdQuery { TeacherId = id };
         var teacher = await _mediator.Send(query);
@@ -47,7 +47,7 @@ public class TeacherController : ControllerBase
     [HttpPost("create")]
     [ProducesResponseType(typeof(Teacher), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<Teacher>> CreateTeacher([FromBody] CreateTeacherRequestModel model)
+    public async Task<ActionResult<Teacher>> Create([FromBody] CreateTeacherRequestModel model)
     {
         if (!ModelState.IsValid)
             return UnprocessableEntity(model);
@@ -56,5 +56,21 @@ public class TeacherController : ControllerBase
         var teacher = await _mediator.Send(command);
 
         return teacher;
+    }
+    
+    /// <summary>
+    /// Get all teachers
+    /// </summary>
+    /// <response code="200">Success. Teachers returns.</response>
+    /// <response code="404">Teachers not found (teachers_not_found)</response>
+    [HttpGet("getall")]
+    [ProducesResponseType(typeof(TeachersListModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<TeachersListModel>> GetAll()
+    {
+        var query = new GetAllTeachersQuery();
+        var teacher = await _mediator.Send(query);
+
+        return Ok(teacher);
     }
 }
