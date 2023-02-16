@@ -11,7 +11,7 @@ namespace TeachBoard.MembersService.WebApi.Controllers;
 
 [ValidateModel]
 [ApiController]
-[Route("members/students")]
+[Route("members/student")]
 [Produces("application/json")]
 public class StudentController : ControllerBase
 {

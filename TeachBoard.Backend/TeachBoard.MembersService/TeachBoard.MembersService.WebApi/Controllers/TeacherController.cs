@@ -10,7 +10,7 @@ namespace TeachBoard.MembersService.WebApi.Controllers;
 
 [ValidateModel]
 [ApiController]
-[Route("members/teachers")]
+[Route("members/teacher")]
 [Produces("application/json")]
 public class TeacherController : ControllerBase
 {
@@ -30,7 +30,7 @@ public class TeacherController : ControllerBase
     [HttpGet("getbyid/{id:int}")]
     [ProducesResponseType(typeof(Teacher), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Student>> GetStudentById(int id)
+    public async Task<ActionResult<Student>> GetTeacherById(int id)
     {
         var query = new GetTeacherByIdQuery { TeacherId = id };
         var teacher = await _mediator.Send(query);
