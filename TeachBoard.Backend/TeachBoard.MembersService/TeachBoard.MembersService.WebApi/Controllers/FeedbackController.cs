@@ -66,7 +66,7 @@ public class FeedbackController : ControllerBase
     [ProducesResponseType(typeof(Feedback), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Feedback>> CreateTeacherToStudentFeedback(
-        [FromBody] CreateTeacherToStudentRequestModel model)
+        [FromBody] CreateFeedbackRequestModel model)
     {
         if (!ModelState.IsValid)
             return UnprocessableEntity(model);
@@ -88,12 +88,12 @@ public class FeedbackController : ControllerBase
     [ProducesResponseType(typeof(Feedback), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Feedback>> CreateStudentToTeacherFeedback(
-        [FromBody] CreateStudentToTeacherRequestModel model)
+        [FromBody] CreateFeedbackRequestModel model)
     {
         if (!ModelState.IsValid)
             return UnprocessableEntity(model);
 
-        var command = _mapper.Map<Feedback>(model);
+        var command = _mapper.Map<CreateFeedbackCommand>(model);
         command.Direction = FeedbackDirection.StudentToTeacher;
 
         var feedback = await _mediator.Send(command);

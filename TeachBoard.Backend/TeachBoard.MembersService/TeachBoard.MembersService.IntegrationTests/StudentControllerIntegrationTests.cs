@@ -153,7 +153,7 @@ public class StudentControllerIntegrationTests : IClassFixture<TestingWebAppFact
     {
         // Arrange
         var postRequest = new HttpRequestMessage(HttpMethod.Post, "members/student/create");
-        var requestBody = new CreateStudentRequestModel { UserId = -5, GroupId = 1 };
+        var requestBody = new CreateStudentRequestModel { UserId = -100, GroupId = 2 };
 
         postRequest.Content = JsonContent.Create(
             requestBody,

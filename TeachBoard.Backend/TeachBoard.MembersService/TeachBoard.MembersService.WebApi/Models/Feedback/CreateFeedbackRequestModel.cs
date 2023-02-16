@@ -5,7 +5,7 @@ using TeachBoard.MembersService.Application.Mappings;
 
 namespace TeachBoard.MembersService.WebApi.Models.Feedback;
 
-public class CreateTeacherToStudentRequestModel : IMappable
+public class CreateFeedbackRequestModel : IMappable
 {
     [Required] [Range(1, int.MaxValue)] public int TeacherId { get; set; }
     [Required] [Range(1, int.MaxValue)] public int StudentId { get; set; }
@@ -14,6 +14,6 @@ public class CreateTeacherToStudentRequestModel : IMappable
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<CreateTeacherToStudentRequestModel, CreateFeedbackCommand>();
+        profile.CreateMap<CreateFeedbackRequestModel, CreateFeedbackCommand>();
     }
 }
