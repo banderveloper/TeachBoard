@@ -67,6 +67,9 @@ public class FeedbackController : ControllerBase
     public async Task<ActionResult<TeacherToStudentFeedback>> CreateTeacherToStudentFeedback(
         [FromBody] CreateTeacherToStudentRequestModel model)
     {
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(model);
+        
         var command = _mapper.Map<CreateTeacherToStudentFeedbackCommand>(model);
         var feedback = await _mediator.Send(command);
 
@@ -84,6 +87,9 @@ public class FeedbackController : ControllerBase
     public async Task<ActionResult<StudentToTeacherFeedback>> CreateStudentToTeacherFeedback(
         [FromBody] CreateStudentToTeacherRequestModel model)
     {
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(model);
+        
         var command = _mapper.Map<CreateStudentToTeacherFeedbackCommand>(model);
         var feedback = await _mediator.Send(command);
 
