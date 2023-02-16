@@ -37,18 +37,6 @@ public class CustomExceptionHandlerMiddleware
                 statusCode = HttpStatusCode.Conflict;
                 result = alreadyExistsException;
                 break;
-            // case RefreshTokenException refreshTokenException:
-            //     statusCode = HttpStatusCode.NotAcceptable;
-            //     result = refreshTokenException;
-            //     break;
-            // case WrongPasswordException wrongPasswordException:
-            //     statusCode = HttpStatusCode.Forbidden;
-            //     result = wrongPasswordException;
-            //     break;
-            // case DataExpiredException dataExpiredException:
-            //     statusCode = HttpStatusCode.Gone;
-            //     result = dataExpiredException;
-            //     break;
             default:
                 Console.WriteLine(exception);
                 break;
