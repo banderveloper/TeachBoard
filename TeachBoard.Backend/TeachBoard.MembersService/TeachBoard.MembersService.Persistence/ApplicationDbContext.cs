@@ -12,8 +12,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Student> Students { get; set; }
     public DbSet<Teacher> Teachers { get; set; }
     public DbSet<Group> Groups { get; set; }
-    public DbSet<StudentToTeacherFeedback> StudentToTeacherFeedbacks { get; set; }
-    public DbSet<TeacherToStudentFeedback> TeacherToStudentFeedbacks { get; set; }
+    public DbSet<Feedback> Feedbacks { get; set; }
     public DbSet<NewsItem> NewsItems { get; set; }
 
     /// <summary>

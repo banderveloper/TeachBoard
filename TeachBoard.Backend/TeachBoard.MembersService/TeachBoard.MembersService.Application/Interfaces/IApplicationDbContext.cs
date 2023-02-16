@@ -11,8 +11,7 @@ public interface IApplicationDbContext
     DbSet<Student> Students { get; set; }
     DbSet<Teacher> Teachers { get; set; }
     DbSet<Group> Groups { get; set; }
-    DbSet<StudentToTeacherFeedback> StudentToTeacherFeedbacks { get; set; }
-    DbSet<TeacherToStudentFeedback> TeacherToStudentFeedbacks { get; set; }
+    DbSet<Feedback> Feedbacks { get; set; }
     DbSet<NewsItem> NewsItems { get; set; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);

@@ -2,7 +2,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.MembersService.Application.Exceptions;
-using TeachBoard.MembersService.Application.Features.Feedbacks;
 using TeachBoard.MembersService.Application.Features.Groups;
 using TeachBoard.MembersService.Application.Validation;
 using TeachBoard.MembersService.Domain.Entities;
@@ -33,7 +32,7 @@ public class GroupController : ControllerBase
     [HttpGet("getall")]
     [ProducesResponseType(typeof(GroupsListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<TeacherToStudentFeedbacksListModel>> GetAll()
+    public async Task<ActionResult<GroupsListModel>> GetAll()
     {
         var query = new GetAllGroupsQuery();
         var groupsModel = await _mediator.Send(query);

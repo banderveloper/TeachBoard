@@ -14,6 +14,6 @@ public class CreateTeacherToStudentRequestModel : IMappable
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<CreateTeacherToStudentRequestModel, CreateTeacherToStudentFeedbackCommand>();
+        profile.CreateMap<CreateTeacherToStudentRequestModel, CreateFeedbackCommand>();
     }
 }
