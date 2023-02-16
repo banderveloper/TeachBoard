@@ -79,4 +79,20 @@ public class StudentController : ControllerBase
 
         return student;
     }
+    
+    /// <summary>
+    /// Delete student by user id
+    /// </summary>
+    /// <response code="200">Success. Student deleted</response>
+    /// <response code="404">Student not found (student_not_found)</response>
+    [HttpDelete("deletebyuserid/{id:int}")]
+    [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteByUserId(int id)
+    {
+        // Delete by id
+        await _mediator.Send(new DeleteStudentByUserIdCommand { UserId = id });
+
+        return Ok();
+    }
 }
