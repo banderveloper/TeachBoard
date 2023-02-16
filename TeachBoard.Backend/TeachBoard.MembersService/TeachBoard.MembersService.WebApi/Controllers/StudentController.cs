@@ -79,7 +79,7 @@ public class StudentController : ControllerBase
 
         return student;
     }
-    
+
     /// <summary>
     /// Delete student by user id
     /// </summary>
