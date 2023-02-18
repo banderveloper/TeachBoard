@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using TeachBoard.MembersService.Application.Exceptions;
 using TeachBoard.MembersService.Application.Features.Students;
+using TeachBoard.MembersService.Application.Features.Students.Common;
 using TeachBoard.MembersService.Domain.Entities;
 using TeachBoard.MembersService.WebApi.Models.Student;
 

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using TeachBoard.MembersService.Application.Exceptions;
+using TeachBoard.MembersService.Application.Features.Students.Common;
 using TeachBoard.MembersService.Application.Interfaces;
 using TeachBoard.MembersService.Domain.Entities;
 
@@ -40,8 +41,3 @@ public class GetStudentsByGroupIdQueryHandler : IRequestHandler<GetStudentsByGro
     }
 }
 
-// Return model
-public class StudentsListModel
-{
-    public IList<Student> Students { get; set; }
-}

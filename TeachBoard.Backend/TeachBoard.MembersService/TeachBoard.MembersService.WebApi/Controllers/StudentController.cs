@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.MembersService.Application.Exceptions;
 using TeachBoard.MembersService.Application.Features.Students;
+using TeachBoard.MembersService.Application.Features.Students.Common;
 using TeachBoard.MembersService.Application.Validation;
 using TeachBoard.MembersService.Domain.Entities;
 using TeachBoard.MembersService.WebApi.Models.Student;
@@ -94,5 +95,14 @@ public class StudentController : ControllerBase
         await _mediator.Send(new DeleteStudentByUserIdCommand { UserId = id });
 
         return Ok();
+    }
+
+    [HttpGet("getgroupmembers")]
+    public async Task<ActionResult<StudentsListModel>> GetStudentGroupMembers(int studentId)
+    {
+        var query = new GetStudentGroupMembersQuery { StudentId = studentId };
+        var students = await _mediator.Send(query);
+
+        return Ok(students);
     }
 }
