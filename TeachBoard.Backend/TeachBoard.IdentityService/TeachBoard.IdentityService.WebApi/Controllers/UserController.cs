@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.IdentityService.Application.CQRS.Commands.ApprovePendingUser;
 using TeachBoard.IdentityService.Application.CQRS.Commands.CreatePendingUser;
+using TeachBoard.IdentityService.Application.CQRS.Queries.GetPendingUserByRegisterCode;
 using TeachBoard.IdentityService.Application.CQRS.Queries.GetUserById;
 using TeachBoard.IdentityService.Application.Exceptions;
 using TeachBoard.IdentityService.WebApi.Models.User;
@@ -102,5 +103,27 @@ public class UserController : ControllerBase
         var publicModel = _mapper.Map<UserPublicDataResponseModel>(user);
 
         return Ok(publicModel);
+    }
+
+    /// <summary>
+    /// Get pending user role
+    /// </summary>
+    /// 
+    /// <param name="registerCode">Register code of pending user</param>
+    ///
+    /// <response code="200">Success. Pending user role returned</response>
+    /// <response code="404">Pending user with given register code not found (pending_user_not_found)</response>
+    [HttpGet("pending/getrolebycode/{registerCode}")]
+    [ProducesResponseType(typeof(PendingUserRoleResponseModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<PendingUserRoleResponseModel>> GetPendingUserRoleByCode(string registerCode)
+    {
+        var query = new GetPendingUserByRegistrationCodeQuery { RegisterCode = registerCode };
+        var pendingUser = await _mediator.Send(query);
+
+        return new PendingUserRoleResponseModel
+        {
+            Role = pendingUser.Role
+        };
     }
 }
