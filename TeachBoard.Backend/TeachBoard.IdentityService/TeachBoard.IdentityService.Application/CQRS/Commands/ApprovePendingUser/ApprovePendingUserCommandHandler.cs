@@ -8,14 +8,14 @@ using TeachBoard.IdentityService.Domain.Entities;
 namespace TeachBoard.IdentityService.Application.CQRS.Commands.ApprovePendingUser;
 
 // Transform pending user to real user using registration with given registration code and new username and pass
-public class ApprovePendingUserCommandHandler : IRequestHandler<ApprovePendingUserCommand>
+public class ApprovePendingUserCommandHandler : IRequestHandler<ApprovePendingUserCommand, User>
 {
     private readonly IApplicationDbContext _context;
 
     public ApprovePendingUserCommandHandler(IApplicationDbContext context)
         => _context = context;
 
-    public async Task<Unit> Handle(ApprovePendingUserCommand request, CancellationToken cancellationToken)
+    public async Task<User> Handle(ApprovePendingUserCommand request, CancellationToken cancellationToken)
     {
         // Get pending user by registration code
         var pendingUser = await _context.PendingUsers
@@ -76,6 +76,6 @@ public class ApprovePendingUserCommandHandler : IRequestHandler<ApprovePendingUs
         // Save it all
         await _context.SaveChangesAsync(cancellationToken);
 
-        return Unit.Value;
+        return newUser;
     }
 }

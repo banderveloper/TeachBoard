@@ -6,6 +6,7 @@ using TeachBoard.IdentityService.Application.CQRS.Commands.CreatePendingUser;
 using TeachBoard.IdentityService.Application.CQRS.Queries.GetPendingUserByRegisterCode;
 using TeachBoard.IdentityService.Application.CQRS.Queries.GetUserById;
 using TeachBoard.IdentityService.Application.Exceptions;
+using TeachBoard.IdentityService.Domain.Entities;
 using TeachBoard.IdentityService.WebApi.Models.User;
 using TeachBoard.IdentityService.WebApi.Models.Validation;
 
@@ -60,13 +61,13 @@ public class UserController : ControllerBase
     /// 
     /// <param name="requestModel">Approve pending user created by administrator</param>
     ///
-    /// <response code="200">Success. User approved</response>
+    /// <response code="200">Success. User approved and returned</response>
     /// <response code="404">Pending user with given register code not found (register_code_not_found)</response>
     /// <response code="409">User with given username already exists (username_already_exists)</response>
     /// <response code="410">Pending user expired (pending_user_expired)</response>
     /// <response code="422">Invalid requestModel</response>
     [HttpPost("pending/approve")]
-    [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status410Gone)]
@@ -79,9 +80,9 @@ public class UserController : ControllerBase
         // Create a command for approve and send it
         // If everything is ok - it will be created user, pending user will be deleted
         var approveCommand = _mapper.Map<ApprovePendingUserCommand>(requestModel);
-        await _mediator.Send(approveCommand);
+        var user = await _mediator.Send(approveCommand);
 
-        return Ok();
+        return Ok(user);
     }
 
     /// <summary>
