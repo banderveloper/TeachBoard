@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.MembersService.Application.Exceptions;
 using TeachBoard.MembersService.Application.Features.Students;
+using TeachBoard.MembersService.Application.Features.Students.Common;
 using TeachBoard.MembersService.Application.Validation;
 using TeachBoard.MembersService.Domain.Entities;
 using TeachBoard.MembersService.WebApi.Models.Student;
@@ -79,7 +80,7 @@ public class StudentController : ControllerBase
 
         return student;
     }
-    
+
     /// <summary>
     /// Delete student by user id
     /// </summary>
@@ -94,5 +95,22 @@ public class StudentController : ControllerBase
         await _mediator.Send(new DeleteStudentByUserIdCommand { UserId = id });
 
         return Ok();
+    }
+
+    /// <summary>
+    /// Get students from group of given student
+    /// </summary>
+    /// <param name="studentId">Group id</param>
+    /// <response code="200">Success. Array of students returns</response>
+    /// <response code="404">Student with given id not found (student_not_found)</response>
+    [HttpGet("getgroupmembers")]
+    [ProducesResponseType(typeof(Student), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<StudentsListModel>> GetStudentGroupMembers(int studentId)
+    {
+        var query = new GetStudentGroupMembersQuery { StudentId = studentId };
+        var students = await _mediator.Send(query);
+
+        return Ok(students);
     }
 }
