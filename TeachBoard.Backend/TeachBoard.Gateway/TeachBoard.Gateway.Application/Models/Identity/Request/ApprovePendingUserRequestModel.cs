@@ -1,6 +1,6 @@
-﻿namespace TeachBoard.Gateway.Application.Models.Identity;
+﻿namespace TeachBoard.Gateway.Application.Models.Identity.Request;
 
-public class ApprovePendingUserTransferModel
+public class ApprovePendingUserRequestModel
 {
     public string RegisterCode { get; set; }
     public string UserName { get; set; }

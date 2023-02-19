@@ -1,6 +1,6 @@
 ﻿using TeachBoard.Gateway.Domain.Enums;
 
-namespace TeachBoard.Gateway.Application.Models.Identity;
+namespace TeachBoard.Gateway.Application.Models.Identity.Response;
 
 public class IdentityUserResponseModel
 {

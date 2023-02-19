@@ -1,5 +1,6 @@
 ﻿using Refit;
-using TeachBoard.Gateway.Application.Models.Identity;
+using TeachBoard.Gateway.Application.Models.Identity.Request;
+using TeachBoard.Gateway.Application.Models.Identity.Response;
 using TeachBoard.Gateway.Domain.Enums;
 
 namespace TeachBoard.Gateway.Application.RefitClients;
@@ -21,5 +22,5 @@ public interface IIdentityClient
     /// <param name="model">Model containing pending register code, new login and password</param>
     /// <returns>Created user from pending user</returns>
     [Post("/users/pending/approve")]
-    Task<IdentityUserResponseModel> ApprovePendingUser(ApprovePendingUserTransferModel model);
+    Task<IdentityUserResponseModel> ApprovePendingUser(ApprovePendingUserRequestModel model);
 }
