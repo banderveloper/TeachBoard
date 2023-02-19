@@ -1,5 +1,6 @@
-using System.Text.Json;
 using Refit;
+using System.Text.Json;
+using TeachBoard.Gateway.WebApi.Middleware;
 using TeachBoard.Gateway.Application.RefitClients;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,14 +17,14 @@ builder.Services.AddControllers()
 builder.Services.AddRefitClient<IIdentityClient>()
     .ConfigureHttpClient(client => client.BaseAddress = new Uri(builder.Configuration["ApiAddresses:Identity"]));
 
-// Register refit IdentityClient
+// Register refit MembersClient
 builder.Services.AddRefitClient<IMembersClient>()
     .ConfigureHttpClient(client => client.BaseAddress = new Uri(builder.Configuration["ApiAddresses:Members"]));
 
 var app = builder.Build();
 
+app.UseCustomExceptionHandler();
+
 app.MapControllers();
-
-
 
 app.Run();
