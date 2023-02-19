@@ -102,7 +102,7 @@ public class StudentController : ControllerBase
     /// </summary>
     /// <param name="studentId">Group id</param>
     /// <response code="200">Success. Array of students returns</response>
-    /// <response code="404">Student with given id not found (student_not_found)</response>
+    /// <response code="404">Student with given id not found (student_not_found) / Student does not belong to any group (group_not_found)</response>
     [HttpGet("getgroupmembers")]
     [ProducesResponseType(typeof(Student), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
