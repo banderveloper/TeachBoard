@@ -10,7 +10,7 @@ namespace TeachBoard.MembersService.Application.Features.Students;
 public class CreateStudentCommand : IRequest<Student>
 {
     public int UserId { get; set; }
-    public int GroupId { get; set; }
+    public int? GroupId { get; set; }
 }
 
 // Handler
@@ -25,17 +25,21 @@ public class CreateStudentCommandHandler : IRequestHandler<CreateStudentCommand,
 
     public async Task<Student> Handle(CreateStudentCommand request, CancellationToken cancellationToken)
     {
-        // If group does not exists - exception
-        
-        var existingGroup = await _context.Groups.FindAsync(request.GroupId, cancellationToken);
 
-        if (existingGroup is null)
-            throw new NotFoundException
-            {
-                Error = "group_not_found",
-                ErrorDescription = $"Group with id {request.GroupId} not found",
-                ReasonField = "groupId"
-            };
+        // If group does not exists - exception
+        if (request.GroupId != null)
+        {
+            var existingGroup = await _context.Groups.FindAsync(request.GroupId, cancellationToken);
+
+            if (existingGroup is null)
+                throw new NotFoundException
+                {
+                    Error = "group_not_found",
+                    ErrorDescription = $"Group with id {request.GroupId} not found",
+                    ReasonField = "groupId"
+                };
+        }
+        
 
         // If student with given user id already exists - exception
         

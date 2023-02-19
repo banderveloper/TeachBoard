@@ -34,6 +34,14 @@ public class GetStudentGroupMembersQueryHandler : IRequestHandler<GetStudentGrou
                 ReasonField = "id"
             };
 
+        if (student.GroupId is null)
+            throw new NotFoundException
+            {
+                Error = "group_not_found",
+                ErrorDescription = "Student does not belong to any group",
+                ReasonField = "groupId"
+            };
+
         // Searching for student group members
         var groupMembers = await _context.Students
             .Where(st => st.GroupId == student.GroupId)
