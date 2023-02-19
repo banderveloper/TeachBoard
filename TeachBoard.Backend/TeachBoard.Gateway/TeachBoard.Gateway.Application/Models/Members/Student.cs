@@ -1,6 +1,6 @@
-﻿namespace TeachBoard.Gateway.Application.Models.Members.Response;
+﻿namespace TeachBoard.Gateway.Application.Models.Members;
 
-public class CreateStudentResponseModel
+public class Student
 {
     public int Id { get; set; }
     public int UserId { get; set; }

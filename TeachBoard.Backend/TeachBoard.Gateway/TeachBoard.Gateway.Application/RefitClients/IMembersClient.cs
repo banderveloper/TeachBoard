@@ -1,6 +1,6 @@
 ﻿using Refit;
+using TeachBoard.Gateway.Application.Models.Members;
 using TeachBoard.Gateway.Application.Models.Members.Request;
-using TeachBoard.Gateway.Application.Models.Members.Response;
 
 namespace TeachBoard.Gateway.Application.RefitClients;
 
@@ -12,5 +12,5 @@ public interface IMembersClient
     /// <param name="model">User id and group id</param>
     /// <returns>Created student</returns>
     [Post("/student/create")]
-    Task<CreateStudentResponseModel> CreateStudent(CreateStudentRequestModel model);
+    Task<Student> CreateStudent(CreateStudentRequestModel model);
 }

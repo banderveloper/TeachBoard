@@ -1,8 +1,8 @@
 ﻿using TeachBoard.Gateway.Domain.Enums;
 
-namespace TeachBoard.Gateway.Application.Models.Identity.Response;
+namespace TeachBoard.Gateway.Application.Models.Identity;
 
-public class IdentityUserResponseModel
+public class User
 {
     public int Id { get; set; }
     
