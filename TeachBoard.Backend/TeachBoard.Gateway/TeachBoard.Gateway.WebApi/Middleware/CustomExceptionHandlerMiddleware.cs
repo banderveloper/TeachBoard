@@ -24,20 +24,20 @@ public class CustomExceptionHandlerMiddleware
     private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         var statusCode = HttpStatusCode.InternalServerError;
-        Dictionary<string, string>? responseBody = null;
+        Dictionary<string, object>? responseBody = null;
 
         switch (exception)
         {
             // Exception from microservices
             case Refit.ApiException refitApiException:
                 statusCode = refitApiException.StatusCode;
-                responseBody = await refitApiException.GetContentAsAsync<Dictionary<string, string>>();
+                responseBody = await refitApiException.GetContentAsAsync<Dictionary<string, object>>();
                 break;
 
             // Needed microservice is down
             case HttpRequestException:
                 statusCode = HttpStatusCode.ServiceUnavailable;
-                responseBody = new Dictionary<string, string>
+                responseBody = new Dictionary<string, object>
                 {
                     { "error", "service_unavailable" },
                     { "errorDescription", "One of the needed services is unavailable now" }
