@@ -1,3 +1,4 @@
+using System.Net.Mime;
 using System.Reflection;
 using System.Text.Json;
 using Microsoft.Extensions.Options;
@@ -6,6 +7,7 @@ using TeachBoard.EducationService.Application.Configurations;
 using TeachBoard.EducationService.Application.Mappings;
 using TeachBoard.EducationService.Persistence;
 using TeachBoard.EducationService.WebApi.Middleware;
+using TeachBoard.EducationService.WebApi.Models.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +17,7 @@ builder.Services.AddSingleton(resolver =>
     resolver.GetRequiredService<IOptions<ConnectionConfiguration>>().Value);
 
 // DI from another layers
-builder.Services.AddApplication();
+builder.Services.AddApplication().AddPersistence();
 
 // Controller and JSON configs registration
 builder.Services.AddControllers()
@@ -24,7 +26,19 @@ builder.Services.AddControllers()
         // lowercase for json keys
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+    })
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        // custom validation error response
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var result = new ValidationFailedResult(context.ModelState);
+            result.ContentTypes.Add(MediaTypeNames.Application.Json);
+
+            return result;
+        };
     });
+
 
 // Swagger
 builder.Services.AddSwaggerGen();
