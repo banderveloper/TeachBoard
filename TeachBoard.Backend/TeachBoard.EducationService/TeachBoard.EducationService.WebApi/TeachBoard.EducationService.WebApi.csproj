@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\TeachBoard.EducationService.Application\TeachBoard.EducationService.Application.csproj" />
+      <ProjectReference Include="..\TeachBoard.EducationService.Domain\TeachBoard.EducationService.Domain.csproj" />
+      <ProjectReference Include="..\TeachBoard.EducationService.Persistence\TeachBoard.EducationService.Persistence.csproj" />
+    </ItemGroup>
+
+</Project>
