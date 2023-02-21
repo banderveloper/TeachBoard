@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.EducationService.Application.Exceptions;
 using TeachBoard.EducationService.Application.Features.Lesson;
+using TeachBoard.EducationService.Application.Features.StudentLessonActivity;
 using TeachBoard.EducationService.Domain.Entities;
 using TeachBoard.EducationService.WebApi.Models.Lesson;
 using TeachBoard.EducationService.WebApi.Models.Validation;
@@ -90,9 +91,9 @@ public class LessonController : ControllerBase
     /// <summary>
     /// Create/update student lesson activity
     /// </summary>
-    /// 
-    /// <param name="model">Student activity model with student & lesson id, attendance and mark</param>
-    /// <returns>Created lesson</returns>
+    ///
+    /// <param name="model">Set student lesson activity model</param>
+    /// <returns>Created or updated student lesson activity</returns>
     ///
     /// <response code="200">Success. Activity created / updated</response>
     /// <response code="400">Setting lesson activity to future lessons is not allowed (lesson_not_started)</response>
@@ -111,5 +112,26 @@ public class LessonController : ControllerBase
         var studentActivity = await _mediator.Send(command);
 
         return studentActivity;
+    }
+
+    /// <summary>
+    /// Get student lesson activites by student id
+    /// </summary>
+    ///
+    /// <param name="studentId">Student id</param>
+    /// <returns>Student lesson activities</returns>
+    ///
+    /// <response code="200">Success. Student lesson activities returned</response>
+    /// <response code="404">Student lesson activities witn given student id not found (student_lesson_activities_not_found)</response>
+    [HttpGet("getstudentactivities/{studentId:int}")]
+    [ProducesResponseType(typeof(StudentLessonActivity), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<StudentLessonActivitiesListModel>> GetStudentLessonActivitiesByStudentId(
+        int studentId)
+    {
+        var query = new GetStudentLessonActivitiesByStudentIdQuery { StudentId = studentId };
+
+        var activitiesListModel = await _mediator.Send(query);
+        return Ok(activitiesListModel);
     }
 }

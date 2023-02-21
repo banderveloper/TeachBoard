@@ -2,12 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using TeachBoard.EducationService.Application.Exceptions;
 using TeachBoard.EducationService.Application.Interfaces;
-using TeachBoard.EducationService.Domain.Entities;
 using TeachBoard.EducationService.Domain.Enums;
 
 namespace TeachBoard.EducationService.Application.Features.Lesson;
 
-public class SetStudentLessonActivityCommand : IRequest<StudentLessonActivity>
+public class SetStudentLessonActivityCommand : IRequest<Domain.Entities.StudentLessonActivity>
 {
     public int StudentId { get; set; }
     public int LessonId { get; set; }
@@ -16,7 +15,7 @@ public class SetStudentLessonActivityCommand : IRequest<StudentLessonActivity>
 }
 
 public class SetStudentLessonActivityCommandHandler
-    : IRequestHandler<SetStudentLessonActivityCommand, StudentLessonActivity>
+    : IRequestHandler<SetStudentLessonActivityCommand, Domain.Entities.StudentLessonActivity>
 {
     private readonly IApplicationDbContext _context;
 
@@ -25,7 +24,7 @@ public class SetStudentLessonActivityCommandHandler
         _context = context;
     }
 
-    public async Task<StudentLessonActivity> Handle(SetStudentLessonActivityCommand request,
+    public async Task<Domain.Entities.StudentLessonActivity> Handle(SetStudentLessonActivityCommand request,
         CancellationToken cancellationToken)
     {
         // try get existing lesson by id, and throw exception if it is not exists
@@ -63,7 +62,7 @@ public class SetStudentLessonActivityCommandHandler
         // if not exists - create
         else
         {
-            existingActivity = new StudentLessonActivity
+            existingActivity = new Domain.Entities.StudentLessonActivity
             {
                 LessonId = request.LessonId,
                 StudentId = request.StudentId,
