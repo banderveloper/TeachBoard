@@ -52,6 +52,16 @@ public class CreateLessonCommandHandler : IRequestHandler<CreateLessonCommand, D
             // if end time not set - set StartTime + 80 minutes (for example)
             EndsAt = request.EndsAt ?? request.StartsAt.AddMinutes(_lessonConfiguration.DefaultDurabilityMinutes),
         };
+        
+        // if end time later than start time
+        if (newLesson.StartsAt > newLesson.EndsAt)
+            throw new InvalidDateTimeException
+            {
+                Error = "invalid_datetime",
+                ErrorDescription = "Lesson end time cannot be later than start",
+                ReasonField = "endsAt"
+            };
+        
 
         _context.Lessons.Add(newLesson);
         await _context.SaveChangesAsync(cancellationToken);
