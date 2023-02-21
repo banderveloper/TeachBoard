@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SQLitePCL;
 using TeachBoard.EducationService.Application.Exceptions;
 using TeachBoard.EducationService.Application.Features.Subject;
 using TeachBoard.EducationService.Domain.Entities;

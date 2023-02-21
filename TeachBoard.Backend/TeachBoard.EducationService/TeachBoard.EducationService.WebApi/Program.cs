@@ -16,6 +16,11 @@ builder.Services.Configure<ConnectionConfiguration>(builder.Configuration.GetSec
 builder.Services.AddSingleton(resolver =>
     resolver.GetRequiredService<IOptions<ConnectionConfiguration>>().Value);
 
+// Lesson configuration registration
+builder.Services.Configure<LessonConfiguration>(builder.Configuration.GetSection("Lesson"));
+builder.Services.AddSingleton(resolver =>
+    resolver.GetRequiredService<IOptions<LessonConfiguration>>().Value);
+
 // DI from another layers
 builder.Services.AddApplication().AddPersistence();
 

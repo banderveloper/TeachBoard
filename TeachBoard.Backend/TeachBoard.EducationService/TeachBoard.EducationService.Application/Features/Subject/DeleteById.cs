@@ -20,8 +20,7 @@ public class DeleteSubjectByIdCommandHandler : IRequestHandler<DeleteSubjectById
 
     public async Task<bool> Handle(DeleteSubjectByIdCommand request, CancellationToken cancellationToken)
     {
-        var subjectToDelete = await _context.Subjects.FindAsync(new object?[] { request.SubjectId, cancellationToken }, 
-            cancellationToken);
+        var subjectToDelete = await _context.Subjects.FindAsync(request.SubjectId, cancellationToken);
 
         if (subjectToDelete is null)
             throw new NotFoundException
