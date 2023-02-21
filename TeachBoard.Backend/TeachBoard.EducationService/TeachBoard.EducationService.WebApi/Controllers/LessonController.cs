@@ -86,4 +86,30 @@ public class LessonController : ControllerBase
 
         return Ok(lessonsModel);
     }
+
+    /// <summary>
+    /// Create/update student lesson activity
+    /// </summary>
+    /// 
+    /// <param name="model">Student activity model with student & lesson id, attendance and mark</param>
+    /// <returns>Created lesson</returns>
+    ///
+    /// <response code="200">Success. Activity created / updated</response>
+    /// <response code="400">Setting lesson activity to future lessons is not allowed (lesson_not_started)</response>
+    /// <response code="404">Lesson with given id not found (lesson_not_found)</response>
+    /// <response code="422">Invalid model</response>
+    [HttpPost("setstudentactivity")]
+    [ProducesResponseType(typeof(StudentLessonActivity), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
+    public async Task<ActionResult<StudentLessonActivity>> SetStudentLessonActivity(
+        [FromBody] SetStudentLessonActivityModel model)
+    {
+        var command = _mapper.Map<SetStudentLessonActivityCommand>(model);
+
+        var studentActivity = await _mediator.Send(command);
+
+        return studentActivity;
+    }
 }

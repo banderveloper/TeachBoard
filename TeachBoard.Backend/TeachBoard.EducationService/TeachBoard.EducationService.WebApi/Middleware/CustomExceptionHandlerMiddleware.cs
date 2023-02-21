@@ -37,6 +37,10 @@ public class CustomExceptionHandlerMiddleware
                 statusCode = HttpStatusCode.Conflict;
                 result = alreadyExistsException;
                 break;
+            case InvalidDateTimeException dateTimeException:
+                statusCode = HttpStatusCode.BadRequest;
+                result = dateTimeException;
+                break;
             default:
                 Console.WriteLine(exception);
                 break;
