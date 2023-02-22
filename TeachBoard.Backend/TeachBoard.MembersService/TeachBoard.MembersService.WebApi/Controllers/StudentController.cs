@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.Json;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.MembersService.Application.Exceptions;
@@ -125,8 +126,11 @@ public class StudentController : ControllerBase
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<StudentsListModel>> GetStudentGroupMembersByUserId(int userId)
     {
+        Console.WriteLine($"Get by user id, id income: {userId}");
         var query = new GetStudentGroupMembersByUserIdQuery { UserId = userId };
         var students = await _mediator.Send(query);
+        Console.WriteLine("Response: ");
+        Console.WriteLine(JsonSerializer.Serialize(students));
 
         return Ok(students);
     }

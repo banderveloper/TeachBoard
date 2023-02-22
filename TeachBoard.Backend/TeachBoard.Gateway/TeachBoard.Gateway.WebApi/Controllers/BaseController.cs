@@ -12,8 +12,8 @@ namespace TeachBoard.Gateway.WebApi.Controllers;
 public class BaseController : ControllerBase
 {
     // User id from jwt token
-    internal int UserId => User.Identity.IsAuthenticated
-        ? int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)
+    internal string UserId => User.Identity.IsAuthenticated
+        ? User.FindFirst(ClaimTypes.NameIdentifier).Value
         : throw new JwtPayloadException
         {
             Error = "jwt_user_id_not_found",
