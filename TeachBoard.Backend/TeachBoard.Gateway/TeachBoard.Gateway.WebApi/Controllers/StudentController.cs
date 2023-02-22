@@ -56,9 +56,7 @@ public class StudentController : BaseController
     [HttpGet("getgroupmembers")]
     public async Task<IActionResult> GetStudentGroupMembers()
     {
-        // todo change user id from 10 to jwt user id
         // Get student group members user ids
-        Console.WriteLine("User ID " + UserId);
         var studentsListModel = await _membersClient.GetStudentGroupMembersByUserId(int.Parse(UserId));
         var studentUserIds = studentsListModel.Students.Select(student => student.UserId).ToList();
 
