@@ -5,6 +5,7 @@ using TeachBoard.IdentityService.Application.CQRS.Commands.ApprovePendingUser;
 using TeachBoard.IdentityService.Application.CQRS.Commands.CreatePendingUser;
 using TeachBoard.IdentityService.Application.CQRS.Queries.GetPendingUserByRegisterCode;
 using TeachBoard.IdentityService.Application.CQRS.Queries.GetUserById;
+using TeachBoard.IdentityService.Application.CQRS.Queries.GetUserNamesPhotosByIds;
 using TeachBoard.IdentityService.Application.Exceptions;
 using TeachBoard.IdentityService.Domain.Entities;
 using TeachBoard.IdentityService.WebApi.Models.User;
@@ -127,4 +128,14 @@ public class UserController : ControllerBase
             Role = pendingUser.Role
         };
     }
+
+    [HttpGet("getnamesphotosbyids")]
+    public async Task<ActionResult<UsersNamePhotoListModel>> GetUsersNamesPhotosByIds([FromBody] GetUsersNamesPhotosRequestModel model)
+    {
+        var query = new GetUserNamesPhotosByIdsQuery { Ids = model.Ids };
+        var usersModel = await _mediator.Send(query);
+
+        return usersModel;
+    }
+    
 }
