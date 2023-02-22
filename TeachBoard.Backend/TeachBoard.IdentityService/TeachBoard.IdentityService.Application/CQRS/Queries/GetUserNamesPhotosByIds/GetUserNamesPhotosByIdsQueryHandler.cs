@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using TeachBoard.IdentityService.Application.Exceptions;
 using TeachBoard.IdentityService.Application.Interfaces;
 
 namespace TeachBoard.IdentityService.Application.CQRS.Queries.GetUserNamesPhotosByIds;
@@ -26,6 +27,14 @@ public class
             .ProjectTo<UserNamePhotoDto>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
+        if (userDtos.Count == 0)
+            throw new NotFoundException
+            {
+                Error = "users_not_found",
+                // users with ids '1, 2, 3' not found
+                ErrorDescription = $"Users with ids '{string.Join(", ", request.Ids)}' not found"
+            };
+        
         return new UsersNamePhotoListModel
         {
             Users = userDtos

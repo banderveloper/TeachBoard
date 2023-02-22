@@ -129,7 +129,17 @@ public class UserController : ControllerBase
         };
     }
 
+    /// <summary>
+    /// Get users names and photos by user ids
+    /// </summary>
+    /// 
+    /// <param name="model">Model containing users ids</param>
+    ///
+    /// <response code="200">Success. Users names and photos returned</response>
+    /// <response code="404">Users with given ids not found (users_not_found)</response>
     [HttpGet("getnamesphotosbyids")]
+    [ProducesResponseType(typeof(UsersNamePhotoListModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<UsersNamePhotoListModel>> GetUsersNamesPhotosByIds([FromBody] GetUsersNamesPhotosRequestModel model)
     {
         var query = new GetUserNamesPhotosByIdsQuery { Ids = model.Ids };
