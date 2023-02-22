@@ -6,21 +6,23 @@ using TeachBoard.MembersService.Application.Interfaces;
 
 namespace TeachBoard.MembersService.Application.Features.Students;
 
-public class GetStudentGroupMembersQuery : IRequest<StudentsListModel>
+public class GetStudentGroupMembersByStudentIdQuery : IRequest<StudentsListModel>
 {
     public int StudentId { get; set; }
 }
 
-public class GetStudentGroupMembersQueryHandler : IRequestHandler<GetStudentGroupMembersQuery, StudentsListModel>
+public class
+    GetStudentGroupMembersByStudentIdQueryHandler : IRequestHandler<GetStudentGroupMembersByStudentIdQuery,
+        StudentsListModel>
 {
     private readonly IApplicationDbContext _context;
 
-    public GetStudentGroupMembersQueryHandler(IApplicationDbContext context)
+    public GetStudentGroupMembersByStudentIdQueryHandler(IApplicationDbContext context)
     {
         _context = context;
     }
 
-    public async Task<StudentsListModel> Handle(GetStudentGroupMembersQuery request,
+    public async Task<StudentsListModel> Handle(GetStudentGroupMembersByStudentIdQuery request,
         CancellationToken cancellationToken)
     {
         // Searching for given student by id
@@ -38,7 +40,7 @@ public class GetStudentGroupMembersQueryHandler : IRequestHandler<GetStudentGrou
             throw new NotFoundException
             {
                 Error = "group_not_found",
-                ErrorDescription = "Student does not belong to any group",
+                ErrorDescription = $"Student with id '{student.Id}' does not belong to any group",
                 ReasonField = "groupId"
             };
 

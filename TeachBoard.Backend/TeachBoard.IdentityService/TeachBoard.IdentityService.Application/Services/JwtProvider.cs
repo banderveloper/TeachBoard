@@ -22,14 +22,14 @@ public class JwtProvider
             new Claim(JwtRegisteredClaimNames.Sub, "auth"),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
 
-            new Claim("id", user.Id.ToString()),
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Role, user.Role.ToString())
         };
-      
+
         // sign key
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.Key));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        
+
         // create token and return it
         var token = new JwtSecurityToken(
             _configuration.Issuer,

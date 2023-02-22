@@ -98,17 +98,34 @@ public class StudentController : ControllerBase
     }
 
     /// <summary>
-    /// Get students from group of given student
+    /// Get students from group of given student by student id
     /// </summary>
-    /// <param name="studentId">Group id</param>
+    /// <param name="studentId">Student id</param>
     /// <response code="200">Success. Array of students returns</response>
     /// <response code="404">Student with given id not found (student_not_found) / Student does not belong to any group (group_not_found)</response>
-    [HttpGet("getgroupmembers")]
+    [HttpGet("getGroupMembersByStudentId/{studentId:int}")]
+    [ProducesResponseType(typeof(StudentsListModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<StudentsListModel>> GetStudentGroupMembersByStudentId(int studentId)
+    {
+        var query = new GetStudentGroupMembersByStudentIdQuery { StudentId = studentId };
+        var students = await _mediator.Send(query);
+
+        return Ok(students);
+    }
+
+    /// <summary>
+    /// Get students from group of given student by user id
+    /// </summary>
+    /// <param name="userId">User id</param>
+    /// <response code="200">Success. Array of students returns</response>
+    /// <response code="404">Student with given user id not found (student_not_found) / Student does not belong to any group (group_not_found)</response>
+    [HttpGet("getGroupMembersByUserId/{userId:int}")]
     [ProducesResponseType(typeof(Student), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<StudentsListModel>> GetStudentGroupMembers(int studentId)
+    public async Task<ActionResult<StudentsListModel>> GetStudentGroupMembersByUserId(int userId)
     {
-        var query = new GetStudentGroupMembersQuery { StudentId = studentId };
+        var query = new GetStudentGroupMembersByUserIdQuery { UserId = userId };
         var students = await _mediator.Send(query);
 
         return Ok(students);

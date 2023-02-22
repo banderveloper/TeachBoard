@@ -7,11 +7,9 @@ using TeachBoard.Gateway.WebApi.Validation;
 
 namespace TeachBoard.Gateway.WebApi.Controllers;
 
-[ApiController]
 [Route("api/student")]
-[Produces("application/json")]
-[ValidateModel]
-public class StudentController : ControllerBase
+//[Authorize(Roles = "Student")]
+public class StudentController : BaseController
 {
     private readonly IIdentityClient _identityClient;
     private readonly IMembersClient _membersClient;
@@ -48,10 +46,24 @@ public class StudentController : ControllerBase
     {
         if (!ModelState.IsValid)
             return UnprocessableEntity(model);
-        
+
         var user = await _identityClient.ApprovePendingUser(model);
         await _membersClient.CreateStudent(new CreateStudentRequestModel { UserId = user.Id });
 
         return Ok();
+    }
+
+    [HttpGet("getgroupmembers")]
+    public async Task<IActionResult> GetStudentGroupMembers()
+    {
+        // todo change user id from 10 to jwt user id
+        // Get student group members user ids
+        var studentsListModel = await _membersClient.GetStudentGroupMembersByUserId(10);
+        var studentUserIds = studentsListModel.Students.Select(student => student.UserId).ToList();
+
+        // Get their names and photos
+        var usersModel = await _identityClient.GetUserNamesPhotosByIds(studentUserIds);
+
+        return Ok(usersModel);
     }
 }

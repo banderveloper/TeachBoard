@@ -1,6 +1,7 @@
 ﻿using Refit;
 using TeachBoard.Gateway.Application.Models.Identity;
 using TeachBoard.Gateway.Application.Models.Identity.Request;
+using TeachBoard.Gateway.Application.Models.Identity.Response;
 using TeachBoard.Gateway.Domain.Enums;
 
 namespace TeachBoard.Gateway.Application.RefitClients;
@@ -23,4 +24,12 @@ public interface IIdentityClient
     /// <returns>Created user from pending user</returns>
     [Post("/users/pending/approve")]
     Task<User> ApprovePendingUser(ApprovePendingUserRequestModel model);
+
+    /// <summary>
+    /// Get users names and photos by users ids
+    /// </summary>
+    /// <param name="ids">List of users ids</param>
+    /// <returns>Model with list of users dtos with names and photos</returns>
+    [Get("/users/getNamesPhotosByIds")]
+    Task<UsersNamePhotoListModel> GetUserNamesPhotosByIds([Body]List<int> ids);
 }

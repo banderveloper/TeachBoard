@@ -14,9 +14,4 @@
       <PackageReference Include="Refit" Version="6.3.2" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Models\Identity\Response" />
-      <Folder Include="Models\Members\Response" />
-    </ItemGroup>
-
 </Project>
