@@ -1,4 +1,6 @@
 ﻿using System.Net;
+using TeachBoard.Gateway.Application.Exceptions;
+using TeachBoard.Gateway.Application.Extensions;
 
 namespace TeachBoard.Gateway.WebApi.Middleware;
 
@@ -24,24 +26,24 @@ public class CustomExceptionHandlerMiddleware
     private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         var statusCode = HttpStatusCode.InternalServerError;
-        Dictionary<string, object>? responseBody = null;
+        IApiException responseBody = null;
 
         switch (exception)
         {
             // Exception from microservices
             case Refit.ApiException refitApiException:
                 statusCode = refitApiException.StatusCode;
-                responseBody = await refitApiException.GetContentAsAsync<Dictionary<string, object>>();
+                responseBody = await refitApiException.ToServiceException();
                 break;
 
             // Needed microservice is down
             case HttpRequestException:
                 statusCode = HttpStatusCode.ServiceUnavailable;
-                responseBody = new Dictionary<string, object>
-                {
-                    { "error", "service_unavailable" },
-                    { "errorDescription", "One of the needed services is unavailable now" }
-                };
+                break;
+
+            case JwtPayloadException jwtPayloadException:
+                statusCode = HttpStatusCode.Unauthorized;
+                responseBody = jwtPayloadException;
                 break;
 
             default:
@@ -51,7 +53,8 @@ public class CustomExceptionHandlerMiddleware
 
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)statusCode;
-        await context.Response.WriteAsJsonAsync(responseBody);
+        if (responseBody is not null)
+            context.Response.WriteAsJsonAsync(responseBody);
     }
 }
 

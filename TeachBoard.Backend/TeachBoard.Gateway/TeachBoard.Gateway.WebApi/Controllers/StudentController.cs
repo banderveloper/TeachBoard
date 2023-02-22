@@ -58,7 +58,7 @@ public class StudentController : BaseController
     {
         // todo change user id from 10 to jwt user id
         // Get student group members user ids
-        var studentsListModel = await _membersClient.GetStudentGroupMembersByUserId(10);
+        var studentsListModel = await _membersClient.GetStudentGroupMembersByUserId(UserId);
         var studentUserIds = studentsListModel.Students.Select(student => student.UserId).ToList();
 
         // Get their names and photos
