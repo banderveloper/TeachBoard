@@ -42,7 +42,7 @@ public class CustomExceptionHandlerMiddleware
                 break;
 
             case JwtPayloadException jwtPayloadException:
-                statusCode = HttpStatusCode.Unauthorized;
+                statusCode = HttpStatusCode.NotAcceptable;
                 responseBody = jwtPayloadException;
                 break;
 

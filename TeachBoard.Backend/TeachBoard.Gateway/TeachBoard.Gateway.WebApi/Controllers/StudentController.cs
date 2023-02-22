@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TeachBoard.Gateway.Application.Exceptions;
 using TeachBoard.Gateway.Application.Models.Identity.Request;
+using TeachBoard.Gateway.Application.Models.Identity.Response;
 using TeachBoard.Gateway.Application.Models.Members.Request;
 using TeachBoard.Gateway.Application.RefitClients;
 using TeachBoard.Gateway.WebApi.Validation;
@@ -34,7 +35,7 @@ public class StudentController : BaseController
     /// <response code="410">Pending user expired (pending_user_expired)</response>
     /// <response code="422">Invalid model</response>
     /// <response code="503">One of the needed services is unavailable now</response>
-    [HttpPost("approvepending")]
+    [HttpPost("approvePending")]
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
@@ -53,8 +54,28 @@ public class StudentController : BaseController
         return Ok();
     }
 
-    [HttpGet("getgroupmembers")]
-    public async Task<IActionResult> GetStudentGroupMembers()
+    /// <summary>
+    /// Get student group members with fields: id, name, surname, patronymic, avatarImagePath 
+    /// </summary>
+    ///
+    /// <remarks>Requires JWT-token with user id, binded to student</remarks>
+    ///
+    /// <response code="200">Success. Student group members list returned</response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="404">
+    /// Users with given ids not found (users_not_found) /
+    /// Student with given user id not found (student_not_found) /
+    /// Student does not belong to any group (group_not_found)
+    /// </response>
+    /// <response code="406">Jwt-token does not contains user id (jwt_user_id_not_found)</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
+    [HttpGet("getGroupMembers")]
+    [ProducesResponseType(typeof(UsersNamePhotoListModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status406NotAcceptable)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status406NotAcceptable)]
+    public async Task<ActionResult<UsersNamePhotoListModel>> GetStudentGroupMembers()
     {
         // Get student group members user ids
         var studentsListModel = await _membersClient.GetStudentGroupMembersByUserId(int.Parse(UserId));
