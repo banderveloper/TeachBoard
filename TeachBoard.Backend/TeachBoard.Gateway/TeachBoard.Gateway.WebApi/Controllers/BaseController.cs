@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.Gateway.Application.Exceptions;
-using TeachBoard.Gateway.WebApi.Validation;
+using TeachBoard.Gateway.Application.Validation;
 
 namespace TeachBoard.Gateway.WebApi.Controllers;
 

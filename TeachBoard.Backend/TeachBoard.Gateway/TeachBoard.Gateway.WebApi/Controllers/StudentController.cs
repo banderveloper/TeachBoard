@@ -6,8 +6,8 @@ using TeachBoard.Gateway.Application.Models.Identity.Request;
 using TeachBoard.Gateway.Application.Models.Identity.Response;
 using TeachBoard.Gateway.Application.Models.Members.Request;
 using TeachBoard.Gateway.Application.RefitClients;
+using TeachBoard.Gateway.Application.Validation;
 using TeachBoard.Gateway.WebApi.Models;
-using TeachBoard.Gateway.WebApi.Validation;
 
 namespace TeachBoard.Gateway.WebApi.Controllers;
 

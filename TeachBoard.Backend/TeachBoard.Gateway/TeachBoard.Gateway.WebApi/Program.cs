@@ -8,7 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using TeachBoard.Gateway.WebApi.Middleware;
 using TeachBoard.Gateway.Application.RefitClients;
-using TeachBoard.Gateway.WebApi.Validation;
+using TeachBoard.Gateway.Application.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
 

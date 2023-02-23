@@ -7,9 +7,13 @@ namespace TeachBoard.Gateway.WebApi.Middleware;
 public class CustomExceptionHandlerMiddleware
 {
     private readonly RequestDelegate _next;
+    private readonly ILogger<CustomExceptionHandlerMiddleware> _logger;
 
-    public CustomExceptionHandlerMiddleware(RequestDelegate next)
-        => _next = next;
+    public CustomExceptionHandlerMiddleware(RequestDelegate next, ILogger<CustomExceptionHandlerMiddleware> logger)
+    {
+        _next = next;
+        _logger = logger;
+    }
 
     public async Task InvokeAsync(HttpContext context)
     {
@@ -26,14 +30,19 @@ public class CustomExceptionHandlerMiddleware
     private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         var statusCode = HttpStatusCode.InternalServerError;
-        IApiException responseBody = null;
+        object? responseBody = null;
 
         switch (exception)
         {
             // Exception from microservices
             case Refit.ApiException refitApiException:
                 statusCode = refitApiException.StatusCode;
-                responseBody = await refitApiException.ToServiceException();
+
+                responseBody =
+                    statusCode == HttpStatusCode.UnprocessableEntity
+                        ? await refitApiException.ToValidationResultDictionary()
+                        : await refitApiException.ToServiceException();
+
                 break;
 
             // Needed microservice is down
@@ -47,14 +56,14 @@ public class CustomExceptionHandlerMiddleware
                 break;
 
             default:
-                Console.WriteLine(exception);
+                _logger.LogError(exception.Message);
                 break;
         }
 
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)statusCode;
         if (responseBody is not null)
-            context.Response.WriteAsJsonAsync(responseBody);
+            await context.Response.WriteAsJsonAsync(responseBody);
     }
 }
 

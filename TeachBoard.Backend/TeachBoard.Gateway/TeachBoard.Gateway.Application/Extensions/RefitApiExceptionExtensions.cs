@@ -14,4 +14,9 @@ public static class RefitApiExceptionExtensions
             ReasonField = responseBody?.GetValueOrDefault("reasonField")?.ToString(),
         };
     }
+
+    public static async Task<Dictionary<string, object>?> ToValidationResultDictionary(this Refit.ApiException refitException)
+    {
+        return await refitException.GetContentAsAsync<Dictionary<string, object>>();
+    }
 }

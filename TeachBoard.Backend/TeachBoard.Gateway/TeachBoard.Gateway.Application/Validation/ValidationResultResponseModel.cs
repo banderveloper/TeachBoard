@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace TeachBoard.Gateway.WebApi.Validation;
+namespace TeachBoard.Gateway.Application.Validation;
 
 // Returning validation error model
 public class ValidationResultModel  

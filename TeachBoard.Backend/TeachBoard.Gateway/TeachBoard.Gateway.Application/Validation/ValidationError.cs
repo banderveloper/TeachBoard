@@ -1,6 +1,6 @@
 ﻿using TeachBoard.Gateway.Application.Extensions;
 
-namespace TeachBoard.Gateway.WebApi.Validation;
+namespace TeachBoard.Gateway.Application.Validation;
 
 // Field validation error item
 public class ValidationError  
