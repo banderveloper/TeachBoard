@@ -22,4 +22,12 @@ public interface IMembersClient
     /// <returns>Model with list of students</returns>
     [Get("/students/getGroupMembersByUserId/{userId}")]
     Task<StudentsListModel> GetStudentGroupMembersByUserId(int userId);
+
+    /// <summary>
+    /// Get student group by user id
+    /// </summary>
+    /// <param name="userId">User id</param>
+    /// <returns>Student group</returns>
+    [Get("/students/getGroupByUserId/{userId}")]
+    Task<Group> GetStudentGroupByUserId(int userId);
 }

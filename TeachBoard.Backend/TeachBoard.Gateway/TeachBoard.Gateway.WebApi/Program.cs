@@ -29,13 +29,15 @@ builder.Services.AddControllers()
         };
     });
 
-// Register refit IdentityClient
+// Register refit clients
 builder.Services.AddRefitClient<IIdentityClient>()
     .ConfigureHttpClient(client => client.BaseAddress = new Uri(builder.Configuration["ApiAddresses:Identity"]));
 
-// Register refit MembersClient
 builder.Services.AddRefitClient<IMembersClient>()
     .ConfigureHttpClient(client => client.BaseAddress = new Uri(builder.Configuration["ApiAddresses:Members"]));
+
+builder.Services.AddRefitClient<IEducationClient>()
+    .ConfigureHttpClient(client => client.BaseAddress = new Uri(builder.Configuration["ApiAddresses:Education"]));
 
 // Swagger
 builder.Services.AddSwaggerGen();

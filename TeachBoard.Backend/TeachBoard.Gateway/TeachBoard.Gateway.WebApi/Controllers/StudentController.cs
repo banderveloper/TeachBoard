@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.Gateway.Application.Exceptions;
+using TeachBoard.Gateway.Application.Models.Education.Response;
 using TeachBoard.Gateway.Application.Models.Identity.Request;
 using TeachBoard.Gateway.Application.Models.Identity.Response;
 using TeachBoard.Gateway.Application.Models.Members.Request;
@@ -15,11 +16,13 @@ public class StudentController : BaseController
 {
     private readonly IIdentityClient _identityClient;
     private readonly IMembersClient _membersClient;
+    private readonly IEducationClient _educationClient;
 
-    public StudentController(IIdentityClient identityClient, IMembersClient membersClient)
+    public StudentController(IIdentityClient identityClient, IMembersClient membersClient, IEducationClient educationClient)
     {
         _identityClient = identityClient;
         _membersClient = membersClient;
+        _educationClient = educationClient;
     }
 
     /// <summary>
@@ -86,5 +89,14 @@ public class StudentController : BaseController
         var usersModel = await _identityClient.GetUserNamesPhotosByIds(studentUserIds);
 
         return Ok(usersModel);
+    }
+
+    [HttpGet("getAllLessons")]
+    public async Task<ActionResult<LessonsListModel>> GetStudentLessons()
+    {
+        var studentGroup = await _membersClient.GetStudentGroupByUserId(int.Parse(UserId));
+        var groupLessons = await _educationClient.GetLessonsByGroupId(studentGroup.Id);
+
+        return groupLessons;
     }
 }
