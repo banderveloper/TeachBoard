@@ -6,6 +6,7 @@ using TeachBoard.Gateway.Application.Models.Identity.Request;
 using TeachBoard.Gateway.Application.Models.Identity.Response;
 using TeachBoard.Gateway.Application.Models.Members.Request;
 using TeachBoard.Gateway.Application.RefitClients;
+using TeachBoard.Gateway.WebApi.Models;
 using TeachBoard.Gateway.WebApi.Validation;
 
 namespace TeachBoard.Gateway.WebApi.Controllers;
@@ -34,15 +35,14 @@ public class StudentController : BaseController
     /// <returns>None</returns>
     ///
     /// <response code="200">Success. Pending student approved</response>
-    /// <response code="401">Unathorized</response>
     /// <response code="404">Pending user with given register code not found (register_code_not_found)</response>
     /// <response code="409">User with given username already exists (username_already_exists)</response>
     /// <response code="410">Pending user expired (pending_user_expired)</response>
     /// <response code="422">Invalid model</response>
     /// <response code="503">One of the needed services is unavailable now</response>
+    [AllowAnonymous]
     [HttpPost("approvePending")]
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status410Gone)]
@@ -83,7 +83,7 @@ public class StudentController : BaseController
     public async Task<ActionResult<UsersNamePhotoListModel>> GetStudentGroupMembers()
     {
         // Get student group members user ids
-        var studentsListModel = await _membersClient.GetStudentGroupMembersByUserId(int.Parse(UserId));
+        var studentsListModel = await _membersClient.GetStudentGroupMembersByUserId(UserId);
         var studentUserIds = studentsListModel.Students.Select(student => student.UserId).ToList();
 
         // Get their names and photos
@@ -115,9 +115,37 @@ public class StudentController : BaseController
     [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
     public async Task<ActionResult<LessonsListModel>> GetStudentLessons()
     {
-        var studentGroup = await _membersClient.GetStudentGroupByUserId(int.Parse(UserId));
+        var studentGroup = await _membersClient.GetStudentGroupByUserId(UserId);
         var groupLessons = await _educationClient.GetLessonsByGroupId(studentGroup.Id);
 
         return groupLessons;
+    }
+
+    /// <summary>
+    /// Get student public data, containing user and group data
+    /// </summary>
+    ///
+    /// <remarks>Requires JWT-token with user id, binded to student</remarks>
+    ///
+    /// <response code="200">Success. Student's user and group data returned</response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="404">
+    /// User with given user id not found (user_not_found) /
+    /// Student does not belong to any group (group_not_found) /
+    /// Student with given user id not found (student_not_found)
+    /// </response>
+    /// <response code="406">Jwt-token does not contains user id (jwt_user_id_not_found)</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
+    [HttpGet("getProfileData")]
+    public async Task<ActionResult<UserProfileDataResponseModel>> GetStudentProfileData()
+    {
+        var userData = await _identityClient.GetUserById(UserId);
+        var userGroup = await _membersClient.GetStudentGroupByUserId(UserId);
+
+        return new UserProfileDataResponseModel
+        {
+            User = userData,
+            Group = userGroup
+        };
     }
 }

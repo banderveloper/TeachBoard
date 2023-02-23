@@ -1,6 +1,47 @@
-﻿namespace TeachBoard.MembersService.Application.Features.Students;
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
+using TeachBoard.MembersService.Application.Exceptions;
+using TeachBoard.MembersService.Application.Interfaces;
+using TeachBoard.MembersService.Domain.Entities;
 
-public class GetStudentGroupByUserId
+namespace TeachBoard.MembersService.Application.Features.Students;
+
+public class GetStudentGroupByUserIdQuery : IRequest<Group>
 {
-    
+    public int UserId { get; set; }
+}
+
+public class GetStudentGroupByUserIdQueryHandler : IRequestHandler<GetStudentGroupByUserIdQuery, Group>
+{
+    private IApplicationDbContext _context;
+
+    public GetStudentGroupByUserIdQueryHandler(IApplicationDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<Group> Handle(GetStudentGroupByUserIdQuery request, CancellationToken cancellationToken)
+    {
+        var studentByUserId = await _context.Students
+            .Include(s => s.Group)
+            .FirstOrDefaultAsync(s => s.UserId == request.UserId,
+                cancellationToken);
+
+        if (studentByUserId is null)
+            throw new NotFoundException
+            {
+                Error = "student_not_found",
+                ErrorDescription = $"Student with user id '{request.UserId}' not found",
+                ReasonField = "userId"
+            };
+
+        if (studentByUserId.GroupId is null)
+            throw new NotFoundException
+            {
+                Error = "group_not_found",
+                ErrorDescription = "Student does not belong to any group"
+            };
+
+        return studentByUserId.Group;
+    }
 }

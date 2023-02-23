@@ -35,7 +35,7 @@ public class CreateStudentCommandHandler : IRequestHandler<CreateStudentCommand,
                 throw new NotFoundException
                 {
                     Error = "group_not_found",
-                    ErrorDescription = $"Group with id {request.GroupId} not found",
+                    ErrorDescription = $"Group with id '{request.GroupId}' not found",
                     ReasonField = "groupId"
                 };
         }
@@ -50,7 +50,7 @@ public class CreateStudentCommandHandler : IRequestHandler<CreateStudentCommand,
             throw new AlreadyExistsException
             {
                 Error = "student_already_exists",
-                ErrorDescription = $"Student with user id {request.UserId} already exists",
+                ErrorDescription = $"Student with user id '{request.UserId}' already exists",
                 ReasonField = "userId"
             };
         

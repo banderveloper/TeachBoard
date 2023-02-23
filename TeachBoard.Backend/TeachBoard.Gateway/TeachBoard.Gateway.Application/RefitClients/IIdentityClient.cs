@@ -15,7 +15,6 @@ public interface IIdentityClient
     /// <returns>Pending user role</returns>
     [Get("/users/pending/getRoleByCode/{registerCode}")]
     Task<UserRole> GetPendingUserRoleByRegisterCode(string registerCode);
-
     
     /// <summary>
     /// Approve pending user by register code
@@ -32,4 +31,12 @@ public interface IIdentityClient
     /// <returns>Model with list of users dtos with names and photos</returns>
     [Get("/users/getNamesPhotosByIds")]
     Task<UsersNamePhotoListModel> GetUserNamesPhotosByIds([Body]List<int> ids);
+
+    /// <summary>
+    /// Get user by user id
+    /// </summary>
+    /// <param name="userId">User id</param>
+    /// <returns>User public data (without password and password)</returns>
+    [Get("/users/getById/{userId}")]
+    Task<UserPublicDataModel> GetUserById(int userId);
 }

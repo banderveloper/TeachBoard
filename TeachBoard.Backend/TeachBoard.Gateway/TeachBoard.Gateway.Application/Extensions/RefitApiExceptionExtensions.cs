@@ -9,9 +9,9 @@ public static class RefitApiExceptionExtensions
         var responseBody = await refitException.GetContentAsAsync<Dictionary<string, object>>();
         return new ServiceException
         {
-            Error = responseBody.GetValueOrDefault("error")?.ToString(),
-            ErrorDescription = responseBody.GetValueOrDefault("errorDescription")?.ToString(),
-            ReasonField = responseBody.GetValueOrDefault("reasonField")?.ToString(),
+            Error = responseBody?.GetValueOrDefault("error")?.ToString(),
+            ErrorDescription = responseBody?.GetValueOrDefault("errorDescription")?.ToString(),
+            ReasonField = responseBody?.GetValueOrDefault("reasonField")?.ToString(),
         };
     }
 }
