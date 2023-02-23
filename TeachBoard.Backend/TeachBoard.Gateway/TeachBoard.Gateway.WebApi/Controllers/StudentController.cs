@@ -18,7 +18,8 @@ public class StudentController : BaseController
     private readonly IMembersClient _membersClient;
     private readonly IEducationClient _educationClient;
 
-    public StudentController(IIdentityClient identityClient, IMembersClient membersClient, IEducationClient educationClient)
+    public StudentController(IIdentityClient identityClient, IMembersClient membersClient,
+        IEducationClient educationClient)
     {
         _identityClient = identityClient;
         _membersClient = membersClient;
@@ -78,7 +79,7 @@ public class StudentController : BaseController
     [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status406NotAcceptable)]
-    [ProducesResponseType(typeof(void), StatusCodes.Status406NotAcceptable)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
     public async Task<ActionResult<UsersNamePhotoListModel>> GetStudentGroupMembers()
     {
         // Get student group members user ids
@@ -91,7 +92,27 @@ public class StudentController : BaseController
         return Ok(usersModel);
     }
 
+    /// <summary>
+    /// Get all student lessons 
+    /// </summary>
+    ///
+    /// <remarks>Requires JWT-token with user id, binded to student</remarks>
+    ///
+    /// <response code="200">Success. Student lessons list returned</response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="404">
+    /// Student with given user id not found (student_not_found) /
+    /// Student does not belong to any group (group_not_found) /
+    /// Lessons not found (lessons_not_found)
+    /// </response>
+    /// <response code="406">Jwt-token does not contains user id (jwt_user_id_not_found)</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
     [HttpGet("getAllLessons")]
+    [ProducesResponseType(typeof(LessonsListModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status406NotAcceptable)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
     public async Task<ActionResult<LessonsListModel>> GetStudentLessons()
     {
         var studentGroup = await _membersClient.GetStudentGroupByUserId(int.Parse(UserId));
