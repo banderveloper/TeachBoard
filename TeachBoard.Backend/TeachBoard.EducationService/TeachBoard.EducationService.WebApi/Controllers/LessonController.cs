@@ -11,7 +11,7 @@ using TeachBoard.EducationService.WebApi.Models.Validation;
 namespace TeachBoard.EducationService.WebApi.Controllers;
 
 [ApiController]
-[Route("education/lessons")]
+[Route("lessons")]
 [ValidateModel]
 [Produces("application/json")]
 public class LessonController : ControllerBase
@@ -58,7 +58,7 @@ public class LessonController : ControllerBase
     ///
     /// <response code="200">Success. Lesson returned</response>
     /// <response code="404">Future lessons not found (lessons_not_found)</response>
-    [HttpGet("getfuture")]
+    [HttpGet("getFuture")]
     [ProducesResponseType(typeof(LessonsListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<LessonsListModel>> GetFutureLessons()
@@ -77,7 +77,7 @@ public class LessonController : ControllerBase
     ///
     /// <response code="200">Success. Lessons returned</response>
     /// <response code="404">Lessons not found (lessons_not_found)</response>
-    [HttpGet("getbygroupid/{id:int}")]
+    [HttpGet("getByGroupId/{id:int}")]
     [ProducesResponseType(typeof(LessonsListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<LessonsListModel>> GetLessonsByGroupId(int id)
@@ -99,7 +99,7 @@ public class LessonController : ControllerBase
     /// <response code="400">Setting lesson activity to future lessons is not allowed (lesson_not_started)</response>
     /// <response code="404">Lesson with given id not found (lesson_not_found)</response>
     /// <response code="422">Invalid model</response>
-    [HttpPost("setstudentactivity")]
+    [HttpPost("setStudentActivity")]
     [ProducesResponseType(typeof(StudentLessonActivity), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
@@ -123,7 +123,7 @@ public class LessonController : ControllerBase
     ///
     /// <response code="200">Success. Student lesson activities returned</response>
     /// <response code="404">Student lesson activities witn given student id not found (student_lesson_activities_not_found)</response>
-    [HttpGet("getstudentactivities/{studentId:int}")]
+    [HttpGet("getStudentActivities/{studentId:int}")]
     [ProducesResponseType(typeof(StudentLessonActivity), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<StudentLessonActivitiesListModel>> GetStudentLessonActivitiesByStudentId(

@@ -12,7 +12,7 @@ namespace TeachBoard.MembersService.WebApi.Controllers;
 
 [ValidateModel]
 [ApiController]
-[Route("members/feedback")]
+[Route("feedbacks")]
 [Produces("application/json")]
 public class FeedbackController : ControllerBase
 {
@@ -30,7 +30,7 @@ public class FeedbackController : ControllerBase
     /// </summary>
     /// <response code="200">Success. Feedbacks returns</response>
     /// <response code="404">Teacher to student feedbacks not found (feedbacks_not_found)</response>
-    [HttpGet("getall/teacher/student")]
+    [HttpGet("getAll/teacher/student")]
     [ProducesResponseType(typeof(FeedbacksListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<FeedbacksListModel>> GetAllTeacherToStudentFeedbacks()
@@ -46,7 +46,7 @@ public class FeedbackController : ControllerBase
     /// </summary>
     /// <response code="200">Success. Feedbacks returns</response>
     /// <response code="404">Student to teacher feedbacks not found (feedbacks_not_found)</response>
-    [HttpGet("getall/student/teacher")]
+    [HttpGet("getAll/student/teacher")]
     [ProducesResponseType(typeof(FeedbacksListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<FeedbacksListModel>> GetAllStudentToTeacherFeedbacks()
@@ -106,7 +106,7 @@ public class FeedbackController : ControllerBase
     /// </summary>
     /// <response code="200">Success. Feedbacks returns</response>
     /// <response code="404">Feedbacks with given student id not found (feedbacks_not_found)</response>
-    [HttpGet("getbystudentid/{id:int}")]
+    [HttpGet("getByStudentId/{id:int}")]
     [ProducesResponseType(typeof(FeedbacksListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<FeedbacksListModel>> GetFeedbacksByStudentId(int id)
@@ -121,7 +121,7 @@ public class FeedbackController : ControllerBase
     /// </summary>
     /// <response code="200">Success. Feedbacks returns</response>
     /// <response code="404">Feedbacks with given teacher id not found (feedbacks_not_found)</response>
-    [HttpGet("getbyteacherid/{id:int}")]
+    [HttpGet("getByTeacherId/{id:int}")]
     [ProducesResponseType(typeof(FeedbacksListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<FeedbacksListModel>> GetFeedbacksByTeacherId(int id)

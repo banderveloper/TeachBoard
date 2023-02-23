@@ -11,7 +11,7 @@ namespace TeachBoard.MembersService.WebApi.Controllers;
 
 [ValidateModel]
 [ApiController]
-[Route("members/group")]
+[Route("groups")]
 [Produces("application/json")]
 public class GroupController : ControllerBase
 {
@@ -29,7 +29,7 @@ public class GroupController : ControllerBase
     /// </summary>
     /// <response code="200">Success. Groups returns</response>
     /// <response code="404">Groups not found (groups_not_found)</response>
-    [HttpGet("getall")]
+    [HttpGet("getAll")]
     [ProducesResponseType(typeof(GroupsListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<GroupsListModel>> GetAll()
@@ -45,7 +45,7 @@ public class GroupController : ControllerBase
     /// </summary>
     /// <response code="200">Success. Group returns</response>
     /// <response code="404">Group with given id not found (group_not_found)</response>
-    [HttpGet("getbyid/{id:int}")]
+    [HttpGet("getById/{id:int}")]
     [ProducesResponseType(typeof(Group), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Group>> GetById(int id)
@@ -61,7 +61,7 @@ public class GroupController : ControllerBase
     /// </summary>
     /// <response code="200">Success. Group returns</response>
     /// <response code="404">Group with given name not found (group_not_found)</response>
-    [HttpGet("getbyname/{name}")]
+    [HttpGet("getByName/{name}")]
     [ProducesResponseType(typeof(Group), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Group>> GetByName(string name)

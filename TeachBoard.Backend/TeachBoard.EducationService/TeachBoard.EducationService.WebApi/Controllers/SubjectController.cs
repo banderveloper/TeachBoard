@@ -10,7 +10,7 @@ using TeachBoard.EducationService.WebApi.Models.Validation;
 namespace TeachBoard.EducationService.WebApi.Controllers;
 
 [ApiController]
-[Route("education/subjects")]
+[Route("subjects")]
 [Produces("application/json")]
 [ValidateModel]
 public class SubjectController : ControllerBase
@@ -58,7 +58,7 @@ public class SubjectController : ControllerBase
     ///
     /// <response code="200">Success. Subject returned</response>
     /// <response code="404">Subject with given id not found (subject_not_found)</response>
-    [HttpGet("getbyid/{id:int}")]
+    [HttpGet("getById/{id:int}")]
     [ProducesResponseType(typeof(Subject), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Subject>> GetSubjectById(int id)
@@ -77,7 +77,7 @@ public class SubjectController : ControllerBase
     ///
     /// <response code="200">Success. Subjects returned</response>
     /// <response code="404">No subjects found (subjects_not_found)</response>
-    [HttpGet("getall")]
+    [HttpGet("getAll")]
     [ProducesResponseType(typeof(SubjectsListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<SubjectsListModel>> GetAllSubjects()
@@ -94,7 +94,7 @@ public class SubjectController : ControllerBase
     /// 
     /// <response code="200">Success. Subject deleted</response>
     /// <response code="404">Subject with given id not found (subject_not_found)</response>
-    [HttpDelete("deletebyid/{id:int}")]
+    [HttpDelete("deleteById/{id:int}")]
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteSubjectById(int id)

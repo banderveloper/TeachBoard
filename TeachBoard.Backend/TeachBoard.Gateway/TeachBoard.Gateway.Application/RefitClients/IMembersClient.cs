@@ -12,7 +12,7 @@ public interface IMembersClient
     /// </summary>
     /// <param name="model">User id and group id</param>
     /// <returns>Created student</returns>
-    [Post("/student/create")]
+    [Post("/students/create")]
     Task<Student> CreateStudent(CreateStudentRequestModel model);
 
     /// <summary>
@@ -20,6 +20,6 @@ public interface IMembersClient
     /// </summary>
     /// <param name="userId">Student user id</param>
     /// <returns>Model with list of students</returns>
-    [Get("/student/getGroupMembersByUserId/{userId}")]
+    [Get("/students/getGroupMembersByUserId/{userId}")]
     Task<StudentsListModel> GetStudentGroupMembersByUserId(int userId);
 }

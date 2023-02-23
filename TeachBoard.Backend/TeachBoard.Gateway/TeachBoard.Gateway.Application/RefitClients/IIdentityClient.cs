@@ -13,7 +13,7 @@ public interface IIdentityClient
     /// </summary>
     /// <param name="registerCode">Registed code of pending user given after creating pending</param>
     /// <returns>Pending user role</returns>
-    [Get("/users/pending/getrolebycode/{registerCode}")]
+    [Get("/users/pending/getRoleByCode/{registerCode}")]
     Task<UserRole> GetPendingUserRoleByRegisterCode(string registerCode);
 
     

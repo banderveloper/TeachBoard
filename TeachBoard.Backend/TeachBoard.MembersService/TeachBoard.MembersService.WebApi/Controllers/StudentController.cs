@@ -13,7 +13,7 @@ namespace TeachBoard.MembersService.WebApi.Controllers;
 
 [ValidateModel]
 [ApiController]
-[Route("members/student")]
+[Route("students")]
 [Produces("application/json")]
 public class StudentController : ControllerBase
 {
@@ -32,7 +32,7 @@ public class StudentController : ControllerBase
     /// <param name="id">Student id</param>
     /// <response code="200">Success. Student returns.</response>
     /// <response code="404">Student with given id not found (student_not_found)</response>
-    [HttpGet("getbyid/{id:int}")]
+    [HttpGet("getById/{id:int}")]
     [ProducesResponseType(typeof(Student), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Student>> GetStudentById(int id)
@@ -49,7 +49,7 @@ public class StudentController : ControllerBase
     /// <param name="id">Group id</param>
     /// <response code="200">Success. Array of students returns</response>
     /// <response code="404">Students with given group id not found (students_not_found)</response>
-    [HttpGet("getbygroupid/{id:int}")]
+    [HttpGet("getByGroupId/{id:int}")]
     [ProducesResponseType(typeof(StudentsListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<StudentsListModel>> GetStudentsByGroupId(int id)
@@ -87,7 +87,7 @@ public class StudentController : ControllerBase
     /// </summary>
     /// <response code="200">Success. Student deleted</response>
     /// <response code="404">Student not found (student_not_found)</response>
-    [HttpDelete("deletebyuserid/{id:int}")]
+    [HttpDelete("deleteByUserId/{id:int}")]
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteByUserId(int id)

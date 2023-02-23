@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TeachBoard.Gateway.Application.Exceptions;
 using TeachBoard.Gateway.Application.Models.Identity.Request;
 using TeachBoard.Gateway.Application.Models.Identity.Response;
@@ -9,7 +10,7 @@ using TeachBoard.Gateway.WebApi.Validation;
 namespace TeachBoard.Gateway.WebApi.Controllers;
 
 [Route("api/student")]
-//[Authorize(Roles = "Student")]
+[Authorize(Roles = "Student")]
 public class StudentController : BaseController
 {
     private readonly IIdentityClient _identityClient;
