@@ -36,7 +36,7 @@ public interface IIdentityClient
     /// Get user by user id
     /// </summary>
     /// <param name="userId">User id</param>
-    /// <returns>User public data (without password and password)</returns>
+    /// <returns>User public data (without id and password)</returns>
     [Get("/users/getById/{userId}")]
     Task<UserPublicDataModel> GetUserById(int userId);
 }
