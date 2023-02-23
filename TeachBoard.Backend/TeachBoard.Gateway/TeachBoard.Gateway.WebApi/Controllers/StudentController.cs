@@ -137,6 +137,11 @@ public class StudentController : BaseController
     /// <response code="406">Jwt-token does not contains user id (jwt_user_id_not_found)</response>
     /// <response code="503">One of the needed services is unavailable now</response>
     [HttpGet("getProfileData")]
+    [ProducesResponseType(typeof(UserProfileDataResponseModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status406NotAcceptable)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
     public async Task<ActionResult<UserProfileDataResponseModel>> GetStudentProfileData()
     {
         var userData = await _identityClient.GetUserById(UserId);
