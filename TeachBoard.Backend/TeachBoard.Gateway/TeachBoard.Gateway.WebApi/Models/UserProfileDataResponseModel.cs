@@ -1,5 +1,4 @@
-﻿using TeachBoard.Gateway.Application.Models.Identity;
-using TeachBoard.Gateway.Application.Models.Identity.Response;
+﻿using TeachBoard.Gateway.Application.Models.Identity.Response;
 using TeachBoard.Gateway.Application.Models.Members;
 
 namespace TeachBoard.Gateway.WebApi.Models;
