@@ -41,6 +41,10 @@ public class CustomExceptionHandlerMiddleware
                 statusCode = HttpStatusCode.BadRequest;
                 result = dateTimeException;
                 break;
+            case HomeworkAccessException homeworkAccessException:
+                statusCode = HttpStatusCode.Locked;
+                result = homeworkAccessException;
+                break;
             default:
                 Console.WriteLine(exception);
                 break;

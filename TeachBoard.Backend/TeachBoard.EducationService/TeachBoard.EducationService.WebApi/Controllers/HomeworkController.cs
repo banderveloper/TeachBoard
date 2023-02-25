@@ -77,7 +77,12 @@ public class HomeworkController : ControllerBase
     /// <response code="200">Success. Homework completed and returned</response>
     /// <response code="404">Homework with given id not found (homework_not_found)</response>
     /// <response code="409">Student already completed this homework (completed_homework_already_exists)</response>
+    /// <response code="422">Invalid requestModel</response>
     [HttpPost("complete")]
+    [ProducesResponseType(typeof(CompletedHomework), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<CompletedHomework>> CompleteHomework([FromBody] CompleteHomeworkRequestModel model)
     {
         if (!ModelState.IsValid)
@@ -88,6 +93,31 @@ public class HomeworkController : ControllerBase
 
         return completedHomework;
     }
-    
-    
+
+    /// <summary>
+    /// Check completed homework (set grade and comment)
+    /// </summary>
+    /// 
+    /// <param name="model">Checking homework model</param>
+    /// <returns>Checked completed homework</returns>
+    ///
+    /// <response code="200">Success. Homework checked and returned</response>
+    /// <response code="404">Completed homework with given id not found (homework_not_found)</response>
+    /// <response code="423">Completed homework with given id was added by another teacher, checking is denied (completed_homework_invalid_teacher)</response>
+    /// <response code="422">Invalid requestModel</response>
+    [HttpPost("checkCompleted")]
+    [ProducesResponseType(typeof(CompletedHomework), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status423Locked)]
+    public async Task<ActionResult<CompletedHomework>> CheckHomework([FromBody] CheckHomeworkRequestModel model)
+    {
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(model);
+
+        var command = _mapper.Map<CheckHomeworkCommand>(model);
+        var completedHomework = await _mediator.Send(command);
+
+        return completedHomework;
+    }
 }
