@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Mime;
 using System.Reflection;
 using System.Text;
@@ -8,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using TeachBoard.Gateway.WebApi.Middleware;
 using TeachBoard.Gateway.Application.RefitClients;
+using TeachBoard.Gateway.Application.Services;
 using TeachBoard.Gateway.Application.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,13 +35,20 @@ builder.Services.AddControllers()
 
 // Register refit clients
 builder.Services.AddRefitClient<IIdentityClient>()
-    .ConfigureHttpClient(client => client.BaseAddress = new Uri(builder.Configuration["ApiAddresses:Identity"]));
+    .ConfigureHttpClient(client => client.BaseAddress = new Uri(builder.Configuration["ApiAddresses:Identity"]))
+    .ConfigurePrimaryHttpMessageHandler(() =>
+        new HttpClientHandler
+        {
+            UseCookies = false
+        });
 
 builder.Services.AddRefitClient<IMembersClient>()
     .ConfigureHttpClient(client => client.BaseAddress = new Uri(builder.Configuration["ApiAddresses:Members"]));
 
 builder.Services.AddRefitClient<IEducationClient>()
     .ConfigureHttpClient(client => client.BaseAddress = new Uri(builder.Configuration["ApiAddresses:Education"]));
+
+builder.Services.AddScoped<CookieService>();
 
 // Swagger
 builder.Services.AddSwaggerGen();

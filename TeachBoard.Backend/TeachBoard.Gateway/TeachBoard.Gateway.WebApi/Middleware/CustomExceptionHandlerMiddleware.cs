@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using TeachBoard.Gateway.Application.Exceptions;
 using TeachBoard.Gateway.Application.Extensions;
+using CookieException = TeachBoard.Gateway.Application.Exceptions.CookieException;
 
 namespace TeachBoard.Gateway.WebApi.Middleware;
 
@@ -30,19 +31,21 @@ public class CustomExceptionHandlerMiddleware
     private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         var statusCode = HttpStatusCode.InternalServerError;
-        object? responseBody = null;
+        IApiException? responseBody = null;
 
         switch (exception)
         {
             // Exception from microservices
             case Refit.ApiException refitApiException:
                 statusCode = refitApiException.StatusCode;
+                
+                if (statusCode == HttpStatusCode.UnprocessableEntity)
+                {
+                    context.Response.StatusCode = (int)statusCode;
+                    await context.Response.WriteAsJsonAsync(refitApiException.ToValidationResultDictionary());
+                }
 
-                responseBody =
-                    statusCode == HttpStatusCode.UnprocessableEntity
-                        ? await refitApiException.ToValidationResultDictionary()
-                        : await refitApiException.ToServiceException();
-
+                responseBody = await refitApiException.ToServiceException();
                 break;
 
             // Needed microservice is down
@@ -54,9 +57,14 @@ public class CustomExceptionHandlerMiddleware
                 statusCode = HttpStatusCode.NotAcceptable;
                 responseBody = jwtPayloadException;
                 break;
+            
+            case CookieException cookieException:
+                statusCode = HttpStatusCode.NotAcceptable;
+                responseBody = cookieException;
+                break;
 
             default:
-                _logger.LogError(exception.Message);
+                _logger.LogError(exception.ToString());
                 break;
         }
 

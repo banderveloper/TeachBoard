@@ -28,6 +28,13 @@ public class CookieProvider
     // Extract refresh token from http-only cookie
     public Guid GetRefreshTokenFromCookie(HttpRequest request)
     {
+        if (!request.Cookies.ContainsKey(_cookieConfiguration.RefreshCookieName))
+            throw new RefreshTokenException
+            {
+                Error = "refresh_cookie_not_found",
+                ErrorDescription = "Expected refresh httponly cookie does not exists"
+            };
+        
         // Try to extract refresh token from cookie. If it is absent - exception
         if (!request.Cookies.TryGetValue(_cookieConfiguration.RefreshCookieName, out var refreshToken))
             throw new RefreshTokenException

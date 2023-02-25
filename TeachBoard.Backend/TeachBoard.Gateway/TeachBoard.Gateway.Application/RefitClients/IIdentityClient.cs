@@ -39,4 +39,20 @@ public interface IIdentityClient
     /// <returns>User public data (without id and password)</returns>
     [Get("/users/getById/{userId}")]
     Task<UserPublicDataModel> GetUserById(int userId);
+
+    /// <summary>
+    /// Login and get jwt tokens
+    /// </summary>
+    /// <param name="model">Model with username and password</param>
+    /// <returns>Access token, his expiration time and refresh token at cookie</returns>
+    [Post("/auth/login")]
+    Task<ApiResponse<AuthTokenResponseModel>> Login(LoginRequestModel model);
+
+    /// <summary>
+    /// Refresh session and get new tokens (refresh)
+    /// </summary>
+    /// <param name="refreshCookie">Refresh cookie in format: cookie_name=cookie_value</param>
+    /// <returns>Model with new access token</returns>
+    [Post("/auth/refresh")]
+    Task<ApiResponse<AuthTokenResponseModel>> Refresh([Header("Cookie")] string refreshCookie);
 }
