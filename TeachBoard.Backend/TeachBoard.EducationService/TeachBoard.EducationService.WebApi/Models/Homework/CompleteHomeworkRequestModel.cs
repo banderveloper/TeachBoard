@@ -4,15 +4,15 @@ using TeachBoard.EducationService.Application.Mappings;
 
 namespace TeachBoard.EducationService.WebApi.Models.Homework;
 
-public class CreateHomeworkModel : IMappable
+public class CompleteHomeworkRequestModel : IMappable
 {
-    public int GroupId { get; set; }
-    public int SubjectId { get; set; }
-    public int TeacherId { get; set; }
+    public int HomeworkId { get; set; }
+    public int StudentId { get; set; }
     public string? FilePath { get; set; }
+    public string? StudentComment { get; set; }
     
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<CreateHomeworkModel, CreateHomeworkCommand>();
+        profile.CreateMap<CompleteHomeworkRequestModel, CompleteHomeworkCommand>();
     }
 }
