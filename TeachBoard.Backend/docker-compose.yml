@@ -52,11 +52,3 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=DockerDevelopment
     restart: on-failure 
-    links:
-      - teachboard.educationservice
-      - teachboard.identityservice
-      - teachboard.membersservice
-    depends_on:
-      - teachboard.membersservice
-      - teachboard.educationservice
-      - teachboard.identityservice
