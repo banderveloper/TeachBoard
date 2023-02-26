@@ -1,12 +1,14 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
 EXPOSE 80
-EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["TeachBoard.MembersService.WebApi/TeachBoard.MembersService.WebApi.csproj", "TeachBoard.MembersService.WebApi/"]
-RUN dotnet restore "TeachBoard.MembersService.WebApi/TeachBoard.MembersService.WebApi.csproj"
+COPY ["TeachBoard.MembersService.Domain/TeachBoard.MembersService.Domain.csproj", "TeachBoard.MembersService.Domain/TeachBoard.MembersService.Domain.csproj"]
+COPY ["TeachBoard.MembersService.Application/TeachBoard.MembersService.Application.csproj", "TeachBoard.MembersService.Application/TeachBoard.MembersService.Application.csproj"]
+COPY ["TeachBoard.MembersService.Persistence/TeachBoard.MembersService.Persistence.csproj", "TeachBoard.MembersService.Persistence/TeachBoard.MembersService.Persistence.csproj"]
+COPY ["TeachBoard.MembersService.WebApi/TeachBoard.MembersService.WebApi.csproj", "TeachBoard.MembersService.WebApi/TeachBoard.MembersService.WebApi.csproj"]
+
 COPY . .
 WORKDIR "/src/TeachBoard.MembersService.WebApi"
 RUN dotnet build "TeachBoard.MembersService.WebApi.csproj" -c Release -o /app/build

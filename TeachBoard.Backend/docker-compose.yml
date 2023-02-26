@@ -1,0 +1,62 @@
+version: '3'
+services:
+  
+  teachboard.identityservice:
+    container_name: teachboard-identityservice
+    build: 
+      context: TeachBoard.IdentityService
+      dockerfile: Dockerfile
+    image: kpssnik/teachboard.identityservice
+    hostname: teachboard.identityservice
+    ports: 
+      - 5001:80
+    environment:
+      - ASPNETCORE_ENVIRONMENT=DockerDevelopment
+    restart: on-failure
+
+  teachboard.membersservice:
+    container_name: teachboard-members
+    build:
+      context: TeachBoard.MembersService
+      dockerfile: Dockerfile
+    image: kpssnik/teachboard.membersservice
+    hostname: teachboard.membersservice
+    ports: 
+      - 5002:80
+    environment:
+      - ASPNETCORE_ENVIRONMENT=DockerDevelopment
+    restart: on-failure
+
+  teachboard.educationservice:
+    container_name: bikeshop-service
+    build:
+      context: TeachBoard.EducationService
+      dockerfile: Dockerfile
+    image: kpssnik/teachboard.educationservice
+    hostname: teachboard.educationservice
+    ports: 
+      - 5003:80
+    environment:
+      - ASPNETCORE_ENVIRONMENT=DockerDevelopment
+    restart: on-failure
+
+  teachboard.gateway:
+    container_name: teachboard-gateway
+    build:
+      context: TeachBoard.Gateway
+      dockerfile: Dockerfile
+    image: kpssnik/teachboard.gateway
+    hostname: teachboard.gateway
+    ports:
+      - 5000:80
+    environment:
+      - ASPNETCORE_ENVIRONMENT=DockerDevelopment
+    restart: on-failure 
+    links:
+      - teachboard.educationservice
+      - teachboard.identityservice
+      - teachboard.membersservice
+    depends_on:
+      - teachboard.membersservice
+      - teachboard.educationservice
+      - teachboard.identityservice

@@ -1,12 +1,13 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
 EXPOSE 80
-EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["TeachBoard.Gateway.WebApi/TeachBoard.Gateway.WebApi.csproj", "TeachBoard.Gateway.WebApi/"]
-RUN dotnet restore "TeachBoard.Gateway.WebApi/TeachBoard.Gateway.WebApi.csproj"
+COPY ["TeachBoard.Gateway.Domain/TeachBoard.Gateway.Domain.csproj", "TeachBoard.Gateway.Domain/TeachBoard.Gateway.Domain.csproj"]
+COPY ["TeachBoard.Gateway.Application/TeachBoard.Gateway.Application.csproj", "TeachBoard.Gateway.Application/TeachBoard.Gateway.Application.csproj"]
+COPY ["TeachBoard.Gateway.WebApi/TeachBoard.Gateway.WebApi.csproj", "TeachBoard.Gateway.WebApi/TeachBoard.Gateway.WebApi.csproj"]
+
 COPY . .
 WORKDIR "/src/TeachBoard.Gateway.WebApi"
 RUN dotnet build "TeachBoard.Gateway.WebApi.csproj" -c Release -o /app/build
