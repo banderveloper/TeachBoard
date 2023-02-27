@@ -8,7 +8,7 @@ public class CreateHomeworkCommand : IRequest<Domain.Entities.Homework>
     public int GroupId { get; set; }
     public int SubjectId { get; set; }
     public int TeacherId { get; set; }
-    public string? FilePath { get; set; }
+    public string FilePath { get; set; }
 }
 
 public class CreateHomeworkCommandHandler : IRequestHandler<CreateHomeworkCommand, Domain.Entities.Homework>
