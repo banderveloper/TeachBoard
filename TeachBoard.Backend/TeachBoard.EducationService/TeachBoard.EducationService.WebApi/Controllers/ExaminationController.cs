@@ -76,4 +76,26 @@ public class ExaminationController : ControllerBase
 
         return studentExaminationActivity;
     }
+    
+    /// <summary>
+    /// Get student examination activities public data
+    /// </summary>
+    /// 
+    /// <param name="studentId">Student id</param>
+    /// <returns>List of public examination activities data</returns>
+    ///
+    /// <response code="200">Success. List of Student examination activities returned</response>
+    /// <response code="404">Student examination activies with given id student id not found (student_examination_activities_not_found)</response>
+    /// <response code="422">Invalid model</response>
+    [HttpGet("getStudentActivities/{studentId:int}")]
+    [ProducesResponseType(typeof(StudentExaminationsPublicDataListModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
+    public async Task<ActionResult<StudentExaminationsPublicDataListModel>> GetStudentExaminationActivities(int studentId)
+    {
+        var query = new GetStudentExaminationsActivitiesQuery { StudentId = studentId };
+        var model = await _mediator.Send(query);
+
+        return model;
+    }
 }
