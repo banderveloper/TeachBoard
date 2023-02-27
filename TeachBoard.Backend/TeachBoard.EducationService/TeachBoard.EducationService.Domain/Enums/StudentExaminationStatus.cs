@@ -2,7 +2,7 @@
 
 public enum StudentExaminationStatus
 {
-    Passed,
-    Banned,
-    Absent
+    Passed = 0,
+    Banned = 1,
+    Absent = 2
 }
