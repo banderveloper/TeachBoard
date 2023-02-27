@@ -130,4 +130,21 @@ public class StudentController : ControllerBase
         
         return Ok(students);
     }
+
+    /// <summary>
+    /// Get student by user id
+    /// </summary>
+    /// <param name="userId">User id</param>
+    /// <response code="200">Success. Student returned</response>
+    /// <response code="404">Student with given user id not found (student_not_found</response>
+    [HttpGet("getByUserId/{userId:int}")]
+    [ProducesResponseType(typeof(Student), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<Student>> GetStudentByUserId(int userId)
+    {
+        var query = new GetStudentByUserIdQuery { UserId = userId };
+        var student = await _mediator.Send(query);
+
+        return student;
+    }
 }
