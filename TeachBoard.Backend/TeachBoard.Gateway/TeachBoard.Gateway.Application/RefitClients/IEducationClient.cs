@@ -12,4 +12,12 @@ public interface IEducationClient
     /// <returns>Model with list of lessons to given group</returns>
     [Get("/lessons/getByGroupId/{groupId}")]
     Task<LessonsListModel> GetLessonsByGroupId(int groupId);
+
+    /// <summary>
+    /// Get student examinations public data
+    /// </summary>
+    /// <param name="studentId">Student id</param>
+    /// <returns>List of student examinations public data</returns>
+    [Get("/examinations/getStudentActivities/{studentId}")]
+    Task<StudentExaminationsPublicDataListModel> GetStudentExaminationsPublicData(int studentId);
 }

@@ -30,4 +30,12 @@ public interface IMembersClient
     /// <returns>Student group</returns>
     [Get("/groups/getByUserId/{userId}")]
     Task<Group> GetStudentGroupByUserId(int userId);
+
+    /// <summary>
+    /// Get student by user id
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns>Student with given user id</returns>
+    [Get("/students/getByUserId/{userId}")]
+    Task<Student> GetStudentByUserId(int userId);
 }

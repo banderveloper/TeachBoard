@@ -153,4 +153,32 @@ public class StudentController : BaseController
             Group = userGroup
         };
     }
+
+    /// <summary>
+    /// Get student examinations activities
+    /// </summary>
+    ///
+    /// <remarks>Requires JWT-token with user id, binded to student</remarks>
+    ///
+    /// <response code="200">Success. Student's examinations activites returned</response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="404">
+    /// Student with given user id not found (student_not_found) /
+    /// Student examination activies with given id student id not found (student_examination_activities_not_found) /
+    /// </response>
+    /// <response code="406">Jwt-token does not contains user id (jwt_user_id_not_found)</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
+    [HttpGet("getExaminationsActivities")]
+    [ProducesResponseType(typeof(StudentExaminationsPublicDataListModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status406NotAcceptable)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
+    public async Task<ActionResult<StudentExaminationsPublicDataListModel>> GetStudentExaminationsPublicData()
+    {
+        var studentInfo = await _membersClient.GetStudentByUserId(UserId);
+        var examinations = await _educationClient.GetStudentExaminationsPublicData(studentInfo.Id);
+
+        return examinations;
+    }
 }
