@@ -43,6 +43,7 @@ public class CustomExceptionHandlerMiddleware
                 {
                     context.Response.StatusCode = (int)statusCode;
                     await context.Response.WriteAsJsonAsync(refitApiException.ToValidationResultDictionary());
+                    return;
                 }
 
                 responseBody = await refitApiException.ToServiceException();

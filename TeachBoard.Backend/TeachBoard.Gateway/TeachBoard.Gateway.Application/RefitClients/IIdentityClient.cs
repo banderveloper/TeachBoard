@@ -55,4 +55,11 @@ public interface IIdentityClient
     /// <returns>Model with new access token</returns>
     [Post("/auth/refresh")]
     Task<ApiResponse<AuthTokenResponseModel>> Refresh([Header("Cookie")] string refreshCookie);
+
+    /// <summary>
+    /// Logout / end session
+    /// </summary>
+    /// <param name="refreshCookie">Refresh cookie in format cookie_name=cookie_value</param>
+    [Post("/auth/logout")]
+    Task<IApiResponse> Logout([Header("Cookie")] string refreshCookie);
 }
