@@ -20,4 +20,12 @@ public interface IEducationClient
     /// <returns>List of student examinations public data</returns>
     [Get("/examinations/getStudentActivities/{studentId}")]
     Task<StudentExaminationsPublicDataListModel> GetStudentExaminationsPublicData(int studentId);
+
+    /// <summary>
+    /// Get full information about student's completed homeworks
+    /// </summary>
+    /// <param name="studentId">Student id</param>
+    /// <returns>List of completed homeworks full data</returns>
+    [Get("/homeworks/getFullCompletedByStudentId/{studentId}")]
+    Task<FullCompletedHomeworksListModel> GetStudentFullCompletedHomeworks(int studentId);
 }

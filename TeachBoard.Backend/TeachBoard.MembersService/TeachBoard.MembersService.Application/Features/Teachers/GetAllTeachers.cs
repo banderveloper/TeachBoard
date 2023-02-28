@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using TeachBoard.MembersService.Application.Exceptions;
+using TeachBoard.MembersService.Application.Features.Teachers.Common;
 using TeachBoard.MembersService.Application.Interfaces;
-using TeachBoard.MembersService.Domain.Entities;
 
 namespace TeachBoard.MembersService.Application.Features.Teachers;
 
@@ -37,9 +37,4 @@ public class GetAllTeachersQueryHandler : IRequestHandler<GetAllTeachersQuery, T
             Teachers = teachers
         };
     }
-}
-
-public class TeachersListModel
-{
-    public IList<Teacher> Teachers { get; set; }
 }

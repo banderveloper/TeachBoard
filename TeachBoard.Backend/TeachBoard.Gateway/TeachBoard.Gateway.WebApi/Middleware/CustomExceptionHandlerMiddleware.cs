@@ -72,7 +72,7 @@ public class CustomExceptionHandlerMiddleware
         if (responseBody is not null)
             await WriteResponseAsync(context, responseBody, statusCode);
         else
-            await WriteResponseAsync(context, new { message = "An error occurred." }, statusCode);
+            await WriteResponseAsync(context, new { error = "unknown_error" }, statusCode);
     }
 
     private async Task WriteResponseAsync<T>(HttpContext context, T responseBody, HttpStatusCode statusCode)

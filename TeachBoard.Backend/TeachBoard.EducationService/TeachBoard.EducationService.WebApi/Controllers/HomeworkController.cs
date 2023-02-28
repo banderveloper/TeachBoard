@@ -120,4 +120,24 @@ public class HomeworkController : ControllerBase
 
         return completedHomework;
     }
+
+    /// <summary>
+    /// Get full information about student's completed homeworks
+    /// </summary>
+    /// 
+    /// <param name="studentId">Student id</param>
+    /// <returns>List of completed homeworks full data</returns>
+    ///
+    /// <response code="200">Success. Completed homeworks full data by student returned</response>
+    /// <response code="404">Completed homeworks of student with given id not found (completed_homeworks_not_found)</response>
+    [HttpGet("getFullCompletedByStudentId/{studentId:int}")]
+    [ProducesResponseType(typeof(FullCompletedHomeworksListModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<FullCompletedHomeworksListModel>> GetFullCompletedHomeworksByStudentId(int studentId)
+    {
+        var query = new GetFullCompletedHomeworksByStudentIdQuery { StudentId = studentId };
+        var completedHomeworks = await _mediator.Send(query);
+
+        return completedHomeworks;
+    }
 }

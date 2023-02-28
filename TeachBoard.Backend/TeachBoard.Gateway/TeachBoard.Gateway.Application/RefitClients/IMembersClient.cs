@@ -38,4 +38,12 @@ public interface IMembersClient
     /// <returns>Student with given user id</returns>
     [Get("/students/getByUserId/{userId}")]
     Task<Student> GetStudentByUserId(int userId);
+
+    /// <summary>
+    /// Get teachers by ids
+    /// </summary>
+    /// <param name="ids">Ids of teachers</param>
+    /// <returns>List of teachers</returns>
+    [Get("/teachers/getByIds")]
+    Task<TeachersListModel> GetTeachersByIds([Body] List<int> ids);
 }

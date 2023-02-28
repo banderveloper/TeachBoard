@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.MembersService.Application.Exceptions;
 using TeachBoard.MembersService.Application.Features.Teachers;
+using TeachBoard.MembersService.Application.Features.Teachers.Common;
 using TeachBoard.MembersService.Application.Validation;
 using TeachBoard.MembersService.Domain.Entities;
 using TeachBoard.MembersService.WebApi.Models.Teacher;
@@ -88,5 +89,22 @@ public class TeacherController : ControllerBase
         await _mediator.Send(new DeleteTeacherByUserIdCommand { UserId = id });
 
         return Ok();
+    }
+
+    /// <summary>
+    /// Get teachers by ids
+    /// </summary>
+    /// <param name="ids">List of teachers ids</param>
+    /// <response code="200">Success. Teachers returned</response>
+    /// <response code="404">Teachers with given id not found (teachers_not_found)</response>
+    [HttpGet("getByIds")]
+    [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<TeachersListModel>> GetTeachersByIds([FromBody] List<int> ids)
+    {
+        var query = new GetTeachersByIdsQuery { Ids = ids };
+        var teachers = await _mediator.Send(query);
+
+        return teachers;
     }
 }
