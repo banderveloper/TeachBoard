@@ -38,7 +38,7 @@ public class CustomExceptionHandlerMiddleware
             // Exception from microservices
             case Refit.ApiException refitApiException:
                 statusCode = refitApiException.StatusCode;
-                
+
                 if (statusCode == HttpStatusCode.UnprocessableEntity)
                 {
                     context.Response.StatusCode = (int)statusCode;
@@ -58,7 +58,7 @@ public class CustomExceptionHandlerMiddleware
                 statusCode = HttpStatusCode.NotAcceptable;
                 responseBody = jwtPayloadException;
                 break;
-            
+
             case CookieException cookieException:
                 statusCode = HttpStatusCode.NotAcceptable;
                 responseBody = cookieException;
@@ -69,10 +69,17 @@ public class CustomExceptionHandlerMiddleware
                 break;
         }
 
+        if (responseBody is not null)
+            await WriteResponseAsync(context, responseBody, statusCode);
+        else
+            await WriteResponseAsync(context, new { message = "An error occurred." }, statusCode);
+    }
+
+    private async Task WriteResponseAsync<T>(HttpContext context, T responseBody, HttpStatusCode statusCode)
+    {
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)statusCode;
-        if (responseBody is not null)
-            await context.Response.WriteAsJsonAsync(responseBody);
+        await context.Response.WriteAsJsonAsync(responseBody);
     }
 }
 
