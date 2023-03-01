@@ -127,7 +127,7 @@ public class StudentController : ControllerBase
     {
         var query = new GetStudentGroupMembersByUserIdQuery { UserId = userId };
         var students = await _mediator.Send(query);
-        
+
         return Ok(students);
     }
 
@@ -146,5 +146,26 @@ public class StudentController : ControllerBase
         var student = await _mediator.Send(query);
 
         return student;
+    }
+
+    /// <summary>
+    /// Set student group
+    /// </summary>
+    /// <param name="model">Model with student id and group id</param>
+    /// <response code="200">Success. Student added to group</response>
+    /// <response code="404">
+    /// Student with given id not found (student_not_found)
+    /// Group with given id not found (group_not_found)
+    /// </response>
+    [HttpPost("setStudentGroup")]
+    public async Task<IActionResult> SetStudentGroup([FromBody] SetStudentGroupRequestModel model)
+    {
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(model);
+
+        var command = _mapper.Map<SetStudentGroupCommand>(model);
+        await _mediator.Send(command);
+
+        return Ok();
     }
 }

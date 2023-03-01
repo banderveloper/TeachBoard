@@ -46,4 +46,12 @@ public interface IMembersClient
     /// <returns>List of teachers</returns>
     [Get("/teachers/getByIds")]
     Task<TeachersListModel> GetTeachersByIds([Body] List<int> ids);
+
+    /// <summary>
+    /// Set student group
+    /// </summary>
+    /// <param name="model">Model with student id and group id</param>
+    /// <returns>Default refit response</returns>
+    [Post("/students/setStudentGroup")]
+    Task<IApiResponse> SetStudentGroup([Body] SetStudentGroupRequestModel model);
 }

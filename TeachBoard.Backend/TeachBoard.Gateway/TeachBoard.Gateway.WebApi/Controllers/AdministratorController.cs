@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using TeachBoard.Gateway.Application.Exceptions;
 using TeachBoard.Gateway.Application.Models.Identity.Request;
 using TeachBoard.Gateway.Application.Models.Identity.Response;
+using TeachBoard.Gateway.Application.Models.Members.Request;
 using TeachBoard.Gateway.Application.RefitClients;
 using TeachBoard.Gateway.Application.Validation;
 using TeachBoard.Gateway.Domain.Enums;
@@ -63,5 +64,30 @@ public class AdministratorController : BaseController
         var responseCodeModel = await _identityClient.CreatePendingUser(model);
 
         return responseCodeModel;
+    }
+
+    /// <summary>
+    /// Set student group
+    /// </summary>
+    /// 
+    /// <param name="model">Model with student id and group id</param>
+    ///
+    /// <response code="200">Success. Student's group changed</response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="404">
+    /// Student with given id not found (student_not_found) /
+    /// Group with given id not found (group_not_found)
+    /// </response>
+    /// <response code="422">Invalid requestModel</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
+    [HttpPost("setStudentGroup")]
+    public async Task<IActionResult> SetStudentGroup([FromBody] SetStudentGroupRequestModel model)
+    {
+        var response = await _membersClient.SetStudentGroup(model);
+        
+        if (!response.IsSuccessStatusCode)
+            throw response.Error;
+        
+        return Ok();
     }
 }
