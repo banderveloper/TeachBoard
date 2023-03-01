@@ -42,7 +42,9 @@ public class CustomExceptionHandlerMiddleware
                 if (statusCode == HttpStatusCode.UnprocessableEntity)
                 {
                     context.Response.StatusCode = (int)statusCode;
-                    await context.Response.WriteAsJsonAsync(refitApiException.ToValidationResultDictionary());
+                    var validationResultDictionary = await refitApiException.ToValidationResultDictionary();
+                    await context.Response.WriteAsJsonAsync(validationResultDictionary);
+
                     return;
                 }
 
@@ -62,6 +64,11 @@ public class CustomExceptionHandlerMiddleware
             case CookieException cookieException:
                 statusCode = HttpStatusCode.NotAcceptable;
                 responseBody = cookieException;
+                break;
+
+            case PermissionException permissionException:
+                statusCode = HttpStatusCode.Forbidden;
+                responseBody = permissionException;
                 break;
 
             default:

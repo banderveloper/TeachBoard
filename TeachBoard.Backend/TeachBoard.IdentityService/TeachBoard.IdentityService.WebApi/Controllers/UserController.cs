@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.Json;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.IdentityService.Application.CQRS.Commands.ApprovePendingUser;
@@ -45,6 +46,9 @@ public class UserController : ControllerBase
     public async Task<ActionResult<RegisterCodeModel>> CreatePendingUser(
         [FromBody] CreatePendingUserRequestModel requestModel)
     {
+        Console.WriteLine("Income create pending user model:");
+        Console.WriteLine(JsonSerializer.Serialize(requestModel));
+        
         if (!ModelState.IsValid)
             return UnprocessableEntity(requestModel);
 
@@ -52,6 +56,9 @@ public class UserController : ControllerBase
 
         // Send command which create pending user and return register code and expiration date
         var registerCodeModel = await _mediator.Send(command);
+
+        Console.WriteLine("Register code output model:");
+        Console.WriteLine(JsonSerializer.Serialize(registerCodeModel));
 
         return Ok(registerCodeModel);
     }

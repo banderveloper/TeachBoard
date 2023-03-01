@@ -15,7 +15,7 @@ public interface IIdentityClient
     /// <returns>Pending user role</returns>
     [Get("/users/pending/getRoleByCode/{registerCode}")]
     Task<UserRole> GetPendingUserRoleByRegisterCode(string registerCode);
-    
+
     /// <summary>
     /// Approve pending user by register code
     /// </summary>
@@ -30,7 +30,7 @@ public interface IIdentityClient
     /// <param name="ids">List of users ids</param>
     /// <returns>Model with list of users dtos with names and photos</returns>
     [Get("/users/getNamesPhotosByIds")]
-    Task<UsersNamePhotoListModel> GetUserNamesPhotosByIds([Body]List<int> ids);
+    Task<UsersNamePhotoListModel> GetUserNamesPhotosByIds([Body] List<int> ids);
 
     /// <summary>
     /// Get user by user id
@@ -62,4 +62,12 @@ public interface IIdentityClient
     /// <param name="refreshCookie">Refresh cookie in format cookie_name=cookie_value</param>
     [Post("/auth/logout")]
     Task<IApiResponse> Logout([Header("Cookie")] string refreshCookie);
+
+    /// <summary>
+    /// Create pending user (by admin or director)
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
+    [Post("/users/pending/create")]
+    Task<RegisterCodeResponseModel> CreatePendingUser([Body] CreatePendingUserRequestModel model);
 }

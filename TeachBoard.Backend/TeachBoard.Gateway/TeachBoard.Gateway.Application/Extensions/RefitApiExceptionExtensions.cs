@@ -15,7 +15,8 @@ public static class RefitApiExceptionExtensions
         };
     }
 
-    public static async Task<Dictionary<string, object>?> ToValidationResultDictionary(this Refit.ApiException refitException)
+    public static async Task<Dictionary<string, object>?> ToValidationResultDictionary(
+        this Refit.ApiException refitException)
     {
         return await refitException.GetContentAsAsync<Dictionary<string, object>>();
     }
