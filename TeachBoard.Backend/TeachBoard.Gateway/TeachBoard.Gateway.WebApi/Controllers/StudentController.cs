@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.Gateway.Application.Exceptions;
-using TeachBoard.Gateway.Application.Models.Education.Request;
 using TeachBoard.Gateway.Application.Models.Education.Response;
 using TeachBoard.Gateway.Application.Models.Identity.Request;
 using TeachBoard.Gateway.Application.Models.Identity.Response;

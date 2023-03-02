@@ -2,20 +2,11 @@
 using TeachBoard.Gateway.Application.Models.Identity;
 using TeachBoard.Gateway.Application.Models.Identity.Request;
 using TeachBoard.Gateway.Application.Models.Identity.Response;
-using TeachBoard.Gateway.Domain.Enums;
 
 namespace TeachBoard.Gateway.Application.RefitClients;
 
 public interface IIdentityClient
 {
-    /// <summary>
-    /// Get pending user role by register code
-    /// </summary>
-    /// <param name="registerCode">Registed code of pending user given after creating pending</param>
-    /// <returns>Pending user role</returns>
-    [Get("/users/pending/role/{registerCode}")]
-    Task<UserRole> GetPendingUserRoleByRegisterCode(string registerCode);
-
     /// <summary>
     /// Approve pending user by register code
     /// </summary>

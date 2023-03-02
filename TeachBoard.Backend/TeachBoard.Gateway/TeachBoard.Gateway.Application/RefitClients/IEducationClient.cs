@@ -1,5 +1,4 @@
 ﻿using Refit;
-using TeachBoard.Gateway.Application.Models.Education.Request;
 using TeachBoard.Gateway.Application.Models.Education.Response;
 
 namespace TeachBoard.Gateway.Application.RefitClients;
