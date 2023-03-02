@@ -140,4 +140,29 @@ public class HomeworkController : ControllerBase
 
         return completedHomeworks;
     }
+
+    /// <summary>
+    /// Get student's uncompleted homeworks
+    /// </summary>
+    /// 
+    /// <param name="model">Model with student id and group id</param>
+    /// <returns>List of uncompleted homeworks as public datas</returns>
+    ///
+    /// <response code="200">Success. Uncompleted homeworks full data by student returned</response>
+    /// <response code="404">Uncompleted homeworks of student with given id not found (uncompleted_homeworks_not_found)</response>
+    [HttpGet("getUncompletedHomeworksByStudent")]
+    [ProducesResponseType(typeof(FullCompletedHomeworksListModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<UncompletedHomeworksPublicListModel>> GetUncompletedHomeworksByStudent(
+        [FromBody] GetUncompletedHomeworksByStudentRequestModel model)
+    {
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(model);
+
+        var query = _mapper.Map<GetUncompletedHomeworksByStudentQuery>(model);
+        var uncompletedHomeworks = await _mediator.Send(query);
+
+        return uncompletedHomeworks;
+    } 
+    
 }

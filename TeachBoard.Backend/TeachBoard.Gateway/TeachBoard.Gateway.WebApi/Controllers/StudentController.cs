@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.Gateway.Application.Exceptions;
+using TeachBoard.Gateway.Application.Models.Education.Request;
 using TeachBoard.Gateway.Application.Models.Education.Response;
 using TeachBoard.Gateway.Application.Models.Identity.Request;
 using TeachBoard.Gateway.Application.Models.Identity.Response;
@@ -208,5 +209,34 @@ public class StudentController : BaseController
         var completedHomeworks = await _educationClient.GetStudentFullCompletedHomeworks(studentInfo.Id);
 
         return completedHomeworks;
+    }
+
+    /// <summary>
+    /// Get student's uncompleted homeworks
+    /// </summary>
+    ///
+    /// <remarks>Requires JWT-token with user id, binded to student</remarks>
+    ///
+    /// <response code="200">Success. Student's uncompleted homeworks returned</response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="404">
+    /// Student with given user id not found (student_not_found) /
+    /// Uncompleted homeworks with given student id not found (uncompleted_homeworks_not_found) /
+    /// </response>
+    /// <response code="406">Jwt-token does not contains user id (jwt_user_id_not_found)</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
+    [HttpGet("getUncompletedHomeworks")]
+    public async Task<ActionResult<UncompletedHomeworksPublicListModel>> GetUncompletedHomeworks()
+    {
+        var studentInfo = await _membersClient.GetStudentByUserId(UserId);
+
+        var requestModel = new GetUncompletedHomeworksByStudentRequestModel
+        {
+            StudentId = studentInfo.Id,
+            GroupId = studentInfo.GroupId
+        };
+        
+        var uncompletedHomeworks = await _educationClient.GetStudentUncompletedHomeworks(requestModel);
+        return uncompletedHomeworks;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Refit;
+using TeachBoard.Gateway.Application.Models.Education.Request;
 using TeachBoard.Gateway.Application.Models.Education.Response;
 
 namespace TeachBoard.Gateway.Application.RefitClients;
@@ -28,4 +29,13 @@ public interface IEducationClient
     /// <returns>List of completed homeworks full data</returns>
     [Get("/homeworks/getFullCompletedByStudentId/{studentId}")]
     Task<FullCompletedHomeworksListModel> GetStudentFullCompletedHomeworks(int studentId);
+
+    /// <summary>
+    /// Get student's uncompleted homeworks
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
+    [Get("/homeworks/getUncompletedHomeworksByStudent")]
+    Task<UncompletedHomeworksPublicListModel> GetStudentUncompletedHomeworks(
+        [Body] GetUncompletedHomeworksByStudentRequestModel model);
 }
