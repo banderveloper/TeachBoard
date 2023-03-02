@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.Gateway.Application.Exceptions;
+using TeachBoard.Gateway.Application.Models.Education;
+using TeachBoard.Gateway.Application.Models.Education.Request;
 using TeachBoard.Gateway.Application.Models.Education.Response;
 using TeachBoard.Gateway.Application.Models.Identity.Request;
 using TeachBoard.Gateway.Application.Models.Identity.Response;
@@ -238,7 +240,7 @@ public class StudentController : BaseController
             studentId: studentInfo.Id,
             groupId: studentInfo.GroupId
         );
-        
+
         return uncompletedHomeworks;
     }
 
@@ -268,5 +270,44 @@ public class StudentController : BaseController
 
         var lessonsActivities = await _educationClient.GetStudentLessonActivities(studentInfo.Id);
         return lessonsActivities;
+    }
+
+    /// <summary>
+    /// Create completed homework
+    /// </summary>
+    ///
+    /// <remarks>Requires JWT-token with user id, binded to student</remarks>
+    ///
+    /// <response code="200">Success. Completed homework created</response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="404">
+    /// Student with given user id not found (student_not_found) /
+    /// Homework with given id not found (homework_not_found)
+    /// Homework with given id to given group not found (homework_not_found)
+    /// </response>
+    /// <response code="406">Jwt-token does not contains user id (jwt_user_id_not_found)</response>
+    /// <response code="409">Student already completed this homework (completed_homework_already_exists)</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
+    [HttpPost("complete-homework")]
+    [ProducesResponseType(typeof(StudentLessonActivityPublicListModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status406NotAcceptable)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
+    public async Task<ActionResult<CompletedHomework>> CompleteHomework([FromBody] CreateCompletedHomeworkRequestModel model)
+    {
+        var studentInfo = await _membersClient.GetStudentByUserId(UserId);
+
+        var completeRequest = new CompleteHomeworkRequestModel
+        {
+            StudentId = studentInfo.Id,
+            StudentGroupId = studentInfo.GroupId,
+            HomeworkId = model.HomeworkId,
+            StudentComment = model.StudentComment,
+            FilePath = model.FilePath
+        };
+        
+        return await _educationClient.CompleteHomework(completeRequest);
     }
 }

@@ -9,6 +9,7 @@ public class CompleteHomeworkRequestModel : IMappable
 {
     [Required] public int HomeworkId { get; set; }
     [Required] public int StudentId { get; set; }
+    [Required] public int StudentGroupId { get; set; }
     public string? FilePath { get; set; }
     public string? StudentComment { get; set; }
 

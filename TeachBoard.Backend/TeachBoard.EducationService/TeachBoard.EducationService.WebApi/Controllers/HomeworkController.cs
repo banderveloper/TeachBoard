@@ -75,7 +75,10 @@ public class HomeworkController : ControllerBase
     /// <returns>Completed homework</returns>
     ///
     /// <response code="200">Success. Homework completed and returned</response>
-    /// <response code="404">Homework with given id not found (homework_not_found)</response>
+    /// <response code="404">
+    /// Homework with given id not found (homework_not_found)
+    /// Homework with given id to given group not found (homework_not_found)
+    /// </response>
     /// <response code="409">Student already completed this homework (completed_homework_already_exists)</response>
     /// <response code="422">Invalid requestModel</response>
     [HttpPost("complete")]

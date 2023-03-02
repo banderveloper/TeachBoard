@@ -10,6 +10,7 @@ public class CompleteHomeworkCommand : IRequest<CompletedHomework>
 {
     public int HomeworkId { get; set; }
     public int StudentId { get; set; }
+    public int StudentGroupId { get; set; }
     public string? FilePath { get; set; }
     public string? StudentComment { get; set; }
 }
@@ -35,13 +36,21 @@ public class CompleteHomeworkCommandHandler : IRequestHandler<CompleteHomeworkCo
                 ReasonField = "homeworkId"
             };
 
+        // if student's group not equals to homework group id 
+        if (existingHomework.GroupId != request.StudentGroupId)
+            throw new NotFoundException
+            {
+                Error = "homework_not_found",
+                ErrorDescription =
+                    $"Homework with id '{request.HomeworkId}' to group with id '{request.StudentGroupId}' not found",
+                ReasonField = "homeworkId"
+            };
 
         // if student with given id already completed homework with given id - exception
 
         var existingCompletedHomework = await _context.CompletedHomeworks
             .FirstOrDefaultAsync(ch => ch.HomeworkId == request.HomeworkId &&
-                                       ch.StudentId == request.StudentId,
-                cancellationToken);
+                                       ch.StudentId == request.StudentId, cancellationToken);
 
         if (existingCompletedHomework is not null)
             throw new AlreadyExistsException

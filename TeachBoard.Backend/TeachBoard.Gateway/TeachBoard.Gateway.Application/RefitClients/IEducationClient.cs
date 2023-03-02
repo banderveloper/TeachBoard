@@ -1,4 +1,6 @@
 ﻿using Refit;
+using TeachBoard.Gateway.Application.Models.Education;
+using TeachBoard.Gateway.Application.Models.Education.Request;
 using TeachBoard.Gateway.Application.Models.Education.Response;
 
 namespace TeachBoard.Gateway.Application.RefitClients;
@@ -45,4 +47,12 @@ public interface IEducationClient
     /// <returns>List of all student's lessons activities</returns>
     [Get("/lessons/student-activities/{studentId}")]
     Task<StudentLessonActivityPublicListModel> GetStudentLessonActivities(int studentId);
+
+    /// <summary>
+    /// Send completed homework by student
+    /// </summary>
+    /// <param name="model">Model with filepath of completed </param>
+    /// <returns>Created completed homework</returns>
+    [Post("/homeworks/complete")]
+    Task<CompletedHomework> CompleteHomework(CompleteHomeworkRequestModel model);
 }
