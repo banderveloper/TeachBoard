@@ -38,4 +38,12 @@ public interface IEducationClient
     [Get("/homeworks/getUncompletedHomeworksByStudent")]
     Task<UncompletedHomeworksPublicListModel> GetStudentUncompletedHomeworks(
         [Body] GetUncompletedHomeworksByStudentRequestModel model);
+
+    /// <summary>
+    /// Get student's lessons activities
+    /// </summary>
+    /// <param name="studentId">Student id</param>
+    /// <returns>List of all student's lessons activities</returns>
+    [Get("/lessons/getStudentActivities/{studentId}")]
+    Task<StudentLessonActivityPublicListModel> GetStudentLessonActivities(int studentId);
 }

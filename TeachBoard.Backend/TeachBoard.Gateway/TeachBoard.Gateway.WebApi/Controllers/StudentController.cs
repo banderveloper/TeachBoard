@@ -226,6 +226,11 @@ public class StudentController : BaseController
     /// <response code="406">Jwt-token does not contains user id (jwt_user_id_not_found)</response>
     /// <response code="503">One of the needed services is unavailable now</response>
     [HttpGet("getUncompletedHomeworks")]
+    [ProducesResponseType(typeof(UncompletedHomeworksPublicListModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status406NotAcceptable)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
     public async Task<ActionResult<UncompletedHomeworksPublicListModel>> GetUncompletedHomeworks()
     {
         var studentInfo = await _membersClient.GetStudentByUserId(UserId);
@@ -235,8 +240,36 @@ public class StudentController : BaseController
             StudentId = studentInfo.Id,
             GroupId = studentInfo.GroupId
         };
-        
+
         var uncompletedHomeworks = await _educationClient.GetStudentUncompletedHomeworks(requestModel);
         return uncompletedHomeworks;
+    }
+
+    /// <summary>
+    /// Get all student's lesson activities
+    /// </summary>
+    ///
+    /// <remarks>Requires JWT-token with user id, binded to student</remarks>
+    ///
+    /// <response code="200">Success. Student's lessons activities returned</response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="404">
+    /// Student with given user id not found (student_not_found) /
+    /// Student's lesson activities (student_lesson_activities_not_found) /
+    /// </response>
+    /// <response code="406">Jwt-token does not contains user id (jwt_user_id_not_found)</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
+    [HttpGet("getLessonsActivities")]
+    [ProducesResponseType(typeof(StudentLessonActivityPublicListModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IApiException), StatusCodes.Status406NotAcceptable)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
+    public async Task<ActionResult<StudentLessonActivityPublicListModel>> GetLessonsActivities()
+    {
+        var studentInfo = await _membersClient.GetStudentByUserId(UserId);
+
+        var lessonsActivities = await _educationClient.GetStudentLessonActivities(studentInfo.Id);
+        return lessonsActivities;
     }
 }

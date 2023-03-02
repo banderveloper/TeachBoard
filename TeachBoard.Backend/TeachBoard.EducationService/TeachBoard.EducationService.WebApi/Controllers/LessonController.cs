@@ -124,9 +124,9 @@ public class LessonController : ControllerBase
     /// <response code="200">Success. Student lesson activities returned</response>
     /// <response code="404">Student lesson activities witn given student id not found (student_lesson_activities_not_found)</response>
     [HttpGet("getStudentActivities/{studentId:int}")]
-    [ProducesResponseType(typeof(StudentLessonActivity), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(StudentLessonActivityPublicListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<StudentLessonActivitiesListModel>> GetStudentLessonActivitiesByStudentId(
+    public async Task<ActionResult<StudentLessonActivityPublicListModel>> GetStudentLessonActivitiesByStudentId(
         int studentId)
     {
         var query = new GetStudentLessonActivitiesByStudentIdQuery { StudentId = studentId };
