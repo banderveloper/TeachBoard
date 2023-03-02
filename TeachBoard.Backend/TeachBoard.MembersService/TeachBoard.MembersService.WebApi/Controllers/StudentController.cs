@@ -31,7 +31,7 @@ public class StudentController : ControllerBase
     /// <param name="id">Student id</param>
     /// <response code="200">Success. Student returns.</response>
     /// <response code="404">Student with given id not found (student_not_found)</response>
-    [HttpGet("getById/{id:int}")]
+    [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(Student), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Student>> GetStudentById(int id)
@@ -45,15 +45,15 @@ public class StudentController : ControllerBase
     /// <summary>
     /// Get students by group id
     /// </summary>
-    /// <param name="id">Group id</param>
+    /// <param name="groupId">Group id</param>
     /// <response code="200">Success. Array of students returns</response>
     /// <response code="404">Students with given group id not found (students_not_found)</response>
-    [HttpGet("getByGroupId/{id:int}")]
+    [HttpGet("by-group/{groupId:int}")]
     [ProducesResponseType(typeof(StudentsListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<StudentsListModel>> GetStudentsByGroupId(int id)
+    public async Task<ActionResult<StudentsListModel>> GetStudentsByGroupId(int groupId)
     {
-        var query = new GetStudentsByGroupIdQuery { GroupId = id };
+        var query = new GetStudentsByGroupIdQuery { GroupId = groupId };
         var students = await _mediator.Send(query);
 
         return Ok(students);
@@ -66,7 +66,7 @@ public class StudentController : ControllerBase
     /// <response code="200">Success. Student created</response>
     /// <response code="404">Group with given group id not found (group_not_found)</response>
     /// <response code="409">Student with given user id already exists (student_already_exists)</response>
-    [HttpPost("create")]
+    [HttpPost]
     [ProducesResponseType(typeof(Student), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status409Conflict)]
@@ -86,13 +86,13 @@ public class StudentController : ControllerBase
     /// </summary>
     /// <response code="200">Success. Student deleted</response>
     /// <response code="404">Student not found (student_not_found)</response>
-    [HttpDelete("deleteByUserId/{id:int}")]
+    [HttpDelete("by-user/{userId:int}")]
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteByUserId(int id)
+    public async Task<IActionResult> DeleteByUserId(int userId)
     {
         // Delete by id
-        await _mediator.Send(new DeleteStudentByUserIdCommand { UserId = id });
+        await _mediator.Send(new DeleteStudentByUserIdCommand { UserId = userId });
 
         return Ok();
     }
@@ -103,7 +103,7 @@ public class StudentController : ControllerBase
     /// <param name="studentId">Student id</param>
     /// <response code="200">Success. Array of students returns</response>
     /// <response code="404">Student with given id not found (student_not_found) / Student does not belong to any group (group_not_found)</response>
-    [HttpGet("getGroupMembersByStudentId/{studentId:int}")]
+    [HttpGet("group-members-by-student/{studentId:int}")]
     [ProducesResponseType(typeof(StudentsListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<StudentsListModel>> GetStudentGroupMembersByStudentId(int studentId)
@@ -120,7 +120,7 @@ public class StudentController : ControllerBase
     /// <param name="userId">User id</param>
     /// <response code="200">Success. Array of students returns</response>
     /// <response code="404">Student with given user id not found (student_not_found) / Student does not belong to any group (group_not_found)</response>
-    [HttpGet("getGroupMembersByUserId/{userId:int}")]
+    [HttpGet("group-members-by-user/{userId:int}")]
     [ProducesResponseType(typeof(Student), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<StudentsListModel>> GetStudentGroupMembersByUserId(int userId)
@@ -137,7 +137,7 @@ public class StudentController : ControllerBase
     /// <param name="userId">User id</param>
     /// <response code="200">Success. Student returned</response>
     /// <response code="404">Student with given user id not found (student_not_found</response>
-    [HttpGet("getByUserId/{userId:int}")]
+    [HttpGet("by-user/{userId:int}")]
     [ProducesResponseType(typeof(Student), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Student>> GetStudentByUserId(int userId)
@@ -157,7 +157,7 @@ public class StudentController : ControllerBase
     /// Student with given id not found (student_not_found)
     /// Group with given id not found (group_not_found)
     /// </response>
-    [HttpPost("setStudentGroup")]
+    [HttpPut("student-group")]
     public async Task<IActionResult> SetStudentGroup([FromBody] SetStudentGroupRequestModel model)
     {
         if (!ModelState.IsValid)

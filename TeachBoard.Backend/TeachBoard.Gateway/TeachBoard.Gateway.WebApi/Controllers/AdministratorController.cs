@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TeachBoard.Gateway.Application.Exceptions;
 using TeachBoard.Gateway.Application.Models.Identity.Request;
 using TeachBoard.Gateway.Application.Models.Identity.Response;
@@ -41,7 +39,7 @@ public class AdministratorController : BaseController
     /// <response code="409">Pending user with given phone/email already exists (phone_already_exists / email_already_exists)</response>
     /// <response code="422">Invalid requestModel</response>
     /// <response code="503">One of the needed services is unavailable now</response>
-    [HttpPost("createPendingUser")]
+    [HttpPost("pending-user")]
     [ProducesResponseType(typeof(RegisterCodeResponseModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status403Forbidden)]
@@ -80,7 +78,7 @@ public class AdministratorController : BaseController
     /// </response>
     /// <response code="422">Invalid requestModel</response>
     /// <response code="503">One of the needed services is unavailable now</response>
-    [HttpPost("setStudentGroup")]
+    [HttpPut("student-group")]
     public async Task<IActionResult> SetStudentGroup([FromBody] SetStudentGroupRequestModel model)
     {
         var response = await _membersClient.SetStudentGroup(model);

@@ -30,7 +30,7 @@ public class GroupController : ControllerBase
     /// </summary>
     /// <response code="200">Success. Groups returns</response>
     /// <response code="404">Groups not found (groups_not_found)</response>
-    [HttpGet("getAll")]
+    [HttpGet]
     [ProducesResponseType(typeof(GroupsListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<GroupsListModel>> GetAll()
@@ -46,7 +46,7 @@ public class GroupController : ControllerBase
     /// </summary>
     /// <response code="200">Success. Group returns</response>
     /// <response code="404">Group with given id not found (group_not_found)</response>
-    [HttpGet("getById/{id:int}")]
+    [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(Group), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Group>> GetById(int id)
@@ -62,7 +62,7 @@ public class GroupController : ControllerBase
     /// </summary>
     /// <response code="200">Success. Group returns</response>
     /// <response code="404">Group with given name not found (group_not_found)</response>
-    [HttpGet("getByName/{name}")]
+    [HttpGet("by-name/{name}")]
     [ProducesResponseType(typeof(Group), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Group>> GetByName(string name)
@@ -79,7 +79,7 @@ public class GroupController : ControllerBase
     /// <param name="model">Group creation model</param>
     /// <response code="200">Success. Group created</response>
     /// <response code="409">Group with given name already exists (group_already_exists)</response>
-    [HttpPost("create")]
+    [HttpPost]
     [ProducesResponseType(typeof(Group), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status409Conflict)]
     public async Task<ActionResult<Group>> Create([FromBody] CreateGroupRequestModel model)
@@ -99,7 +99,7 @@ public class GroupController : ControllerBase
     /// <param name="userId">User id</param>
     /// <response code="200">Success. Student group returns</response>
     /// <response code="404">Student with given user id not found (student_not_found) / Student does not belong to any group (group_not_found)</response>
-    [HttpGet("getByUserId/{userId:int}")]
+    [HttpGet("by-user/{userId:int}")]
     [ProducesResponseType(typeof(Group), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Group>> GetStudentGroupByUserId(int userId)

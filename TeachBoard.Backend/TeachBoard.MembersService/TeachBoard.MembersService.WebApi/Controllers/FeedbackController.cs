@@ -30,7 +30,7 @@ public class FeedbackController : ControllerBase
     /// </summary>
     /// <response code="200">Success. Feedbacks returns</response>
     /// <response code="404">Teacher to student feedbacks not found (feedbacks_not_found)</response>
-    [HttpGet("getAll/teacher/student")]
+    [HttpGet("teacher-student")]
     [ProducesResponseType(typeof(FeedbacksListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<FeedbacksListModel>> GetAllTeacherToStudentFeedbacks()
@@ -46,7 +46,7 @@ public class FeedbackController : ControllerBase
     /// </summary>
     /// <response code="200">Success. Feedbacks returns</response>
     /// <response code="404">Student to teacher feedbacks not found (feedbacks_not_found)</response>
-    [HttpGet("getAll/student/teacher")]
+    [HttpGet("student-teacher")]
     [ProducesResponseType(typeof(FeedbacksListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<FeedbacksListModel>> GetAllStudentToTeacherFeedbacks()
@@ -62,7 +62,7 @@ public class FeedbackController : ControllerBase
     /// </summary>
     /// <response code="200">Success. Feedback created and returned.</response>
     /// <response code="404">Student/teacher by student/teacher id not found (student_not_found) (teacher_not_found)</response>
-    [HttpPost("create/teacher/student")]
+    [HttpPost("teacher-student")]
     [ProducesResponseType(typeof(Feedback), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Feedback>> CreateTeacherToStudentFeedback(
@@ -84,7 +84,7 @@ public class FeedbackController : ControllerBase
     /// </summary>
     /// <response code="200">Success. Feedback created and returned.</response>
     /// <response code="404">Student/teacher by student/teacher id not found (student_not_found) (teacher_not_found)</response>
-    [HttpPost("create/student/teacher")]
+    [HttpPost("student-teacher")]
     [ProducesResponseType(typeof(Feedback), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Feedback>> CreateStudentToTeacherFeedback(
@@ -106,28 +106,28 @@ public class FeedbackController : ControllerBase
     /// </summary>
     /// <response code="200">Success. Feedbacks returns</response>
     /// <response code="404">Feedbacks with given student id not found (feedbacks_not_found)</response>
-    [HttpGet("getByStudentId/{id:int}")]
+    [HttpGet("by-student/{studentId:int}")]
     [ProducesResponseType(typeof(FeedbacksListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<FeedbacksListModel>> GetFeedbacksByStudentId(int id)
+    public async Task<ActionResult<FeedbacksListModel>> GetFeedbacksByStudentId(int studentId)
     {
-        var feedbacksModel = await _mediator.Send(new GetFeedbacksByStudentIdQuery { StudentId = id });
-        
+        var feedbacksModel = await _mediator.Send(new GetFeedbacksByStudentIdQuery { StudentId = studentId });
+
         return Ok(feedbacksModel);
     }
-    
+
     /// <summary>
     /// Get feedbacks by teacher id
     /// </summary>
     /// <response code="200">Success. Feedbacks returns</response>
     /// <response code="404">Feedbacks with given teacher id not found (feedbacks_not_found)</response>
-    [HttpGet("getByTeacherId/{id:int}")]
+    [HttpGet("by-teacher/{teacherId:int}")]
     [ProducesResponseType(typeof(FeedbacksListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<FeedbacksListModel>> GetFeedbacksByTeacherId(int id)
+    public async Task<ActionResult<FeedbacksListModel>> GetFeedbacksByTeacherId(int teacherId)
     {
-        var feedbacksModel = await _mediator.Send(new GetFeedbacksByTeacherIdQuery { TeacherId = id });
-        
+        var feedbacksModel = await _mediator.Send(new GetFeedbacksByTeacherIdQuery { TeacherId = teacherId });
+
         return Ok(feedbacksModel);
     }
 }

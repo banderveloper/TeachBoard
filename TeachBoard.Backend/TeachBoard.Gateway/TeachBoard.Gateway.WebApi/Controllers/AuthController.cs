@@ -40,7 +40,7 @@ public class AuthController : BaseController
         return Ok(identityServiceResponse.Content);
     }
 
-    [HttpPost("refresh")]
+    [HttpPut("refresh")]
     public async Task<ActionResult<AuthTokenResponseModel>> Refresh()
     {
         if (!Request.Cookies.TryGetValue("TeachBoard-Refresh-Token", out var refreshTokenFromCookie))
@@ -70,7 +70,7 @@ public class AuthController : BaseController
         return Ok(identityServiceResponse.Content);
     }
 
-    [HttpPost("logout")]
+    [HttpDelete("logout")]
     public async Task<IActionResult> Logout()
     {
         if (!Request.Cookies.TryGetValue("TeachBoard-Refresh-Token", out var refreshTokenFromCookie))

@@ -12,7 +12,7 @@ public interface IMembersClient
     /// </summary>
     /// <param name="model">User id and group id</param>
     /// <returns>Created student</returns>
-    [Post("/students/create")]
+    [Post("/students")]
     Task<Student> CreateStudent(CreateStudentRequestModel model);
 
     /// <summary>
@@ -20,7 +20,7 @@ public interface IMembersClient
     /// </summary>
     /// <param name="userId">Student user id</param>
     /// <returns>Model with list of students</returns>
-    [Get("/students/getGroupMembersByUserId/{userId}")]
+    [Get("/students/group-members-by-user/{userId}")]
     Task<StudentsListModel> GetStudentGroupMembersByUserId(int userId);
 
     /// <summary>
@@ -28,7 +28,7 @@ public interface IMembersClient
     /// </summary>
     /// <param name="userId">User id</param>
     /// <returns>Student group</returns>
-    [Get("/groups/getByUserId/{userId}")]
+    [Get("/groups/by-user/{userId}")]
     Task<Group> GetStudentGroupByUserId(int userId);
 
     /// <summary>
@@ -36,22 +36,22 @@ public interface IMembersClient
     /// </summary>
     /// <param name="userId"></param>
     /// <returns>Student with given user id</returns>
-    [Get("/students/getByUserId/{userId}")]
+    [Get("/students/by-user/{userId}")]
     Task<Student> GetStudentByUserId(int userId);
 
     /// <summary>
     /// Get teachers by ids
     /// </summary>
-    /// <param name="ids">Ids of teachers</param>
+    /// <param name="teacherId">Ids of teachers</param>
     /// <returns>List of teachers</returns>
-    [Get("/teachers/getByIds")]
-    Task<TeachersListModel> GetTeachersByIds([Body] List<int> ids);
+    [Get("/teachers/by-ids")]
+    Task<TeachersListModel> GetTeachersByIds([Query(CollectionFormat.Multi)] List<int> teacherId);
 
     /// <summary>
     /// Set student group
     /// </summary>
     /// <param name="model">Model with student id and group id</param>
     /// <returns>Default refit response</returns>
-    [Post("/students/setStudentGroup")]
+    [Put("/students/student-group")]
     Task<IApiResponse> SetStudentGroup([Body] SetStudentGroupRequestModel model);
 }

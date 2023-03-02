@@ -42,7 +42,7 @@ public class StudentController : BaseController
     /// <response code="422">Invalid model</response>
     /// <response code="503">One of the needed services is unavailable now</response>
     [AllowAnonymous]
-    [HttpPost("approvePending")]
+    [HttpPost("approve-pending")]
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status409Conflict)]
@@ -75,7 +75,7 @@ public class StudentController : BaseController
     /// </response>
     /// <response code="406">Jwt-token does not contains user id (jwt_user_id_not_found)</response>
     /// <response code="503">One of the needed services is unavailable now</response>
-    [HttpGet("getGroupMembers")]
+    [HttpGet("group-members")]
     [ProducesResponseType(typeof(UsersNamePhotoListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
@@ -108,7 +108,7 @@ public class StudentController : BaseController
     /// </response>
     /// <response code="406">Jwt-token does not contains user id (jwt_user_id_not_found)</response>
     /// <response code="503">One of the needed services is unavailable now</response>
-    [HttpGet("getAllLessons")]
+    [HttpGet("all-lessons")]
     [ProducesResponseType(typeof(LessonsListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
@@ -137,7 +137,7 @@ public class StudentController : BaseController
     /// </response>
     /// <response code="406">Jwt-token does not contains user id (jwt_user_id_not_found)</response>
     /// <response code="503">One of the needed services is unavailable now</response>
-    [HttpGet("getProfileData")]
+    [HttpGet("profile-data")]
     [ProducesResponseType(typeof(UserProfileDataResponseModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
@@ -169,7 +169,7 @@ public class StudentController : BaseController
     /// </response>
     /// <response code="406">Jwt-token does not contains user id (jwt_user_id_not_found)</response>
     /// <response code="503">One of the needed services is unavailable now</response>
-    [HttpGet("getExaminationsActivities")]
+    [HttpGet("exam-activities")]
     [ProducesResponseType(typeof(StudentExaminationsPublicDataListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
@@ -197,7 +197,7 @@ public class StudentController : BaseController
     /// </response>
     /// <response code="406">Jwt-token does not contains user id (jwt_user_id_not_found)</response>
     /// <response code="503">One of the needed services is unavailable now</response>
-    [HttpGet("getCompletedHomeworks")]
+    [HttpGet("completed-homeworks")]
     [ProducesResponseType(typeof(FullCompletedHomeworksListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
@@ -225,7 +225,7 @@ public class StudentController : BaseController
     /// </response>
     /// <response code="406">Jwt-token does not contains user id (jwt_user_id_not_found)</response>
     /// <response code="503">One of the needed services is unavailable now</response>
-    [HttpGet("getUncompletedHomeworks")]
+    [HttpGet("uncompleted-homeworks")]
     [ProducesResponseType(typeof(UncompletedHomeworksPublicListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
@@ -235,13 +235,11 @@ public class StudentController : BaseController
     {
         var studentInfo = await _membersClient.GetStudentByUserId(UserId);
 
-        var requestModel = new GetUncompletedHomeworksByStudentRequestModel
-        {
-            StudentId = studentInfo.Id,
-            GroupId = studentInfo.GroupId
-        };
-
-        var uncompletedHomeworks = await _educationClient.GetStudentUncompletedHomeworks(requestModel);
+        var uncompletedHomeworks = await _educationClient.GetStudentUncompletedHomeworks(
+            studentId: studentInfo.Id,
+            groupId: studentInfo.GroupId
+        );
+        
         return uncompletedHomeworks;
     }
 
@@ -259,7 +257,7 @@ public class StudentController : BaseController
     /// </response>
     /// <response code="406">Jwt-token does not contains user id (jwt_user_id_not_found)</response>
     /// <response code="503">One of the needed services is unavailable now</response>
-    [HttpGet("getLessonsActivities")]
+    [HttpGet("lessons-activities")]
     [ProducesResponseType(typeof(StudentLessonActivityPublicListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]

@@ -13,7 +13,7 @@ public interface IIdentityClient
     /// </summary>
     /// <param name="registerCode">Registed code of pending user given after creating pending</param>
     /// <returns>Pending user role</returns>
-    [Get("/users/pending/getRoleByCode/{registerCode}")]
+    [Get("/users/pending/role/{registerCode}")]
     Task<UserRole> GetPendingUserRoleByRegisterCode(string registerCode);
 
     /// <summary>
@@ -27,17 +27,17 @@ public interface IIdentityClient
     /// <summary>
     /// Get users names and photos by users ids
     /// </summary>
-    /// <param name="ids">List of users ids</param>
+    /// <param name="userId">List of users ids</param>
     /// <returns>Model with list of users dtos with names and photos</returns>
-    [Get("/users/getNamesPhotosByIds")]
-    Task<UsersNamePhotoListModel> GetUserNamesPhotosByIds([Body] List<int> ids);
+    [Get("/users/names-photos")]
+    Task<UsersNamePhotoListModel> GetUserNamesPhotosByIds([Query(CollectionFormat.Multi)] List<int> userId);
 
     /// <summary>
     /// Get user by user id
     /// </summary>
     /// <param name="userId">User id</param>
     /// <returns>User public data (without id and password)</returns>
-    [Get("/users/getById/{userId}")]
+    [Get("/users/{userId}")]
     Task<UserPublicDataModel> GetUserById(int userId);
 
     /// <summary>
@@ -53,21 +53,21 @@ public interface IIdentityClient
     /// </summary>
     /// <param name="refreshCookie">Refresh cookie in format: cookie_name=cookie_value</param>
     /// <returns>Model with new access token</returns>
-    [Post("/auth/refresh")]
+    [Put("/auth/refresh")]
     Task<ApiResponse<AuthTokenResponseModel>> Refresh([Header("Cookie")] string refreshCookie);
 
     /// <summary>
     /// Logout / end session
     /// </summary>
     /// <param name="refreshCookie">Refresh cookie in format cookie_name=cookie_value</param>
-    [Post("/auth/logout")]
+    [Delete("/auth/logout")]
     Task<IApiResponse> Logout([Header("Cookie")] string refreshCookie);
 
     /// <summary>
     /// Create pending user (by admin or director)
     /// </summary>
     /// <param name="model"></param>
-    /// <returns></returns>
-    [Post("/users/pending/create")]
+    /// <returns>Model with register code and expiration time</returns>
+    [Post("/users/pending")]
     Task<RegisterCodeResponseModel> CreatePendingUser([Body] CreatePendingUserRequestModel model);
 }

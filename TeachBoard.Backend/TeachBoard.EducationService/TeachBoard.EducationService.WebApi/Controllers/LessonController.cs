@@ -35,7 +35,7 @@ public class LessonController : ControllerBase
     /// <response code="200">Success. Lesson created and returned</response>
     /// <response code="404">Subject with given id not found (subject_not_found)</response>
     /// <response code="422">Invalid model</response>
-    [HttpPost("create")]
+    [HttpPost]
     [ProducesResponseType(typeof(Lesson), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
@@ -58,7 +58,7 @@ public class LessonController : ControllerBase
     ///
     /// <response code="200">Success. Lesson returned</response>
     /// <response code="404">Future lessons not found (lessons_not_found)</response>
-    [HttpGet("getFuture")]
+    [HttpGet("future")]
     [ProducesResponseType(typeof(LessonsListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<LessonsListModel>> GetFutureLessons()
@@ -77,12 +77,12 @@ public class LessonController : ControllerBase
     ///
     /// <response code="200">Success. Lessons returned</response>
     /// <response code="404">Lessons not found (lessons_not_found)</response>
-    [HttpGet("getByGroupId/{id:int}")]
+    [HttpGet("by-group/{groupId:int}")]
     [ProducesResponseType(typeof(LessonsListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<LessonsListModel>> GetLessonsByGroupId(int id)
+    public async Task<ActionResult<LessonsListModel>> GetLessonsByGroupId(int groupId)
     {
-        var query = new GetLessonsByGroupIdQuery { GroupId = id };
+        var query = new GetLessonsByGroupIdQuery { GroupId = groupId };
         var lessonsModel = await _mediator.Send(query);
 
         return Ok(lessonsModel);
@@ -99,7 +99,7 @@ public class LessonController : ControllerBase
     /// <response code="400">Setting lesson activity to future lessons is not allowed (lesson_not_started)</response>
     /// <response code="404">Lesson with given id not found (lesson_not_found)</response>
     /// <response code="422">Invalid model</response>
-    [HttpPost("setStudentActivity")]
+    [HttpPost("student-activity")]
     [ProducesResponseType(typeof(StudentLessonActivity), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
@@ -123,7 +123,7 @@ public class LessonController : ControllerBase
     ///
     /// <response code="200">Success. Student lesson activities returned</response>
     /// <response code="404">Student lesson activities witn given student id not found (student_lesson_activities_not_found)</response>
-    [HttpGet("getStudentActivities/{studentId:int}")]
+    [HttpGet("student-activities/{studentId:int}")]
     [ProducesResponseType(typeof(StudentLessonActivityPublicListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<StudentLessonActivityPublicListModel>> GetStudentLessonActivitiesByStudentId(

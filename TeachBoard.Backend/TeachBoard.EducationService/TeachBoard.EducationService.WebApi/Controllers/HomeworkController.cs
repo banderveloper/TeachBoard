@@ -33,7 +33,7 @@ public class HomeworkController : ControllerBase
     ///
     /// <response code="200">Success. Homework created and returned</response>
     /// <response code="422">Invalid requestModel</response>
-    [HttpPost("create")]
+    [HttpPost]
     [ProducesResponseType(typeof(Homework), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<Homework>> CreateHomework([FromBody] CreateHomeworkRequestModel requestModel)
@@ -56,7 +56,7 @@ public class HomeworkController : ControllerBase
     ///
     /// <response code="200">Success. Homeworks for given group returned</response>
     /// <response code="404">Homeworks for given group not found (homeworks_not_found)</response>
-    [HttpGet("getByGroupId/{groupId:int}")]
+    [HttpGet("group/{groupId:int}")]
     [ProducesResponseType(typeof(HomeworksListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<HomeworksListModel>> GetHomeworksByGroupId(int groupId)
@@ -105,7 +105,7 @@ public class HomeworkController : ControllerBase
     /// <response code="404">Completed homework with given id not found (homework_not_found)</response>
     /// <response code="423">Completed homework with given id was added by another teacher, checking is denied (completed_homework_invalid_teacher)</response>
     /// <response code="422">Invalid requestModel</response>
-    [HttpPost("checkCompleted")]
+    [HttpPost("check-сompleted")]
     [ProducesResponseType(typeof(CompletedHomework), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
@@ -130,7 +130,7 @@ public class HomeworkController : ControllerBase
     ///
     /// <response code="200">Success. Completed homeworks full data by student returned</response>
     /// <response code="404">Completed homeworks of student with given id not found (completed_homeworks_not_found)</response>
-    [HttpGet("getFullCompletedByStudentId/{studentId:int}")]
+    [HttpGet("full-completed/{studentId:int}")]
     [ProducesResponseType(typeof(FullCompletedHomeworksListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<FullCompletedHomeworksListModel>> GetFullCompletedHomeworksByStudentId(int studentId)
@@ -145,24 +145,21 @@ public class HomeworkController : ControllerBase
     /// Get student's uncompleted homeworks
     /// </summary>
     /// 
-    /// <param name="model">Model with student id and group id</param>
+    /// <param name="studentId">Student id</param>
+    /// <param name="groupId">Student's group id</param>
     /// <returns>List of uncompleted homeworks as public datas</returns>
     ///
     /// <response code="200">Success. Uncompleted homeworks full data by student returned</response>
     /// <response code="404">Uncompleted homeworks of student with given id not found (uncompleted_homeworks_not_found)</response>
-    [HttpGet("getUncompletedHomeworksByStudent")]
+    [HttpGet("uncompleted-homeworks/{studentId:int}/{groupId:int}")]
     [ProducesResponseType(typeof(FullCompletedHomeworksListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<UncompletedHomeworksPublicListModel>> GetUncompletedHomeworksByStudent(
-        [FromBody] GetUncompletedHomeworksByStudentRequestModel model)
+    public async Task<ActionResult<UncompletedHomeworksPublicListModel>> GetUncompletedHomeworksByStudent(int studentId,
+        int groupId)
     {
-        if (!ModelState.IsValid)
-            return UnprocessableEntity(model);
-
-        var query = _mapper.Map<GetUncompletedHomeworksByStudentQuery>(model);
+        var query = new GetUncompletedHomeworksByStudentQuery { StudentId = studentId, GroupId = groupId };
         var uncompletedHomeworks = await _mediator.Send(query);
 
         return uncompletedHomeworks;
-    } 
-    
+    }
 }

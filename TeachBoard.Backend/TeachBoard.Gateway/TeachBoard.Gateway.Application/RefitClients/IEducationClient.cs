@@ -11,7 +11,7 @@ public interface IEducationClient
     /// </summary>
     /// <param name="groupId">Group id</param>
     /// <returns>Model with list of lessons to given group</returns>
-    [Get("/lessons/getByGroupId/{groupId}")]
+    [Get("/lessons/by-group/{groupId}")]
     Task<LessonsListModel> GetLessonsByGroupId(int groupId);
 
     /// <summary>
@@ -19,7 +19,7 @@ public interface IEducationClient
     /// </summary>
     /// <param name="studentId">Student id</param>
     /// <returns>List of student examinations public data</returns>
-    [Get("/examinations/getStudentActivities/{studentId}")]
+    [Get("/examinations/student-activities/{studentId}")]
     Task<StudentExaminationsPublicDataListModel> GetStudentExaminationsPublicData(int studentId);
 
     /// <summary>
@@ -27,23 +27,23 @@ public interface IEducationClient
     /// </summary>
     /// <param name="studentId">Student id</param>
     /// <returns>List of completed homeworks full data</returns>
-    [Get("/homeworks/getFullCompletedByStudentId/{studentId}")]
+    [Get("/homeworks/full-completed/{studentId}")]
     Task<FullCompletedHomeworksListModel> GetStudentFullCompletedHomeworks(int studentId);
 
     /// <summary>
     /// Get student's uncompleted homeworks
     /// </summary>
-    /// <param name="model"></param>
-    /// <returns></returns>
-    [Get("/homeworks/getUncompletedHomeworksByStudent")]
-    Task<UncompletedHomeworksPublicListModel> GetStudentUncompletedHomeworks(
-        [Body] GetUncompletedHomeworksByStudentRequestModel model);
+    /// <param name="studentId">Student id</param>
+    /// <param name="groupId">Student's group id</param>
+    /// <returns>Model with list of uncompleted homeworks at public data</returns>
+    [Get("/homeworks/uncompleted-homeworks/{studentId}/{groupId}")]
+    Task<UncompletedHomeworksPublicListModel> GetStudentUncompletedHomeworks(int studentId, int? groupId);
 
     /// <summary>
     /// Get student's lessons activities
     /// </summary>
     /// <param name="studentId">Student id</param>
     /// <returns>List of all student's lessons activities</returns>
-    [Get("/lessons/getStudentActivities/{studentId}")]
+    [Get("/lessons/student-activities/{studentId}")]
     Task<StudentLessonActivityPublicListModel> GetStudentLessonActivities(int studentId);
 }

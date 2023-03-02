@@ -39,7 +39,7 @@ public class UserController : ControllerBase
     /// <response code="200">Success. Pending user created</response>
     /// <response code="409">Pending user with given phone/email already exists (phone_already_exists / email_already_exists)</response>
     /// <response code="422">Invalid requestModel</response>
-    [HttpPost("pending/create")]
+    [HttpPost("pending")]
     [ProducesResponseType(typeof(RegisterCodeModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
@@ -97,16 +97,16 @@ public class UserController : ControllerBase
     /// Get user public data by id
     /// </summary>
     /// 
-    /// <param name="id">User id</param>
+    /// <param name="userId">User id</param>
     ///
     /// <response code="200">Success. User public data returned</response>
     /// <response code="404">User with given id not found (user_not_found)</response>
-    [HttpGet("getbyid/{id:int}")]
+    [HttpGet("{userId:int}")]
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<UserPublicDataResponseModel>> GetUserById(int id)
+    public async Task<ActionResult<UserPublicDataResponseModel>> GetUserById(int userId)
     {
-        var query = new GetUserByIdQuery { UserId = id };
+        var query = new GetUserByIdQuery { UserId = userId };
 
         var user = await _mediator.Send(query);
         var publicModel = _mapper.Map<UserPublicDataResponseModel>(user);
@@ -122,7 +122,7 @@ public class UserController : ControllerBase
     ///
     /// <response code="200">Success. Pending user role returned</response>
     /// <response code="404">Pending user with given register code not found (pending_user_not_found)</response>
-    [HttpGet("pending/getrolebycode/{registerCode}")]
+    [HttpGet("pending/role/{registerCode}")]
     [ProducesResponseType(typeof(PendingUserRoleResponseModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<PendingUserRoleResponseModel>> GetPendingUserRoleByCode(string registerCode)
@@ -140,16 +140,16 @@ public class UserController : ControllerBase
     /// Get users names and photos by user ids
     /// </summary>
     /// 
-    /// <param name="ids">Users ids</param>
+    /// <param name="userId">Users ids</param>
     ///
     /// <response code="200">Success. Users names and photos returned</response>
     /// <response code="404">Users with given ids not found (users_not_found)</response>
-    [HttpGet("getNamesPhotosByIds")]
+    [HttpGet("names-photos")]
     [ProducesResponseType(typeof(UsersNamePhotoListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<UsersNamePhotoListModel>> GetUsersNamesPhotosByIds([FromBody] List<int> ids)
+    public async Task<ActionResult<UsersNamePhotoListModel>> GetUsersNamesPhotosByIds([FromQuery] List<int> userId)
     {
-        var query = new GetUserNamesPhotosByIdsQuery { Ids = ids };
+        var query = new GetUserNamesPhotosByIdsQuery { Ids = userId };
         var usersModel = await _mediator.Send(query);
 
         return usersModel;

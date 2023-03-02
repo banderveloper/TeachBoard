@@ -95,7 +95,7 @@ public class AuthController : ControllerBase
     /// <response code="200">Successful session update</response>
     /// <response code="404">Session connected to given refresh token not found (session_not_found) / User connected to session not found (user_not_found)</response>
     /// <response code="406">Did not pass refresh token at TeachBoard-Refresh-Token (refresh_token_not_found)</response>
-    [HttpPost("refresh")]
+    [HttpPut("refresh")]
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status406NotAcceptable)]
@@ -138,7 +138,7 @@ public class AuthController : ControllerBase
     /// <response code="200">Successful logout</response>
     /// <response code="404">Session connected to given refresh token not found (session_not_found)</response>
     /// <response code="406">Did not pass refresh token at TeachBoard-Refresh-Token (refresh_token_not_found)</response>
-    [HttpPost("logout")]
+    [HttpDelete("logout")]
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status406NotAcceptable)]

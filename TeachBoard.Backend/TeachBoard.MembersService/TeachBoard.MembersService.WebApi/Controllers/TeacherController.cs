@@ -21,14 +21,14 @@ public class TeacherController : ControllerBase
     {
         _mediator = mediator;
     }
-    
+
     /// <summary>
     /// Get teacher by id
     /// </summary>
     /// <param name="id">Teacher id</param>
     /// <response code="200">Success. Teacher returns.</response>
     /// <response code="404">Teacher with given id not found (teacher_not_found)</response>
-    [HttpGet("getById/{id:int}")]
+    [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(Teacher), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Student>> GetById(int id)
@@ -38,14 +38,14 @@ public class TeacherController : ControllerBase
 
         return Ok(teacher);
     }
-    
+
     /// <summary>
     /// Create teacher
     /// </summary>
     /// <param name="model">Teacher creation model</param>
     /// <response code="200">Success. Teacher created</response>
     /// <response code="409">Teacher with given user id already exists (teacher_already_exists)</response>
-    [HttpPost("create")]
+    [HttpPost]
     [ProducesResponseType(typeof(Teacher), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status409Conflict)]
     public async Task<ActionResult<Teacher>> Create([FromBody] CreateTeacherRequestModel model)
@@ -58,13 +58,13 @@ public class TeacherController : ControllerBase
 
         return teacher;
     }
-    
+
     /// <summary>
     /// Get all teachers
     /// </summary>
     /// <response code="200">Success. Teachers returns.</response>
     /// <response code="404">Teachers not found (teachers_not_found)</response>
-    [HttpGet("getAll")]
+    [HttpGet]
     [ProducesResponseType(typeof(TeachersListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<TeachersListModel>> GetAll()
@@ -80,13 +80,13 @@ public class TeacherController : ControllerBase
     /// </summary>
     /// <response code="200">Success. Teacher deleted</response>
     /// <response code="404">Teacher not found (teacher_not_found)</response>
-    [HttpDelete("deleteByUserId/{id:int}")]
+    [HttpDelete("by-user/{userId:int}")]
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteByUserId(int id)
+    public async Task<IActionResult> DeleteByUserId(int userId)
     {
         // Delete by id
-        await _mediator.Send(new DeleteTeacherByUserIdCommand { UserId = id });
+        await _mediator.Send(new DeleteTeacherByUserIdCommand { UserId = userId });
 
         return Ok();
     }
@@ -94,15 +94,15 @@ public class TeacherController : ControllerBase
     /// <summary>
     /// Get teachers by ids
     /// </summary>
-    /// <param name="ids">List of teachers ids</param>
+    /// <param name="teacherId">List of teachers ids</param>
     /// <response code="200">Success. Teachers returned</response>
     /// <response code="404">Teachers with given id not found (teachers_not_found)</response>
-    [HttpGet("getByIds")]
+    [HttpGet("by-ids")]
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<TeachersListModel>> GetTeachersByIds([FromBody] List<int> ids)
+    public async Task<ActionResult<TeachersListModel>> GetTeachersByIds([FromQuery] List<int> teacherId)
     {
-        var query = new GetTeachersByIdsQuery { Ids = ids };
+        var query = new GetTeachersByIdsQuery { Ids = teacherId };
         var teachers = await _mediator.Send(query);
 
         return teachers;

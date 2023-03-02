@@ -35,7 +35,7 @@ public class ExaminationController : ControllerBase
     /// <response code="400">Examination end time cannot be later than start (invalid_datetime)</response>
     /// <response code="404">Subject with given id not found (subject_not_found)</response>
     /// <response code="422">Invalid model</response>
-    [HttpPost("create")]
+    [HttpPost]
     [ProducesResponseType(typeof(Examination), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
@@ -61,7 +61,7 @@ public class ExaminationController : ControllerBase
     /// <response code="200">Success. Student examination activity created/updated and returned</response>
     /// <response code="404">Student examination activity with given id not found (examination_not_found)</response>
     /// <response code="422">Invalid model</response>
-    [HttpPost("setStudentActivity")]
+    [HttpPost("student-activity")]
     [ProducesResponseType(typeof(StudentExaminationActivity), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
@@ -78,7 +78,7 @@ public class ExaminationController : ControllerBase
     }
     
     /// <summary>
-    /// Get student examination activities public data
+    /// Get student's examination activities as public data
     /// </summary>
     /// 
     /// <param name="studentId">Student id</param>
@@ -87,7 +87,7 @@ public class ExaminationController : ControllerBase
     /// <response code="200">Success. List of Student examination activities returned</response>
     /// <response code="404">Student examination activies with given id student id not found (student_examination_activities_not_found)</response>
     /// <response code="422">Invalid model</response>
-    [HttpGet("getStudentActivities/{studentId:int}")]
+    [HttpGet("student-activities/{studentId:int}")]
     [ProducesResponseType(typeof(StudentExaminationsPublicDataListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]

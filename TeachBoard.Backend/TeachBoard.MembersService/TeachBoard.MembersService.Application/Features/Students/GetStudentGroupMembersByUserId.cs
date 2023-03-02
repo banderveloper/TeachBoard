@@ -40,13 +40,20 @@ public class GetStudentGroupMembersByUserIdQueryHandler
             throw new NotFoundException
             {
                 Error = "group_not_found",
-                ErrorDescription = $"Student with id {studentByUserId.Id} does not belong to any group",
+                ErrorDescription = $"Student with id '{studentByUserId.Id}' does not belong to any group",
                 ReasonField = "groupId"
             };
 
         var studentGroupMembers = await _context.Students
             .Where(s => s.GroupId == studentByUserId.GroupId)
             .ToListAsync(cancellationToken);
+
+        if (studentGroupMembers.Count == 0)
+            throw new NotFoundException
+            {
+                Error = "group_members_not_found",
+                ErrorDescription = $"Student with id '{studentByUserId.UserId}' does not have group so-members"
+            };
 
         return new StudentsListModel
         {

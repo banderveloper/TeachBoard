@@ -34,7 +34,7 @@ public class SubjectController : ControllerBase
     /// <response code="200">Success. Subject created and returned</response>
     /// <response code="409">Subject with given name already exists (subject_already_exists)</response>
     /// <response code="422">Invalid model</response>
-    [HttpPost("create")]
+    [HttpPost]
     [ProducesResponseType(typeof(Subject), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
@@ -58,7 +58,7 @@ public class SubjectController : ControllerBase
     ///
     /// <response code="200">Success. Subject returned</response>
     /// <response code="404">Subject with given id not found (subject_not_found)</response>
-    [HttpGet("getById/{id:int}")]
+    [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(Subject), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Subject>> GetSubjectById(int id)
@@ -77,7 +77,7 @@ public class SubjectController : ControllerBase
     ///
     /// <response code="200">Success. Subjects returned</response>
     /// <response code="404">No subjects found (subjects_not_found)</response>
-    [HttpGet("getAll")]
+    [HttpGet]
     [ProducesResponseType(typeof(SubjectsListModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<SubjectsListModel>> GetAllSubjects()
@@ -94,7 +94,7 @@ public class SubjectController : ControllerBase
     /// 
     /// <response code="200">Success. Subject deleted</response>
     /// <response code="404">Subject with given id not found (subject_not_found)</response>
-    [HttpDelete("deleteById/{id:int}")]
+    [HttpDelete("{id:int}")]
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteSubjectById(int id)
