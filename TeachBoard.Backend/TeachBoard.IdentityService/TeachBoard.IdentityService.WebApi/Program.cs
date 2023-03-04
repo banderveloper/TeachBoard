@@ -1,6 +1,7 @@
 using System.Net.Mime;
 using System.Reflection;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using TeachBoard.IdentityService.Application;
 using TeachBoard.IdentityService.Application.Mappings;
 using TeachBoard.IdentityService.Persistence;
@@ -35,6 +36,8 @@ builder.Services.AddControllers()
         // lowercase for json keys
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+        
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     })
     .ConfigureApiBehaviorOptions(options =>
     {

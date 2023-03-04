@@ -5,6 +5,7 @@ using TeachBoard.IdentityService.Application.CQRS.Commands;
 using TeachBoard.IdentityService.Application.CQRS.Queries;
 using TeachBoard.IdentityService.Application.Exceptions;
 using TeachBoard.IdentityService.Domain.Entities;
+using TeachBoard.IdentityService.WebApi.ActionResults;
 using TeachBoard.IdentityService.WebApi.Models.User;
 using TeachBoard.IdentityService.WebApi.Models.Validation;
 
@@ -95,29 +96,9 @@ public class UserController : ControllerBase
         var query = new GetUserByIdQuery { UserId = id };
 
         var user = await _mediator.Send(query);
-        var responseModel = _mapper.Map<UserPublicDataResponseModel>(user) ?? new object();
+        var responseModel = _mapper.Map<UserPublicDataResponseModel>(user);
 
-        return Ok(responseModel);
-    }
-
-    /// <summary>
-    /// Get pending user role
-    /// </summary>
-    /// 
-    /// <param name="registerCode">Register code of pending user</param>
-    ///
-    /// <response code="200">Success. Pending user role returned</response>
-    [HttpGet("pending/role/{registerCode}")]
-    [ProducesResponseType(typeof(PendingUserRoleResponseModel), StatusCodes.Status200OK)]
-    public async Task<ActionResult<PendingUserRoleResponseModel>> GetPendingUserRoleByCode(string registerCode)
-    {
-        var query = new GetPendingUserByRegistrationCodeQuery { RegisterCode = registerCode };
-        var pendingUser = await _mediator.Send(query);
-
-        return Ok(pendingUser is not null
-            ? new PendingUserRoleResponseModel { Role = pendingUser.Role }
-            : new object()
-        );
+        return new NullableJsonResult(responseModel);
     }
 
     /// <summary>
