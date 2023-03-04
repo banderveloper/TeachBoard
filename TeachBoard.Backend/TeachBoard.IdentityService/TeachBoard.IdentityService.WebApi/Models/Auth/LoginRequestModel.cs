@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using AutoMapper;
-using TeachBoard.IdentityService.Application.CQRS.Queries.GetUserByCredentials;
+using TeachBoard.IdentityService.Application.CQRS.Queries;
 using TeachBoard.IdentityService.Application.Mappings;
 
 namespace TeachBoard.IdentityService.WebApi.Models.Auth;

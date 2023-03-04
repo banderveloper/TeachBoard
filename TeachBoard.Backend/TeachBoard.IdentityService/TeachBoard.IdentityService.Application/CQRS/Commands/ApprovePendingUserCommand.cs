@@ -5,9 +5,17 @@ using TeachBoard.IdentityService.Application.Extensions;
 using TeachBoard.IdentityService.Application.Interfaces;
 using TeachBoard.IdentityService.Domain.Entities;
 
-namespace TeachBoard.IdentityService.Application.CQRS.Commands.ApprovePendingUser;
+namespace TeachBoard.IdentityService.Application.CQRS.Commands;
 
 // Transform pending user to real user using registration with given registration code and new username and pass
+
+public class ApprovePendingUserCommand : IRequest<User>
+{
+    public string RegisterCode { get; set; } = string.Empty;
+    public string UserName { get; set; } = string.Empty;
+    public string PasswordHash { get; set; } = string.Empty;
+}
+
 public class ApprovePendingUserCommandHandler : IRequestHandler<ApprovePendingUserCommand, User>
 {
     private readonly IApplicationDbContext _context;
@@ -19,39 +27,46 @@ public class ApprovePendingUserCommandHandler : IRequestHandler<ApprovePendingUs
     {
         // Get pending user by registration code
         var pendingUser = await _context.PendingUsers
-            .FirstOrDefaultAsync(pu => pu.RegisterCode == request.RegisterCode,
+            .FirstOrDefaultAsync(
+                pu => string.Equals(pu.RegisterCode.ToLower(), request.RegisterCode.ToLower()),
                 cancellationToken);
 
         // If not found - exception
         if (pendingUser is null)
-            throw new NotFoundException
+            throw new ExpectedApiException
             {
-                Error = "register_code_not_found",
-                ErrorDescription = $"Pending user approval error. Register code {request.RegisterCode} not found"
+                ErrorCode = "pending_user_not_found",
+                ReasonField = "registerCode",
+                PublicErrorMessage = "Pending user with given register code does not exists",
+                LogErrorMessage =
+                    $"Approve pending error. Pending user with register code [{request.RegisterCode}] not found"
             };
 
         // if pending user expired - exception
-        if (pendingUser.ExpiresAt < DateTime.Now)
-            throw new DataExpiredException
+        if (DateTime.Now > pendingUser.ExpiresAt)
+            throw new ExpectedApiException
             {
-                Error = "pending_user_expired",
-                ErrorDescription = $"Pending user expired {pendingUser.ExpiresAt.ToUniversalTime()}"
+                ErrorCode = "pending_user_expired",
+                PublicErrorMessage = "Pending user registration time expired",
+                LogErrorMessage =
+                    $"Approve pending error. Requested pending user expired at [{pendingUser.ExpiresAt.ToUniversalTime()}]"
             };
-        
-        
+
         // trying to find existing user with given login
         var userByUsername = await _context.Users
-            .FirstOrDefaultAsync(user => user.UserName == request.UserName,
+            .FirstOrDefaultAsync(
+                user => string.Equals(user.UserName.ToLower(), request.UserName.ToLower()),
                 cancellationToken);
 
         // if it is exists - already exists exception
         if (userByUsername is not null)
-            throw new AlreadyExistsException
+            throw new ExpectedApiException
             {
-                Error = "username_already_exists",
-                ErrorDescription = $"User with username {request.UserName} already exists"
+                ErrorCode = "user_already_exists",
+                ReasonField = "userName",
+                PublicErrorMessage = "User with given username already exists",
+                LogErrorMessage = $"Approve pending error. Username [{request.UserName}] already exists"
             };
-
 
         // Create user account from pending
         var newUser = new User

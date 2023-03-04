@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using AutoMapper;
-using TeachBoard.IdentityService.Application.CQRS.Commands.CreatePendingUser;
+using TeachBoard.IdentityService.Application.CQRS.Commands;
 using TeachBoard.IdentityService.Application.Mappings;
 using TeachBoard.IdentityService.Domain.Enums;
 

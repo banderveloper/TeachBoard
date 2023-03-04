@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Reflection.Metadata.Ecma335;
 using TeachBoard.IdentityService.Application.Exceptions;
 
 namespace TeachBoard.IdentityService.WebApi.Middleware;
@@ -6,10 +7,14 @@ namespace TeachBoard.IdentityService.WebApi.Middleware;
 public class CustomExceptionHandlerMiddleware
 {
     private readonly RequestDelegate _next;
+    private readonly ILogger<CustomExceptionHandlerMiddleware> _logger;
 
-    public CustomExceptionHandlerMiddleware(RequestDelegate next)
-        => _next = next;
-    
+    public CustomExceptionHandlerMiddleware(RequestDelegate next, ILogger<CustomExceptionHandlerMiddleware> logger)
+    {
+        _next = next;
+        _logger = logger;
+    }
+
     public async Task InvokeAsync(HttpContext context)
     {
         try
@@ -22,48 +27,32 @@ public class CustomExceptionHandlerMiddleware
         }
     }
 
-    private Task HandleExceptionAsync(HttpContext context, Exception exception)
+    private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
-        var statusCode = HttpStatusCode.InternalServerError;
-        IApiException? result = null;
+        context.Response.ContentType = "application/json";
 
         switch (exception)
         {
-            case NotFoundException notFoundException:
-                statusCode = HttpStatusCode.NotFound;
-                result = notFoundException;
+            case IExpectedApiException expectedApiException:
+                context.Response.StatusCode = (int)HttpStatusCode.OK;
+                await context.Response.WriteAsJsonAsync(expectedApiException);
                 break;
-            case AlreadyExistsException alreadyExistsException:
-                statusCode = HttpStatusCode.Conflict;
-                result = alreadyExistsException;
+
+            case INotAcceptableRequestException notAcceptableRequestException:
+                context.Response.StatusCode = (int)HttpStatusCode.NotAcceptable;
+                await context.Response.WriteAsJsonAsync(notAcceptableRequestException);
                 break;
-            case RefreshTokenException refreshTokenException:
-                statusCode = HttpStatusCode.NotAcceptable;
-                result = refreshTokenException;
-                break;
-            case WrongPasswordException wrongPasswordException:
-                statusCode = HttpStatusCode.Forbidden;
-                result = wrongPasswordException;
-                break;
-            case DataExpiredException dataExpiredException:
-                statusCode = HttpStatusCode.Gone;
-                result = dataExpiredException;
-                break;
+
             default:
-                Console.WriteLine(exception);
+                _logger.LogError(exception.ToString());
+                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                await context.Response.WriteAsJsonAsync(new
+                {
+                    error = "unknown_error",
+                    errorDescription = "Unknown server error"
+                });
                 break;
         }
-
-        context.Response.ContentType = "application/json";
-        context.Response.StatusCode = (int)statusCode;
-
-        return result is not null
-            ? context.Response.WriteAsJsonAsync(result)
-            : context.Response.WriteAsJsonAsync(new
-            {
-                error = "unknown_error",
-                errorDescription = "Unknown server error"
-            });
     }
 }
 

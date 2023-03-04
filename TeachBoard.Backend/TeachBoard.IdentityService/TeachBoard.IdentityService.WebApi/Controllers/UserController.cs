@@ -1,12 +1,8 @@
-﻿using System.Text.Json;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using TeachBoard.IdentityService.Application.CQRS.Commands.ApprovePendingUser;
-using TeachBoard.IdentityService.Application.CQRS.Commands.CreatePendingUser;
-using TeachBoard.IdentityService.Application.CQRS.Queries.GetPendingUserByRegisterCode;
-using TeachBoard.IdentityService.Application.CQRS.Queries.GetUserById;
-using TeachBoard.IdentityService.Application.CQRS.Queries.GetUserNamesPhotosByIds;
+using TeachBoard.IdentityService.Application.CQRS.Commands;
+using TeachBoard.IdentityService.Application.CQRS.Queries;
 using TeachBoard.IdentityService.Application.Exceptions;
 using TeachBoard.IdentityService.Domain.Entities;
 using TeachBoard.IdentityService.WebApi.Models.User;
@@ -15,7 +11,7 @@ using TeachBoard.IdentityService.WebApi.Models.Validation;
 namespace TeachBoard.IdentityService.WebApi.Controllers;
 
 [ApiController]
-[Route("users")]
+[Route("user")]
 [Produces("application/json")]
 [ValidateModel]
 public class UserController : ControllerBase
@@ -41,14 +37,11 @@ public class UserController : ControllerBase
     /// <response code="422">Invalid requestModel</response>
     [HttpPost("pending")]
     [ProducesResponseType(typeof(RegisterCodeModel), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<RegisterCodeModel>> CreatePendingUser(
         [FromBody] CreatePendingUserRequestModel requestModel)
     {
-        Console.WriteLine("Income create pending user model:");
-        Console.WriteLine(JsonSerializer.Serialize(requestModel));
-        
         if (!ModelState.IsValid)
             return UnprocessableEntity(requestModel);
 
@@ -56,9 +49,6 @@ public class UserController : ControllerBase
 
         // Send command which create pending user and return register code and expiration date
         var registerCodeModel = await _mediator.Send(command);
-
-        Console.WriteLine("Register code output model:");
-        Console.WriteLine(JsonSerializer.Serialize(registerCodeModel));
 
         return Ok(registerCodeModel);
     }
@@ -76,9 +66,7 @@ public class UserController : ControllerBase
     /// <response code="422">Invalid requestModel</response>
     [HttpPost("pending/approve")]
     [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status409Conflict)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status410Gone)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<IActionResult> ApprovePendingUser([FromBody] ApprovePendingUserRequestModel requestModel)
     {
@@ -97,21 +85,19 @@ public class UserController : ControllerBase
     /// Get user public data by id
     /// </summary>
     /// 
-    /// <param name="userId">User id</param>
+    /// <param name="id">User id</param>
     ///
     /// <response code="200">Success. User public data returned</response>
-    /// <response code="404">User with given id not found (user_not_found)</response>
-    [HttpGet("{userId:int}")]
-    [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<UserPublicDataResponseModel>> GetUserById(int userId)
+    [HttpGet("{id:int}")]
+    [ProducesResponseType(typeof(UserPublicDataResponseModel), StatusCodes.Status200OK)]
+    public async Task<ActionResult<UserPublicDataResponseModel>> GetUserById(int id)
     {
-        var query = new GetUserByIdQuery { UserId = userId };
+        var query = new GetUserByIdQuery { UserId = id };
 
         var user = await _mediator.Send(query);
-        var publicModel = _mapper.Map<UserPublicDataResponseModel>(user);
+        var responseModel = _mapper.Map<UserPublicDataResponseModel>(user) ?? new object();
 
-        return Ok(publicModel);
+        return Ok(responseModel);
     }
 
     /// <summary>
@@ -121,38 +107,34 @@ public class UserController : ControllerBase
     /// <param name="registerCode">Register code of pending user</param>
     ///
     /// <response code="200">Success. Pending user role returned</response>
-    /// <response code="404">Pending user with given register code not found (pending_user_not_found)</response>
     [HttpGet("pending/role/{registerCode}")]
     [ProducesResponseType(typeof(PendingUserRoleResponseModel), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<PendingUserRoleResponseModel>> GetPendingUserRoleByCode(string registerCode)
     {
         var query = new GetPendingUserByRegistrationCodeQuery { RegisterCode = registerCode };
         var pendingUser = await _mediator.Send(query);
 
-        return new PendingUserRoleResponseModel
-        {
-            Role = pendingUser.Role
-        };
+        return Ok(pendingUser is not null
+            ? new PendingUserRoleResponseModel { Role = pendingUser.Role }
+            : new object()
+        );
     }
 
     /// <summary>
-    /// Get users names and photos by user ids
+    /// Get users ids, names and photos by user ids
     /// </summary>
     /// 
-    /// <param name="userId">Users ids</param>
+    /// <param name="userIds">Users ids</param>
     ///
-    /// <response code="200">Success. Users names and photos returned</response>
-    /// <response code="404">Users with given ids not found (users_not_found)</response>
-    [HttpGet("names-photos")]
-    [ProducesResponseType(typeof(UsersNamePhotoListModel), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<UsersNamePhotoListModel>> GetUsersNamesPhotosByIds([FromQuery] List<int> userId)
+    /// <response code="200">Success. Users ids, names and photos returned</response>
+    [HttpGet("presentation")]
+    [ProducesResponseType(typeof(IList<UserPresentationDataModel>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IList<UserPresentationDataModel>>> GetUsersNamesPhotosByIds(
+        [FromQuery] List<int> userIds)
     {
-        var query = new GetUserNamesPhotosByIdsQuery { Ids = userId };
+        var query = new GetUsersPresentationDataByIdsQuery { Ids = userIds };
         var usersModel = await _mediator.Send(query);
 
-        return usersModel;
+        return Ok(usersModel);
     }
-    
 }

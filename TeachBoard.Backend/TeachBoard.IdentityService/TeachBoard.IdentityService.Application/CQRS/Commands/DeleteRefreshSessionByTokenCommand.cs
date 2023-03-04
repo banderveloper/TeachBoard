@@ -5,16 +5,19 @@ using TeachBoard.IdentityService.Application.Interfaces;
 
 namespace TeachBoard.IdentityService.Application.CQRS.Commands.DeleteRefreshSessionByToken;
 
-public class DeleteRefreshSessionByTokenCommandHandler : IRequestHandler<DeleteRefreshSessionByTokenCommand>
+public class DeleteRefreshSessionByTokenCommand : IRequest<bool>
+{
+    public Guid RefreshToken { get; set; }
+}
+
+public class DeleteRefreshSessionByTokenCommandHandler : IRequestHandler<DeleteRefreshSessionByTokenCommand, bool>
 {
     private readonly IApplicationDbContext _context;
 
-    public DeleteRefreshSessionByTokenCommandHandler(IApplicationDbContext context)
-    {
+    public DeleteRefreshSessionByTokenCommandHandler(IApplicationDbContext context) =>
         _context = context;
-    }
-
-    public async Task<Unit> Handle(DeleteRefreshSessionByTokenCommand request, CancellationToken cancellationToken)
+    
+    public async Task<bool> Handle(DeleteRefreshSessionByTokenCommand request, CancellationToken cancellationToken)
     {
         // get existing session by refresh token
         var existingSession = await _context.RefreshSessions
@@ -23,16 +26,18 @@ public class DeleteRefreshSessionByTokenCommandHandler : IRequestHandler<DeleteR
 
         // if not exists - error
         if (existingSession is null)
-            throw new NotFoundException
+            throw new ExpectedApiException
             {
-                Error = "session_not_found",
-                ErrorDescription = $"Refresh token '{request.RefreshToken}' not found at any session"
+                ErrorCode = "session_not_found",
+                PublicErrorMessage = "Session bound to given token not found",
+                LogErrorMessage =
+                    $"Delete refresh session by refresh error. Refresh token ['{request.RefreshToken}'] not found"
             };
 
         // if found - delete session from db
         _context.RefreshSessions.Remove(existingSession);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return Unit.Value;
+        return true;
     }
 }

@@ -18,12 +18,12 @@ public static class DependencyInjection
         // register db context
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseSqlite(connectionConfiguration.Sqlite);
+            options.UseSqlite(connectionConfiguration!.Sqlite);
         });
         
         // bind db context interface to class
         services.AddScoped<IApplicationDbContext>(provider =>
-            provider.GetService<ApplicationDbContext>());
+            provider.GetService<ApplicationDbContext>()!);
 
         return services;
     }

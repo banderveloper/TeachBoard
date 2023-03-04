@@ -2,11 +2,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.IdentityService.Application.Configurations;
+using TeachBoard.IdentityService.Application.CQRS.Commands;
 using TeachBoard.IdentityService.Application.CQRS.Commands.DeleteRefreshSessionByToken;
-using TeachBoard.IdentityService.Application.CQRS.Commands.SetRefreshSession;
-using TeachBoard.IdentityService.Application.CQRS.Commands.UpdateRefreshSession;
-using TeachBoard.IdentityService.Application.CQRS.Queries.GetUserByCredentials;
-using TeachBoard.IdentityService.Application.CQRS.Queries.GetUserById;
+using TeachBoard.IdentityService.Application.CQRS.Queries;
 using TeachBoard.IdentityService.Application.Exceptions;
 using TeachBoard.IdentityService.Application.Extensions;
 using TeachBoard.IdentityService.Application.Services;
@@ -53,8 +51,8 @@ public class AuthController : ControllerBase
     /// <response code="422">Invalid model</response>
     [HttpPost("login")]
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<AccessTokenResponseModel>> Login([FromBody] LoginRequestModel requestModel)
     {
@@ -97,8 +95,8 @@ public class AuthController : ControllerBase
     /// <response code="406">Did not pass refresh token at TeachBoard-Refresh-Token (refresh_token_not_found)</response>
     [HttpPut("refresh")]
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status406NotAcceptable)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status406NotAcceptable)]
     public async Task<ActionResult<AccessTokenResponseModel>> Refresh()
     {
         // get refresh token from http-only cookie
@@ -140,8 +138,8 @@ public class AuthController : ControllerBase
     /// <response code="406">Did not pass refresh token at TeachBoard-Refresh-Token (refresh_token_not_found)</response>
     [HttpDelete("logout")]
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status406NotAcceptable)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status406NotAcceptable)]
     public async Task<IActionResult> Logout()
     {
         // get refresh token from http-only cookie

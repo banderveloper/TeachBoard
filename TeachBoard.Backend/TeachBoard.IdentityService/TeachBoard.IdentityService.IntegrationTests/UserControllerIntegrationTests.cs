@@ -3,7 +3,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
-using TeachBoard.IdentityService.Application.CQRS.Commands.CreatePendingUser;
+using TeachBoard.IdentityService.Application.CQRS.Commands;
 using TeachBoard.IdentityService.Domain.Entities;
 using TeachBoard.IdentityService.WebApi.Models.User;
 using Xunit.Abstractions;
