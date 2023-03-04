@@ -8,7 +8,7 @@ public class PendingUser : BaseEntity
     public string RegisterCode { get; set; } = string.Empty; // Code which student must be enter during registration
     public DateTime ExpiresAt { get; set; } // DateTime when pending user will be deleted
     
-    public Role Role { get; set; }
+    public UserRole Role { get; set; }
 
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;

@@ -1,6 +1,6 @@
 ﻿namespace TeachBoard.IdentityService.Domain.Enums;
 
-public enum Role
+public enum UserRole
 {
     Unspecified = 0,
     Student = 1,

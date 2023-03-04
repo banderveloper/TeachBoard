@@ -4,5 +4,5 @@ namespace TeachBoard.IdentityService.WebApi.Models.User;
 
 public class PendingUserRoleResponseModel
 {
-    public Role Role { get; set; }
+    public UserRole Role { get; set; }
 }

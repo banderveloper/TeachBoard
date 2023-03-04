@@ -10,7 +10,7 @@ namespace TeachBoard.IdentityService.Application.CQRS.Commands;
 
 public class CreatePendingUserCommand : IRequest<RegisterCodeModel>
 {
-    public Role Role { get; set; }
+    public UserRole Role { get; set; }
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
     public string Patronymic { get; set; } = string.Empty;

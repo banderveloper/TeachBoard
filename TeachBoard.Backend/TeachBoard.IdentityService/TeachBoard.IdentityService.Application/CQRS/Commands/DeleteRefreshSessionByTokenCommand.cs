@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using TeachBoard.IdentityService.Application.Exceptions;
 using TeachBoard.IdentityService.Application.Interfaces;
 
-namespace TeachBoard.IdentityService.Application.CQRS.Commands.DeleteRefreshSessionByToken;
+namespace TeachBoard.IdentityService.Application.CQRS.Commands;
 
 public class DeleteRefreshSessionByTokenCommand : IRequest<bool>
 {

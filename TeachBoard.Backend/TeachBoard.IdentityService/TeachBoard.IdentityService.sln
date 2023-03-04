@@ -6,8 +6,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{C28C8B67-4725-4949-946B-0EFC1A7E0F72}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C140FD87-88C7-47B8-96DE-93914A9D4CF6}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeachBoard.IdentityService.Domain", "TeachBoard.IdentityService.Domain\TeachBoard.IdentityService.Domain.csproj", "{2109500D-C975-4DAF-9147-A94B1F528048}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeachBoard.IdentityService.Application", "TeachBoard.IdentityService.Application\TeachBoard.IdentityService.Application.csproj", "{EA757D4A-DDC6-42BA-900C-E307DF0A057F}"
@@ -15,8 +13,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeachBoard.IdentityService.Persistence", "TeachBoard.IdentityService.Persistence\TeachBoard.IdentityService.Persistence.csproj", "{DF9B13B4-3A3B-469C-A623-AD2350287C7F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeachBoard.IdentityService.WebApi", "TeachBoard.IdentityService.WebApi\TeachBoard.IdentityService.WebApi.csproj", "{B399D5F9-C3C5-41E5-A4A2-A64529CAC79F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeachBoard.IdentityService.IntegrationTests", "TeachBoard.IdentityService.IntegrationTests\TeachBoard.IdentityService.IntegrationTests.csproj", "{0EC36E4F-CA54-45A8-8ED8-B1D44C2A05F3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,7 +24,6 @@ Global
 		{EA757D4A-DDC6-42BA-900C-E307DF0A057F} = {3ABA99C7-6C86-4C10-8D45-46C764A2146E}
 		{DF9B13B4-3A3B-469C-A623-AD2350287C7F} = {1FC4EC9E-67E1-4088-BDBF-2BE28C51B397}
 		{B399D5F9-C3C5-41E5-A4A2-A64529CAC79F} = {C28C8B67-4725-4949-946B-0EFC1A7E0F72}
-		{0EC36E4F-CA54-45A8-8ED8-B1D44C2A05F3} = {C140FD87-88C7-47B8-96DE-93914A9D4CF6}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{2109500D-C975-4DAF-9147-A94B1F528048}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -47,9 +42,5 @@ Global
 		{B399D5F9-C3C5-41E5-A4A2-A64529CAC79F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B399D5F9-C3C5-41E5-A4A2-A64529CAC79F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B399D5F9-C3C5-41E5-A4A2-A64529CAC79F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0EC36E4F-CA54-45A8-8ED8-B1D44C2A05F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0EC36E4F-CA54-45A8-8ED8-B1D44C2A05F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0EC36E4F-CA54-45A8-8ED8-B1D44C2A05F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0EC36E4F-CA54-45A8-8ED8-B1D44C2A05F3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

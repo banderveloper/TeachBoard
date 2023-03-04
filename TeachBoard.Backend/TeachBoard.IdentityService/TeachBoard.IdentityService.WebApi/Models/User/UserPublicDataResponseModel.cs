@@ -8,7 +8,7 @@ public class UserPublicDataResponseModel : IMappable
 {
     public string UserName { get; set; } = string.Empty;
 
-    public Role Role { get; set; } = Role.Unspecified;
+    public UserRole Role { get; set; } = UserRole.Unspecified;
     
     public string? FirstName { get; set; }
     public string? LastName { get; set; }

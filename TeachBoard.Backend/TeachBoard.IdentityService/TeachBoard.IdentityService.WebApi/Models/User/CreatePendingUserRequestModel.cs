@@ -8,8 +8,8 @@ namespace TeachBoard.IdentityService.WebApi.Models.User;
 
 public class CreatePendingUserRequestModel : IMappable
 {
-    [EnumDataType(typeof(Role), ErrorMessage = "Invalid role, 0-4 expected")]
-    public Role Role { get; set; } = Role.Unspecified;
+    [EnumDataType(typeof(UserRole), ErrorMessage = "Invalid role, 0-4 expected")]
+    public UserRole Role { get; set; } = UserRole.Unspecified;
     
     [MinLength(3, ErrorMessage = "First name too short")]
     public string? FirstName { get; set; }

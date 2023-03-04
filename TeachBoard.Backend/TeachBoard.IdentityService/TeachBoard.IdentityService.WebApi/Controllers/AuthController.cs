@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.IdentityService.Application.Configurations;
 using TeachBoard.IdentityService.Application.CQRS.Commands;
-using TeachBoard.IdentityService.Application.CQRS.Commands.DeleteRefreshSessionByToken;
 using TeachBoard.IdentityService.Application.CQRS.Queries;
 using TeachBoard.IdentityService.Application.Exceptions;
 using TeachBoard.IdentityService.Application.Extensions;
