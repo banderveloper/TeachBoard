@@ -7,6 +7,8 @@ namespace TeachBoard.IdentityService.WebApi.Models.User;
 
 public class UserPublicDataResponseModel : IMappable
 {
+    public int Id { get; set; }
+    
     public string UserName { get; set; } = string.Empty;
 
     [JsonConverter(typeof(CustomJsonStringEnumConverter<UserRole>))]

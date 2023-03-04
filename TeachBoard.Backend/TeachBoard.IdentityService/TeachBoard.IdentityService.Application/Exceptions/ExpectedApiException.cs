@@ -8,7 +8,6 @@ public interface IExpectedApiException
     /// String respesentation of error code
     /// </summary>
     /// <example>username_already_exists</example>
-    [JsonPropertyName("error")]
     public string ErrorCode { get; set; }
 
     /// <summary>

@@ -1,4 +1,4 @@
-using System.Net.Mime;
+using System.Net;
 using System.Reflection;
 using System.Text.Json;
 using TeachBoard.IdentityService.Application;
@@ -47,7 +47,8 @@ builder.Services.AddControllers()
         {
             var result = new WebApiResult
             {
-                Error = new ValidationResultModel(context.ModelState)
+                Error = new ValidationResultModel(context.ModelState),
+                StatusCode = HttpStatusCode.UnprocessableEntity
             };
 
             return result;

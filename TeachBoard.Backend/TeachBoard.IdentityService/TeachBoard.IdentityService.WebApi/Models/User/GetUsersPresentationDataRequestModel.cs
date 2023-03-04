@@ -1,6 +1,8 @@
-﻿namespace TeachBoard.IdentityService.WebApi.Models.User;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace TeachBoard.IdentityService.WebApi.Models.User;
 
 public class GetUsersPresentationDataRequestModel
 {
-    public IList<int> Ids { get; set; }
+    [Required] public IList<int> Ids { get; set; }
 }

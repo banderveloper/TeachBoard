@@ -29,22 +29,17 @@ public class UserController : ControllerBase
     /// Create new pending user
     /// </summary>
     /// 
-    /// <param name="model">Create pending user requestModel with personal data of user</param>
+    /// <param name="model">Personal data of the creating user</param>
     /// <returns>Register code and expiration date</returns>
     ///
-    /// <response code="200">Success. Pending user created</response>
-    /// <response code="200">Pending user with given phone/email already exists (phone_already_exists / email_already_exists)</response>
-    /// <response code="422">Invalid requestModel</response>
+    /// <response code="200">Success / email_already_exists / phoneNumber_already_exists</response>
+    /// <response code="422">Invalid model state</response>
     [HttpPost("pending")]
     [ProducesResponseType(typeof(RegisterCodeModel), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<RegisterCodeModel>> CreatePendingUser(
         [FromBody] CreatePendingUserRequestModel model)
     {
-        if (!ModelState.IsValid)
-            return UnprocessableEntity(model);
-
         var command = _mapper.Map<CreatePendingUserCommand>(model);
 
         // Send command which create pending user and return register code and expiration date
@@ -57,24 +52,22 @@ public class UserController : ControllerBase
     /// Approve pending user
     /// </summary>
     /// 
-    /// <param name="requestModel">Approve pending user created by administrator</param>
+    /// <param name="model">Register code and user credentials</param>
     ///
-    /// <response code="200">i love ayrat</response>
-    /// <response code="200">username_already_exists</response>
-    /// <response code="200">ty_dolbaeb</response>
+    /// <response code="200">Success / pending_user_not_found / pending_user_expired / user_already_exists</response>
+    /// <response code="422">Invalid model state</response>
     [HttpPost("pending/approve")]
-    [ProducesResponseType(typeof(WebApiResult), StatusCodes.Status200OK)]
-    public async Task<IActionResult> ApprovePendingUser([FromBody] ApprovePendingUserRequestModel requestModel)
+    [ProducesResponseType(typeof(UserPublicDataResponseModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
+    public async Task<ActionResult<UserPublicDataResponseModel>> ApprovePendingUser([FromBody] ApprovePendingUserRequestModel model)
     {
-        if (!ModelState.IsValid)
-            return UnprocessableEntity(requestModel);
-
-        // Create a command for approve and send it
         // If everything is ok - it will be created user, pending user will be deleted
-        var approveCommand = _mapper.Map<ApprovePendingUserCommand>(requestModel);
+        var approveCommand = _mapper.Map<ApprovePendingUserCommand>(model);
         var user = await _mediator.Send(approveCommand);
 
-        return new WebApiResult(user);
+        var response = _mapper.Map<UserPublicDataResponseModel>(user);
+
+        return new WebApiResult(response);
     }
 
     /// <summary>
