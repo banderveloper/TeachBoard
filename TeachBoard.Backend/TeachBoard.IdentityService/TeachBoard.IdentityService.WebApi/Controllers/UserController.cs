@@ -7,14 +7,13 @@ using TeachBoard.IdentityService.Application.Exceptions;
 using TeachBoard.IdentityService.Domain.Entities;
 using TeachBoard.IdentityService.WebApi.ActionResults;
 using TeachBoard.IdentityService.WebApi.Models.User;
-using TeachBoard.IdentityService.WebApi.Models.Validation;
+using TeachBoard.IdentityService.WebApi.Validation;
 
 namespace TeachBoard.IdentityService.WebApi.Controllers;
 
 [ApiController]
 [Route("user")]
 [Produces("application/json")]
-[ValidateModel]
 public class UserController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -30,28 +29,28 @@ public class UserController : ControllerBase
     /// Create new pending user
     /// </summary>
     /// 
-    /// <param name="requestModel">Create pending user requestModel with personal data of user</param>
+    /// <param name="model">Create pending user requestModel with personal data of user</param>
     /// <returns>Register code and expiration date</returns>
     ///
     /// <response code="200">Success. Pending user created</response>
-    /// <response code="409">Pending user with given phone/email already exists (phone_already_exists / email_already_exists)</response>
+    /// <response code="200">Pending user with given phone/email already exists (phone_already_exists / email_already_exists)</response>
     /// <response code="422">Invalid requestModel</response>
     [HttpPost("pending")]
     [ProducesResponseType(typeof(RegisterCodeModel), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<RegisterCodeModel>> CreatePendingUser(
-        [FromBody] CreatePendingUserRequestModel requestModel)
+        [FromBody] CreatePendingUserRequestModel model)
     {
         if (!ModelState.IsValid)
-            return UnprocessableEntity(requestModel);
+            return UnprocessableEntity(model);
 
-        var command = _mapper.Map<CreatePendingUserCommand>(requestModel);
+        var command = _mapper.Map<CreatePendingUserCommand>(model);
 
         // Send command which create pending user and return register code and expiration date
         var registerCodeModel = await _mediator.Send(command);
 
-        return Ok(registerCodeModel);
+        return new WebApiResult(registerCodeModel);
     }
 
     /// <summary>
@@ -60,15 +59,11 @@ public class UserController : ControllerBase
     /// 
     /// <param name="requestModel">Approve pending user created by administrator</param>
     ///
-    /// <response code="200">Success. User approved and returned</response>
-    /// <response code="404">Pending user with given register code not found (register_code_not_found)</response>
-    /// <response code="409">User with given username already exists (username_already_exists)</response>
-    /// <response code="410">Pending user expired (pending_user_expired)</response>
-    /// <response code="422">Invalid requestModel</response>
+    /// <response code="200">i love ayrat</response>
+    /// <response code="200">username_already_exists</response>
+    /// <response code="200">ty_dolbaeb</response>
     [HttpPost("pending/approve")]
-    [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(WebApiResult), StatusCodes.Status200OK)]
     public async Task<IActionResult> ApprovePendingUser([FromBody] ApprovePendingUserRequestModel requestModel)
     {
         if (!ModelState.IsValid)
@@ -79,7 +74,7 @@ public class UserController : ControllerBase
         var approveCommand = _mapper.Map<ApprovePendingUserCommand>(requestModel);
         var user = await _mediator.Send(approveCommand);
 
-        return Ok(user);
+        return new WebApiResult(user);
     }
 
     /// <summary>
@@ -98,7 +93,7 @@ public class UserController : ControllerBase
         var user = await _mediator.Send(query);
         var responseModel = _mapper.Map<UserPublicDataResponseModel>(user);
 
-        return new NullableJsonResult(responseModel);
+        return new WebApiResult(responseModel);
     }
 
     /// <summary>
@@ -116,6 +111,6 @@ public class UserController : ControllerBase
         var query = new GetUsersPresentationDataByIdsQuery { Ids = userIds };
         var usersModel = await _mediator.Send(query);
 
-        return Ok(usersModel);
+        return new WebApiResult(usersModel);
     }
 }

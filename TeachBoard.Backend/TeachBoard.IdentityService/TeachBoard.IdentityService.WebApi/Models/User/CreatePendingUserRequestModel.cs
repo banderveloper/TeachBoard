@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using AutoMapper;
 using TeachBoard.IdentityService.Application.CQRS.Commands;
 using TeachBoard.IdentityService.Application.Mappings;
@@ -8,7 +9,7 @@ namespace TeachBoard.IdentityService.WebApi.Models.User;
 
 public class CreatePendingUserRequestModel : IMappable
 {
-    [EnumDataType(typeof(UserRole), ErrorMessage = "Invalid role, 0-4 expected")]
+    [JsonConverter(typeof(CustomJsonStringEnumConverter<UserRole>))]
     public UserRole Role { get; set; } = UserRole.Unspecified;
     
     [MinLength(3, ErrorMessage = "First name too short")]

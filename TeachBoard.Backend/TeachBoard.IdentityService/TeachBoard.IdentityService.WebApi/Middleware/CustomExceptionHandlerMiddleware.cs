@@ -1,6 +1,8 @@
 ﻿using System.Net;
 using System.Reflection.Metadata.Ecma335;
+using Microsoft.AspNetCore.Mvc;
 using TeachBoard.IdentityService.Application.Exceptions;
+using TeachBoard.IdentityService.WebApi.ActionResults;
 
 namespace TeachBoard.IdentityService.WebApi.Middleware;
 
@@ -30,29 +32,31 @@ public class CustomExceptionHandlerMiddleware
     private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         context.Response.ContentType = "application/json";
+        var response = new WebApiResult();
 
         switch (exception)
         {
             case IExpectedApiException expectedApiException:
-                context.Response.StatusCode = (int)HttpStatusCode.OK;
-                await context.Response.WriteAsJsonAsync(expectedApiException);
+                response.Error = expectedApiException;
                 break;
 
             case INotAcceptableRequestException notAcceptableRequestException:
-                context.Response.StatusCode = (int)HttpStatusCode.NotAcceptable;
-                await context.Response.WriteAsJsonAsync(notAcceptableRequestException);
+                response.Error = notAcceptableRequestException;
+                response.StatusCode = HttpStatusCode.NotAcceptable;
                 break;
 
             default:
+                response.Error = new { error = "unknown_error" };
+                response.StatusCode = HttpStatusCode.InternalServerError;
+
                 _logger.LogError(exception.ToString());
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                await context.Response.WriteAsJsonAsync(new
-                {
-                    error = "unknown_error",
-                    errorDescription = "Unknown server error"
-                });
                 break;
         }
+
+        await response.ExecuteResultAsync(new ActionContext
+        {
+            HttpContext = context
+        });
     }
 }
 

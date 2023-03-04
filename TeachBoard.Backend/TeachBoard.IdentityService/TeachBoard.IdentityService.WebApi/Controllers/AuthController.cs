@@ -7,15 +7,16 @@ using TeachBoard.IdentityService.Application.CQRS.Queries;
 using TeachBoard.IdentityService.Application.Exceptions;
 using TeachBoard.IdentityService.Application.Extensions;
 using TeachBoard.IdentityService.Application.Services;
+using TeachBoard.IdentityService.WebApi.ActionResults;
 using TeachBoard.IdentityService.WebApi.Models.Auth;
-using TeachBoard.IdentityService.WebApi.Models.Validation;
+using TeachBoard.IdentityService.WebApi.Validation;
 
 namespace TeachBoard.IdentityService.WebApi.Controllers;
 
 [ApiController]
 [Route("auth")]
 [Produces("application/json")]
-[ValidateModel]
+
 public class AuthController : ControllerBase
 {
     private readonly IMapper _mapper;
@@ -72,7 +73,7 @@ public class AuthController : ControllerBase
         // generate access token for user
         var accessToken = _jwtProvider.GenerateUserJwt(user);
 
-        return Ok(new AccessTokenResponseModel
+        return new WebApiResult(new AccessTokenResponseModel
         {
             AccessToken = accessToken,
             Expires = DateTime.Now.AddMinutes(_jwtConfiguration.MinutesToExpiration).ToUnixTimestamp()
@@ -116,7 +117,7 @@ public class AuthController : ControllerBase
         // generation new access token and return it
         var accessToken = _jwtProvider.GenerateUserJwt(user);
 
-        return Ok(new AccessTokenResponseModel
+        return new WebApiResult(new AccessTokenResponseModel
         {
             AccessToken = accessToken,
             Expires = DateTime.Now.AddMinutes(_jwtConfiguration.MinutesToExpiration).ToUnixTimestamp()
@@ -151,6 +152,6 @@ public class AuthController : ControllerBase
         // delete cookie
         Response.Cookies.Delete("TeachBoard-Refresh-Token");
 
-        return Ok();
+        return new WebApiResult();
     }
 }

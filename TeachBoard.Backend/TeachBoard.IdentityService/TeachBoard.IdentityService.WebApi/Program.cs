@@ -1,13 +1,14 @@
 using System.Net.Mime;
 using System.Reflection;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using TeachBoard.IdentityService.Application;
 using TeachBoard.IdentityService.Application.Mappings;
+using TeachBoard.IdentityService.Domain.Enums;
 using TeachBoard.IdentityService.Persistence;
 using TeachBoard.IdentityService.WebApi;
+using TeachBoard.IdentityService.WebApi.ActionResults;
 using TeachBoard.IdentityService.WebApi.Middleware;
-using TeachBoard.IdentityService.WebApi.Models.Validation;
+using TeachBoard.IdentityService.WebApi.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,15 +38,17 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
         
-        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+        options.JsonSerializerOptions.Converters.Add(new CustomJsonStringEnumConverter<UserRole>());
     })
     .ConfigureApiBehaviorOptions(options =>
     {
         // custom validation error response
         options.InvalidModelStateResponseFactory = context =>
         {
-            var result = new ValidationFailedResult(context.ModelState);
-            result.ContentTypes.Add(MediaTypeNames.Application.Json);
+            var result = new WebApiResult
+            {
+                Error = new ValidationResultModel(context.ModelState)
+            };
 
             return result;
         };

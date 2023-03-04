@@ -1,6 +1,6 @@
 ﻿using TeachBoard.IdentityService.Application.Extensions;
 
-namespace TeachBoard.IdentityService.WebApi.Models.Validation;
+namespace TeachBoard.IdentityService.WebApi.Validation;
 
 // Field validation error item
 public class ValidationError  
