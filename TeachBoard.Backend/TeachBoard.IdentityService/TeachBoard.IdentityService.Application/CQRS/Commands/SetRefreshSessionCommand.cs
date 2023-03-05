@@ -23,6 +23,7 @@ public class SetRefreshSessionCommandHandler : IRequestHandler<SetRefreshSession
     {
         // try to get existing user session by user id
         var existingSession = await _context.RefreshSessions
+            .AsTracking()
             .FirstOrDefaultAsync(
                 session => session.UserId == request.UserId,
                 cancellationToken);

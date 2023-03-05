@@ -16,9 +16,10 @@ public static class DependencyInjection
         var connectionConfiguration = scope.ServiceProvider.GetService<ConnectionConfiguration>();
 
         // register db context
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContextPool<ApplicationDbContext>(options =>
         {
             options.UseSqlite(connectionConfiguration!.Sqlite);
+            options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         });
         
         // bind db context interface to class

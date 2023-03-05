@@ -24,6 +24,7 @@ public class UpdateRefreshSessionCommandHandler : IRequestHandler<UpdateRefreshS
     {
         // get session with given refresh token
         var existingSession = await _context.RefreshSessions
+            .AsTracking()
             .FirstOrDefaultAsync(
                 session => session.RefreshToken == request.RefreshToken,
                 cancellationToken);
