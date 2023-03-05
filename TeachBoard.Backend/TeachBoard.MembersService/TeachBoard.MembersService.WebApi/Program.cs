@@ -101,9 +101,3 @@ app.UseCors("AllowAll");
 app.MapControllers();
 
 app.Run();
-
-
-// for integration tests
-public partial class Program
-{
-}
