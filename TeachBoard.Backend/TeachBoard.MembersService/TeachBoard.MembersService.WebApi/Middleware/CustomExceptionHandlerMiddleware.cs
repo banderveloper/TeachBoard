@@ -36,6 +36,7 @@ public class CustomExceptionHandlerMiddleware
         switch (exception)
         {
             case IExpectedApiException expectedApiException:
+                response.StatusCode = HttpStatusCode.OK;
                 response.Error = new
                 {
                     expectedApiException.ErrorCode,
