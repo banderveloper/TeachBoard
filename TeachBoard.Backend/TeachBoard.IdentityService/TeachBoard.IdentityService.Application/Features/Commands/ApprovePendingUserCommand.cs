@@ -5,7 +5,7 @@ using TeachBoard.IdentityService.Application.Extensions;
 using TeachBoard.IdentityService.Application.Interfaces;
 using TeachBoard.IdentityService.Domain.Entities;
 
-namespace TeachBoard.IdentityService.Application.CQRS.Commands;
+namespace TeachBoard.IdentityService.Application.Features.Commands;
 
 // Transform pending user to real user using registration with given registration code and new username and pass
 

@@ -1,10 +1,9 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using TeachBoard.IdentityService.Application.Exceptions;
 using TeachBoard.IdentityService.Application.Interfaces;
 using TeachBoard.IdentityService.Domain.Entities;
 
-namespace TeachBoard.IdentityService.Application.CQRS.Queries;
+namespace TeachBoard.IdentityService.Application.Features.Queries;
 
 public class GetPendingUserByRegistrationCodeQuery : IRequest<PendingUser?>
 {

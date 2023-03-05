@@ -6,7 +6,7 @@ using TeachBoard.IdentityService.Application.Interfaces;
 using TeachBoard.IdentityService.Domain.Entities;
 using TeachBoard.IdentityService.Domain.Enums;
 
-namespace TeachBoard.IdentityService.Application.CQRS.Commands;
+namespace TeachBoard.IdentityService.Application.Features.Commands;
 
 public class CreatePendingUserCommand : IRequest<RegisterCodeModel>
 {

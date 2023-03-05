@@ -5,7 +5,7 @@ using TeachBoard.IdentityService.Application.Extensions;
 using TeachBoard.IdentityService.Application.Interfaces;
 using TeachBoard.IdentityService.Domain.Entities;
 
-namespace TeachBoard.IdentityService.Application.CQRS.Queries;
+namespace TeachBoard.IdentityService.Application.Features.Queries;
 
 public class GetUserByCredentialsQuery : IRequest<User>
 {

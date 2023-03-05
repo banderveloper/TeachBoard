@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace TeachBoard.IdentityService.WebApi.ActionResults;
 
+/// <summary>
+/// Unified response model with nullable data and error, returned in each point
+/// </summary>
 public class WebApiResult : ActionResult
 {
     public object? Data { get; set; }

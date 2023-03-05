@@ -2,10 +2,10 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.IdentityService.Application.Configurations;
-using TeachBoard.IdentityService.Application.CQRS.Commands;
-using TeachBoard.IdentityService.Application.CQRS.Queries;
 using TeachBoard.IdentityService.Application.Exceptions;
 using TeachBoard.IdentityService.Application.Extensions;
+using TeachBoard.IdentityService.Application.Features.Commands;
+using TeachBoard.IdentityService.Application.Features.Queries;
 using TeachBoard.IdentityService.Application.Services;
 using TeachBoard.IdentityService.WebApi.ActionResults;
 using TeachBoard.IdentityService.WebApi.Models.Auth;

@@ -19,6 +19,9 @@ public static class DependencyInjection
         services.AddDbContextPool<ApplicationDbContext>(options =>
         {
             options.UseSqlite(connectionConfiguration!.Sqlite);
+            
+            // for optimizing read-only queries, disabling caching of entities
+            // in ef select queries before update should be added .AsTracking method  
             options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         });
         

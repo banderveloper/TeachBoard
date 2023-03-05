@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using AutoMapper;
-using TeachBoard.IdentityService.Application.CQRS.Commands;
+using TeachBoard.IdentityService.Application.Features.Commands;
 using TeachBoard.IdentityService.Application.Mappings;
 using TeachBoard.IdentityService.Domain.Enums;
 

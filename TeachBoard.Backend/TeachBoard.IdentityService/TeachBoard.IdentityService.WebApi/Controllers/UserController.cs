@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using TeachBoard.IdentityService.Application.CQRS.Commands;
-using TeachBoard.IdentityService.Application.CQRS.Queries;
+using TeachBoard.IdentityService.Application.Features.Commands;
+using TeachBoard.IdentityService.Application.Features.Queries;
 using TeachBoard.IdentityService.WebApi.ActionResults;
 using TeachBoard.IdentityService.WebApi.Models.User;
 using TeachBoard.IdentityService.WebApi.Validation;

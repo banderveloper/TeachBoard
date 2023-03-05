@@ -4,7 +4,7 @@ using TeachBoard.IdentityService.Application.Exceptions;
 using TeachBoard.IdentityService.Application.Interfaces;
 using TeachBoard.IdentityService.Domain.Entities;
 
-namespace TeachBoard.IdentityService.Application.CQRS.Commands;
+namespace TeachBoard.IdentityService.Application.Features.Commands;
 
 // Update session (recreate refresh) using given refresh token
 

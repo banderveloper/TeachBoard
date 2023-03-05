@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using AutoMapper;
-using TeachBoard.IdentityService.Application.CQRS.Commands;
+using TeachBoard.IdentityService.Application.Features.Commands;
 using TeachBoard.IdentityService.Application.Mappings;
 
 namespace TeachBoard.IdentityService.WebApi.Models.User;

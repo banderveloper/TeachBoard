@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TeachBoard.IdentityService.Application.Interfaces;
 
-namespace TeachBoard.IdentityService.Application.CQRS.Queries;
+namespace TeachBoard.IdentityService.Application.Features.Queries;
 
 // Get users presentation data (id, full name, avatar image) by list of users ids
 

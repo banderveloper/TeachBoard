@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using TeachBoard.IdentityService.Application.Interfaces;
 using TeachBoard.IdentityService.Domain.Entities;
 
-namespace TeachBoard.IdentityService.Application.CQRS.Commands;
+namespace TeachBoard.IdentityService.Application.Features.Commands;
 
 // Create or update refresh session. Returns new refresh token
 

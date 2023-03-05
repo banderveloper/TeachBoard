@@ -38,11 +38,12 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
         
+        // UserRole enum to string converter
         options.JsonSerializerOptions.Converters.Add(new CustomJsonStringEnumConverter<UserRole>());
     })
     .ConfigureApiBehaviorOptions(options =>
     {
-        // custom validation error response
+        // adding validation error and 422 http to WebApiResponse while model state is not valid
         options.InvalidModelStateResponseFactory = context =>
         {
             var result = new WebApiResult
@@ -105,9 +106,3 @@ app.UseCors("AllowAll");
 app.MapControllers();
 
 app.Run();
-
-
-// For intergration tests
-public partial class Program
-{
-};
