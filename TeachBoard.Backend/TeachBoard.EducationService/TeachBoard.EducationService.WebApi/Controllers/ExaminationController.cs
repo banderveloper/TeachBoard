@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using TeachBoard.EducationService.Application.Exceptions;
 using TeachBoard.EducationService.Application.Features.Examination;
 using TeachBoard.EducationService.Domain.Entities;
+using TeachBoard.EducationService.WebApi.ActionResults;
 using TeachBoard.EducationService.WebApi.Models.Examination;
 using TeachBoard.EducationService.WebApi.Models.Validation;
 
@@ -48,7 +49,7 @@ public class ExaminationController : ControllerBase
         var command = _mapper.Map<CreateExaminationCommand>(model);
         var createdExamination = await _mediator.Send(command);
 
-        return createdExamination;
+        return new WebApiResult(createdExamination);
     }
 
     /// <summary>
@@ -74,7 +75,7 @@ public class ExaminationController : ControllerBase
         var command = _mapper.Map<SetStudentExaminationActivityCommand>(model);
         var studentExaminationActivity = await _mediator.Send(command);
 
-        return studentExaminationActivity;
+        return new WebApiResult(studentExaminationActivity);
     }
     
     /// <summary>
@@ -96,6 +97,6 @@ public class ExaminationController : ControllerBase
         var query = new GetStudentExaminationsActivitiesQuery { StudentId = studentId };
         var model = await _mediator.Send(query);
 
-        return model;
+        return new WebApiResult(model);
     }
 }

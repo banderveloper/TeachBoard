@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using TeachBoard.EducationService.Application.Exceptions;
 using TeachBoard.EducationService.Application.Features.Subject;
 using TeachBoard.EducationService.Domain.Entities;
+using TeachBoard.EducationService.WebApi.ActionResults;
 using TeachBoard.EducationService.WebApi.Models.Subject;
 using TeachBoard.EducationService.WebApi.Models.Validation;
 
@@ -46,7 +47,7 @@ public class SubjectController : ControllerBase
         var command = _mapper.Map<CreateSubjectCommand>(model);
 
         var createdSubject = await _mediator.Send(command);
-        return Ok(createdSubject);
+        return new WebApiResult(createdSubject);
     }
 
     /// <summary>
@@ -66,7 +67,7 @@ public class SubjectController : ControllerBase
         var query = new GetSubjectByIdQuery { SubjectId = id };
         var subject = await _mediator.Send(query);
 
-        return Ok(subject);
+        return new WebApiResult(subject);
     }
 
     /// <summary>
@@ -85,7 +86,7 @@ public class SubjectController : ControllerBase
         var query = new GetAllSubjectsQuery();
         var subjectsModel = await _mediator.Send(query);
 
-        return Ok(subjectsModel);
+        return new WebApiResult(subjectsModel);
     }
 
     /// <summary>
@@ -102,6 +103,6 @@ public class SubjectController : ControllerBase
         var query = new DeleteSubjectByIdCommand { SubjectId = id };
         await _mediator.Send(query);
 
-        return Ok();
+        return new WebApiResult();
     }
 }

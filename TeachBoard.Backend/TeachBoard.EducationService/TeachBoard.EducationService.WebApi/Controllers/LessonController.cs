@@ -5,6 +5,7 @@ using TeachBoard.EducationService.Application.Exceptions;
 using TeachBoard.EducationService.Application.Features.Lesson;
 using TeachBoard.EducationService.Application.Features.StudentLessonActivity;
 using TeachBoard.EducationService.Domain.Entities;
+using TeachBoard.EducationService.WebApi.ActionResults;
 using TeachBoard.EducationService.WebApi.Models.Lesson;
 using TeachBoard.EducationService.WebApi.Models.Validation;
 
@@ -47,7 +48,7 @@ public class LessonController : ControllerBase
         var command = _mapper.Map<CreateLessonCommand>(model);
         var createdLesson = await _mediator.Send(command);
 
-        return Ok(createdLesson);
+        return new WebApiResult(createdLesson);
     }
 
     /// <summary>
@@ -66,7 +67,7 @@ public class LessonController : ControllerBase
         var query = new GetFutureLessonsQuery();
         var lessonsModel = await _mediator.Send(query);
 
-        return Ok(lessonsModel);
+        return new WebApiResult(lessonsModel);
     }
 
     /// <summary>
@@ -85,7 +86,7 @@ public class LessonController : ControllerBase
         var query = new GetLessonsByGroupIdQuery { GroupId = groupId };
         var lessonsModel = await _mediator.Send(query);
 
-        return Ok(lessonsModel);
+        return new WebApiResult(lessonsModel);
     }
 
     /// <summary>
@@ -111,7 +112,7 @@ public class LessonController : ControllerBase
 
         var studentActivity = await _mediator.Send(command);
 
-        return studentActivity;
+        return new WebApiResult(studentActivity);
     }
 
     /// <summary>
@@ -132,6 +133,6 @@ public class LessonController : ControllerBase
         var query = new GetStudentLessonActivitiesByStudentIdQuery { StudentId = studentId };
 
         var activitiesListModel = await _mediator.Send(query);
-        return Ok(activitiesListModel);
+        return new WebApiResult(activitiesListModel);
     }
 }

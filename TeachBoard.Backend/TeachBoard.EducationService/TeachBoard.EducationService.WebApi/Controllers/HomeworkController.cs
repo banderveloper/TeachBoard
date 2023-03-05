@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using TeachBoard.EducationService.Application.Exceptions;
 using TeachBoard.EducationService.Application.Features.Homework;
 using TeachBoard.EducationService.Domain.Entities;
+using TeachBoard.EducationService.WebApi.ActionResults;
 using TeachBoard.EducationService.WebApi.Models.Homework;
 using TeachBoard.EducationService.WebApi.Models.Validation;
 
@@ -44,7 +45,7 @@ public class HomeworkController : ControllerBase
         var command = _mapper.Map<CreateHomeworkCommand>(requestModel);
         var createdHomework = await _mediator.Send(command);
 
-        return createdHomework;
+        return new WebApiResult(createdHomework);
     }
 
     /// <summary>
@@ -64,7 +65,7 @@ public class HomeworkController : ControllerBase
         var query = new GetHomeworksByGroupIdQuery { GroupId = groupId };
         var homeworksModel = await _mediator.Send(query);
 
-        return homeworksModel;
+        return new WebApiResult(homeworksModel);
     }
 
     /// <summary>
@@ -94,7 +95,7 @@ public class HomeworkController : ControllerBase
         var command = _mapper.Map<CompleteHomeworkCommand>(model);
         var completedHomework = await _mediator.Send(command);
 
-        return completedHomework;
+        return new WebApiResult(completedHomework);
     }
 
     /// <summary>
@@ -121,7 +122,7 @@ public class HomeworkController : ControllerBase
         var command = _mapper.Map<CheckHomeworkCommand>(model);
         var completedHomework = await _mediator.Send(command);
 
-        return completedHomework;
+        return new WebApiResult(completedHomework);
     }
 
     /// <summary>
@@ -141,7 +142,7 @@ public class HomeworkController : ControllerBase
         var query = new GetFullCompletedHomeworksByStudentIdQuery { StudentId = studentId };
         var completedHomeworks = await _mediator.Send(query);
 
-        return completedHomeworks;
+        return new WebApiResult(completedHomeworks);
     }
 
     /// <summary>
@@ -163,6 +164,6 @@ public class HomeworkController : ControllerBase
         var query = new GetUncompletedHomeworksByStudentQuery { StudentId = studentId, GroupId = groupId };
         var uncompletedHomeworks = await _mediator.Send(query);
 
-        return uncompletedHomeworks;
+        return new WebApiResult(uncompletedHomeworks);
     }
 }
