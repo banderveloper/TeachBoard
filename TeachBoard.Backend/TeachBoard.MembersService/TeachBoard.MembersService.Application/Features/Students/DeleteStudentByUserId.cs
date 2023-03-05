@@ -30,7 +30,7 @@ public class DeleteStudentByUserIdCommandHandler : IRequestHandler<DeleteStudent
         if (students.Count == 0)
             throw new ExpectedApiException
             {
-                ErrorCode = "student_not_found",
+                ErrorCode = ErrorCode.StudentNotFound,
                 PublicErrorMessage = "Student cannot be deleted because it does not exists",
                 LogErrorMessage = $"DeleteStudentByUserId error. Student with user id {request.UserId} does not exists"
             };

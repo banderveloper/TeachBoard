@@ -33,7 +33,7 @@ public class CreateStudentCommandHandler : IRequestHandler<CreateStudentCommand,
             if (existingGroup is null)
                 throw new ExpectedApiException
                 {
-                    ErrorCode = "group_not_found",
+                    ErrorCode = ErrorCode.GroupNotFound,
                     PublicErrorMessage = $"Group not found",
                     LogErrorMessage = $"CreateStudent command error. Group with id {request.GroupId} not found"
                 };
@@ -47,7 +47,7 @@ public class CreateStudentCommandHandler : IRequestHandler<CreateStudentCommand,
         if (existingStudent is not null)
             throw new ExpectedApiException
             {
-                ErrorCode = "student_already_exists",
+                ErrorCode = ErrorCode.StudentAlreadyExists,
                 PublicErrorMessage = "One student is already bound to given user profile",
                 LogErrorMessage = $"CreateStudent error. Student with user id {request.UserId} already exists"
             };

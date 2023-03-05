@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Mvc;
+using TeachBoard.MembersService.Application;
 using TeachBoard.MembersService.Application.Exceptions;
 using TeachBoard.MembersService.WebApi.ActionResults;
 
@@ -46,7 +47,7 @@ public class CustomExceptionHandlerMiddleware
                 break;
 
             default:
-                response.Error = new { error = "unknown_error" };
+                response.Error = new { errorCode = ErrorCode.Unknown };
                 response.StatusCode = HttpStatusCode.InternalServerError;
 
                 _logger.LogError(exception.ToString());

@@ -30,7 +30,7 @@ public class SetStudentGroupCommandHandler : IRequestHandler<SetStudentGroupComm
         if (existingStudent is null)
             throw new ExpectedApiException
             {
-                ErrorCode = "student_not_found",
+                ErrorCode = ErrorCode.StudentNotFound,
                 PublicErrorMessage = "Student not found",
                 LogErrorMessage = $"SetStudentGroup command error. Student with id {request.StudentId} not found"
             };
@@ -40,7 +40,7 @@ public class SetStudentGroupCommandHandler : IRequestHandler<SetStudentGroupComm
         if (existingGroup is null)
             throw new ExpectedApiException
             {
-                ErrorCode = "group_not_found",
+                ErrorCode = ErrorCode.GroupNotFound,
                 PublicErrorMessage = "Group not found",
                 LogErrorMessage = $"SetStudentGroup command error. Group with id {request.GroupId} not found"
             };

@@ -31,7 +31,7 @@ public class CreateTeacherCommandHandler : IRequestHandler<CreateTeacherCommand,
         if (existingTeacher is not null)
             throw new ExpectedApiException
             {
-                ErrorCode = "teacher_already_exists",
+                ErrorCode = ErrorCode.TeacherAlreadyExists,
                 PublicErrorMessage = "One teacher is already bound to given user profile",
                 LogErrorMessage = $"CreateTeacher command error. Teacher with user id {request.UserId} already exists"
             };

@@ -8,7 +8,7 @@ public interface IExpectedApiException
     /// String representation of error code
     /// </summary>
     /// <example>username_already_exists</example>
-    public string ErrorCode { get; set; }
+    public ErrorCode ErrorCode { get; set; }
 
     /// <summary>
     /// Model field/property, caused an error
@@ -31,7 +31,7 @@ public interface IExpectedApiException
 
 public class ExpectedApiException : Exception, IExpectedApiException
 {
-    public string ErrorCode { get; set; } = "unknown_error";
+    public ErrorCode ErrorCode { get; set; }
     public string? ReasonField { get; set; }
     public string? PublicErrorMessage { get; set; }
     public string? LogErrorMessage { get; set; }

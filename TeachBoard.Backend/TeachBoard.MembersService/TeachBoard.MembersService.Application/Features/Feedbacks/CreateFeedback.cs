@@ -32,7 +32,7 @@ public class CreateFeedbackCommandHandler : IRequestHandler<CreateFeedbackComman
         if (existingTeacher is null)
             throw new ExpectedApiException
             {
-                ErrorCode = "teacher_not_found",
+                ErrorCode = ErrorCode.TeacherNotFound,
                 PublicErrorMessage = $"Teacher not found",
                 LogErrorMessage = $"Create feedback error. Teacher with id [{request.TeacherId}] not found"
             };
@@ -42,7 +42,7 @@ public class CreateFeedbackCommandHandler : IRequestHandler<CreateFeedbackComman
         if (existingStudent is null)
             throw new ExpectedApiException
             {
-                ErrorCode = "student_not_found",
+                ErrorCode = ErrorCode.StudentNotFound,
                 PublicErrorMessage = $"Student not found",
                 LogErrorMessage = $"CreateFeedback command error. Student with id [{request.StudentId}] not found"
             };

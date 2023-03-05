@@ -1,9 +1,9 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace TeachBoard.MembersService.WebApi;
+namespace TeachBoard.MembersService.Application.Converters;
 
-public class CustomJsonStringEnumConverter<T> : JsonConverter<T> where T : Enum
+public class JsonStringEnumConverter<T> : JsonConverter<T> where T : Enum
 {
     public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {

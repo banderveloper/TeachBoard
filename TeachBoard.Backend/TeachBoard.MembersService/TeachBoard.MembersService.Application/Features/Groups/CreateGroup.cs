@@ -31,7 +31,7 @@ public class CreateGroupCommandHandler : IRequestHandler<CreateGroupCommand, Gro
         if (existingGroup is not null)
             throw new ExpectedApiException
             {
-                ErrorCode = "group_already_exists",
+                ErrorCode = ErrorCode.GroupAlreadyExists,
                 PublicErrorMessage = "Group with given name already exists",
                 LogErrorMessage = $"CreateGroup command error. Group with name {request.Name} already exists",
                 ReasonField = "name"

@@ -7,8 +7,8 @@ using TeachBoard.MembersService.Persistence;
 using TeachBoard.MembersService.WebApi.Middleware;
 using TeachBoard.MembersService.Application.Mappings;
 using TeachBoard.MembersService.Application.Configurations;
+using TeachBoard.MembersService.Application.Converters;
 using TeachBoard.MembersService.Domain.Enums;
-using TeachBoard.MembersService.WebApi;
 using TeachBoard.MembersService.WebApi.ActionResults;
 using TeachBoard.MembersService.WebApi.Validation;
 
@@ -43,7 +43,10 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
         
         // FeedbackDirection enum to string converter
-        options.JsonSerializerOptions.Converters.Add(new CustomJsonStringEnumConverter<FeedbackDirection>());
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter<FeedbackDirection>());
+        
+        // ErrorCode enum to snake_case string converter
+        options.JsonSerializerOptions.Converters.Add(new SnakeCaseStringEnumConverter<ErrorCode>());
     })
     .ConfigureApiBehaviorOptions(options =>
     {
