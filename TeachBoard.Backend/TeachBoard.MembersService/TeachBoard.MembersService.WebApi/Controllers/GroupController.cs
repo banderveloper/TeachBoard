@@ -32,14 +32,14 @@ public class GroupController : ControllerBase
     /// <response code="200">Success. Groups returns</response>
     /// <response code="404">Groups not found (groups_not_found)</response>
     [HttpGet]
-    [ProducesResponseType(typeof(GroupsListModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IList<Group>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<GroupsListModel>> GetAll()
+    public async Task<ActionResult<IList<Group>>> GetAll()
     {
         var query = new GetAllGroupsQuery();
-        var groupsModel = await _mediator.Send(query);
+        var groups = await _mediator.Send(query);
 
-        return new WebApiResult(groupsModel);
+        return new WebApiResult(groups);
     }
 
     /// <summary>

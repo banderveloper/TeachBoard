@@ -1,17 +1,17 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using TeachBoard.MembersService.Application.Exceptions;
 using TeachBoard.MembersService.Application.Interfaces;
+using TeachBoard.MembersService.Domain.Entities;
 
 namespace TeachBoard.MembersService.Application.Features.Feedbacks;
 
 // Query
-public class GetFeedbacksByTeacherIdQuery : IRequest<FeedbacksListModel>
+public class GetFeedbacksByTeacherIdQuery : IRequest<IList<Feedback>>
 {
     public int TeacherId { get; set; }
 }
 
-public class GetFeedbacksByTeacherIdQueryHandler : IRequestHandler<GetFeedbacksByTeacherIdQuery, FeedbacksListModel>
+public class GetFeedbacksByTeacherIdQueryHandler : IRequestHandler<GetFeedbacksByTeacherIdQuery, IList<Feedback>>
 {
     private readonly IApplicationDbContext _context;
 
@@ -20,13 +20,13 @@ public class GetFeedbacksByTeacherIdQueryHandler : IRequestHandler<GetFeedbacksB
         _context = context;
     }
 
-    public async Task<FeedbacksListModel> Handle(GetFeedbacksByTeacherIdQuery request,
+    public async Task<IList<Feedback>> Handle(GetFeedbacksByTeacherIdQuery request,
         CancellationToken cancellationToken)
     {
         var feedbacks = await _context.Feedbacks
             .Where(f => f.TeacherId == request.TeacherId)
             .ToListAsync(cancellationToken);
 
-        return new FeedbacksListModel { Feedbacks = feedbacks };
+        return feedbacks;
     }
 }

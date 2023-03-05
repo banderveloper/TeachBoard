@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using TeachBoard.MembersService.Application.Exceptions;
 using TeachBoard.MembersService.Application.Interfaces;
 using TeachBoard.MembersService.Domain.Entities;
 

@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.MembersService.Application.Exceptions;
 using TeachBoard.MembersService.Application.Features.Students;
-using TeachBoard.MembersService.Application.Features.Students.Common;
 using TeachBoard.MembersService.Application.Validation;
 using TeachBoard.MembersService.Domain.Entities;
 using TeachBoard.MembersService.WebApi.ActionResults;
@@ -50,9 +49,9 @@ public class StudentController : ControllerBase
     /// <response code="200">Success. Array of students returns</response>
     /// <response code="404">Students with given group id not found (students_not_found)</response>
     [HttpGet("by-group/{groupId:int}")]
-    [ProducesResponseType(typeof(StudentsListModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IList<Student>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<StudentsListModel>> GetStudentsByGroupId(int groupId)
+    public async Task<ActionResult<IList<Student>>> GetStudentsByGroupId(int groupId)
     {
         var query = new GetStudentsByGroupIdQuery { GroupId = groupId };
         var students = await _mediator.Send(query);
@@ -105,9 +104,9 @@ public class StudentController : ControllerBase
     /// <response code="200">Success. Array of students returns</response>
     /// <response code="404">Student with given id not found (student_not_found) / Student does not belong to any group (group_not_found)</response>
     [HttpGet("group-members-by-student/{studentId:int}")]
-    [ProducesResponseType(typeof(StudentsListModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IList<Student>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<StudentsListModel>> GetStudentGroupMembersByStudentId(int studentId)
+    public async Task<ActionResult<IList<Student>>> GetStudentGroupMembersByStudentId(int studentId)
     {
         var query = new GetStudentGroupMembersByStudentIdQuery { StudentId = studentId };
         var students = await _mediator.Send(query);
@@ -122,9 +121,9 @@ public class StudentController : ControllerBase
     /// <response code="200">Success. Array of students returns</response>
     /// <response code="404">Student with given user id not found (student_not_found) / Student does not belong to any group (group_not_found)</response>
     [HttpGet("group-members-by-user/{userId:int}")]
-    [ProducesResponseType(typeof(Student), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IList<Student>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<StudentsListModel>> GetStudentGroupMembersByUserId(int userId)
+    public async Task<ActionResult<IList<Student>>> GetStudentGroupMembersByUserId(int userId)
     {
         var query = new GetStudentGroupMembersByUserIdQuery { UserId = userId };
         var students = await _mediator.Send(query);

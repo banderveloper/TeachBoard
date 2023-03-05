@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.MembersService.Application.Exceptions;
 using TeachBoard.MembersService.Application.Features.Teachers;
-using TeachBoard.MembersService.Application.Features.Teachers.Common;
 using TeachBoard.MembersService.Application.Validation;
 using TeachBoard.MembersService.Domain.Entities;
 using TeachBoard.MembersService.WebApi.ActionResults;
@@ -32,7 +31,7 @@ public class TeacherController : ControllerBase
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(Teacher), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Student>> GetById(int id)
+    public async Task<ActionResult<Teacher>> GetById(int id)
     {
         var query = new GetTeacherByIdQuery { TeacherId = id };
         var teacher = await _mediator.Send(query);
@@ -66,9 +65,9 @@ public class TeacherController : ControllerBase
     /// <response code="200">Success. Teachers returns.</response>
     /// <response code="404">Teachers not found (teachers_not_found)</response>
     [HttpGet]
-    [ProducesResponseType(typeof(TeachersListModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IList<Teacher>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<TeachersListModel>> GetAll()
+    public async Task<ActionResult<IList<Teacher>>> GetAll()
     {
         var query = new GetAllTeachersQuery();
         var teacher = await _mediator.Send(query);
@@ -101,7 +100,7 @@ public class TeacherController : ControllerBase
     [HttpGet("by-ids")]
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<TeachersListModel>> GetTeachersByIds([FromQuery] List<int> teacherId)
+    public async Task<ActionResult<IList<Teacher>>> GetTeachersByIds([FromQuery] List<int> teacherId)
     {
         var query = new GetTeachersByIdsQuery { Ids = teacherId };
         var teachers = await _mediator.Send(query);
