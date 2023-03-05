@@ -22,9 +22,13 @@ public static class DependencyInjection
         var connectionConfiguration = scope.ServiceProvider.GetService<ConnectionConfiguration>();
 
         // register db context
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContextPool<ApplicationDbContext>(options =>
         {
             options.UseSqlite(connectionConfiguration.Sqlite);
+
+            // for optimizing read-only queries, disabling caching of entities
+            // in ef select queries before update should be added .AsTracking method  
+            options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         });
         
         // bind db context interface to class

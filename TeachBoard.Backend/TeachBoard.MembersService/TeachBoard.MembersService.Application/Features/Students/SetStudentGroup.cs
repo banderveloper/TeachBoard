@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using TeachBoard.MembersService.Application.Exceptions;
 using TeachBoard.MembersService.Application.Interfaces;
 
@@ -22,7 +23,10 @@ public class SetStudentGroupCommandHandler : IRequestHandler<SetStudentGroupComm
     public async Task<Unit> Handle(SetStudentGroupCommand request, CancellationToken cancellationToken)
     {
         // Find student by student, if not exists - error
-        var existingStudent = await _context.Students.FindAsync(new object[] { request.StudentId }, cancellationToken);
+        var existingStudent = await _context.Students
+            .AsTracking()
+            .FirstOrDefaultAsync(s => s.Id == request.StudentId, cancellationToken);
+        
         if (existingStudent is null)
             throw new ExpectedApiException
             {
