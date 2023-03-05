@@ -37,12 +37,20 @@ public class CustomExceptionHandlerMiddleware
         switch (exception)
         {
             case IExpectedApiException expectedApiException:
-                response.Error = expectedApiException;
+                response.Error = new
+                {
+                    expectedApiException.ErrorCode,
+                    expectedApiException.ReasonField,
+                    expectedApiException.PublicErrorMessage
+                };
                 break;
 
             case INotAcceptableRequestException notAcceptableRequestException:
-                response.Error = notAcceptableRequestException;
                 response.StatusCode = HttpStatusCode.NotAcceptable;
+                response.Error = new
+                {
+                    notAcceptableRequestException.ErrorCode
+                };
                 break;
 
             default:
