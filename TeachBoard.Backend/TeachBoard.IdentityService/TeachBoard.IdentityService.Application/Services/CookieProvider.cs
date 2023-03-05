@@ -8,12 +8,10 @@ public class CookieProvider
 {
     private readonly CookieConfiguration _cookieConfiguration;
     
-    public CookieProvider(CookieConfiguration cookieConfiguration)
-    {
+    public CookieProvider(CookieConfiguration cookieConfiguration) =>
         _cookieConfiguration = cookieConfiguration;
-    }
-
-    // Insert refresh token into http-only cookie
+    
+    // Insert refresh token into response http-only cookie
     public void AddRefreshCookieToResponse(HttpResponse response, Guid refreshToken)
     {
         response.Cookies.Append(_cookieConfiguration.RefreshCookieName, refreshToken.ToString(),
@@ -29,19 +27,11 @@ public class CookieProvider
     public Guid GetRefreshTokenFromCookie(HttpRequest request)
     {
         if (!request.Cookies.ContainsKey(_cookieConfiguration.RefreshCookieName))
-            throw new RefreshTokenException
-            {
-                Error = "refresh_cookie_not_found",
-                ErrorDescription = "Expected refresh httponly cookie does not exists"
-            };
+            throw new NotAcceptableRequestException { ErrorCode = "cookie_refresh_token_not_passed" };
         
         // Try to extract refresh token from cookie. If it is absent - exception
         if (!request.Cookies.TryGetValue(_cookieConfiguration.RefreshCookieName, out var refreshToken))
-            throw new RefreshTokenException
-            {
-                Error = "refresh_token_not_found",
-                ErrorDescription = "Expected refresh token in httponly cookie does not exists"
-            };
+            throw new NotAcceptableRequestException { ErrorCode = "cookie_refresh_token_not_passed" };
 
         return Guid.Parse(refreshToken);
     }

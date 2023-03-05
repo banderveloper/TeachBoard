@@ -4,8 +4,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{E8C65B7B-B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{0C37E3FA-F127-4E1F-97B6-61BCF975744A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{49B4D2A6-9B52-45D9-AB0B-4BA9FD9E6180}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeachBoard.Gateway.WebApi", "TeachBoard.Gateway.WebApi\TeachBoard.Gateway.WebApi.csproj", "{AFD1238D-1D6A-4A3E-A5F0-35522267B3B6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeachBoard.Gateway.Domain", "TeachBoard.Gateway.Domain\TeachBoard.Gateway.Domain.csproj", "{B3DBE9C0-6098-4948-A50E-1DD4827015DD}"

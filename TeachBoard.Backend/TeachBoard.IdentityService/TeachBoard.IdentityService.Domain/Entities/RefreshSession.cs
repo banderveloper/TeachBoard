@@ -8,7 +8,7 @@ public class RefreshSession : BaseEntity
     public int UserId { get; set; }
     public Guid RefreshToken { get; set; }
     public DateTime UpdatedAt { get; set; } = DateTime.Now;
+    
 
-    //
     [JsonIgnore] public User? User { get; set; }
 }

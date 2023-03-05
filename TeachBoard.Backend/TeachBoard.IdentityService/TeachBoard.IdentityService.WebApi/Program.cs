@@ -1,12 +1,14 @@
-using System.Net.Mime;
+using System.Net;
 using System.Reflection;
 using System.Text.Json;
 using TeachBoard.IdentityService.Application;
 using TeachBoard.IdentityService.Application.Mappings;
+using TeachBoard.IdentityService.Domain.Enums;
 using TeachBoard.IdentityService.Persistence;
 using TeachBoard.IdentityService.WebApi;
+using TeachBoard.IdentityService.WebApi.ActionResults;
 using TeachBoard.IdentityService.WebApi.Middleware;
-using TeachBoard.IdentityService.WebApi.Models.Validation;
+using TeachBoard.IdentityService.WebApi.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,14 +37,20 @@ builder.Services.AddControllers()
         // lowercase for json keys
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+        
+        // UserRole enum to string converter
+        options.JsonSerializerOptions.Converters.Add(new CustomJsonStringEnumConverter<UserRole>());
     })
     .ConfigureApiBehaviorOptions(options =>
     {
-        // custom validation error response
+        // adding validation error and 422 http to WebApiResponse while model state is not valid
         options.InvalidModelStateResponseFactory = context =>
         {
-            var result = new ValidationFailedResult(context.ModelState);
-            result.ContentTypes.Add(MediaTypeNames.Application.Json);
+            var result = new WebApiResult
+            {
+                Error = new ValidationResultModel(context.ModelState),
+                StatusCode = HttpStatusCode.UnprocessableEntity
+            };
 
             return result;
         };
@@ -98,9 +106,3 @@ app.UseCors("AllowAll");
 app.MapControllers();
 
 app.Run();
-
-
-// For intergration tests
-public partial class Program
-{
-};
