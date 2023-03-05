@@ -26,15 +26,17 @@ public class AuthController : ControllerBase
     private readonly JwtProvider _jwtProvider;
 
     private readonly JwtConfiguration _jwtConfiguration;
+    private readonly CookieConfiguration _cookieConfiguration;
 
     public AuthController(IMapper mapper, IMediator mediator, CookieProvider cookieProvider, JwtProvider jwtProvider,
-        JwtConfiguration jwtConfiguration)
+        JwtConfiguration jwtConfiguration, CookieConfiguration cookieConfiguration)
     {
         _mapper = mapper;
         _mediator = mediator;
         _cookieProvider = cookieProvider;
         _jwtProvider = jwtProvider;
         _jwtConfiguration = jwtConfiguration;
+        _cookieConfiguration = cookieConfiguration;
     }
 
     /// <summary>
@@ -146,7 +148,7 @@ public class AuthController : ControllerBase
         await _mediator.Send(deleteCommand);
 
         // delete cookie
-        Response.Cookies.Delete("TeachBoard-Refresh-Token");
+        Response.Cookies.Delete(_cookieConfiguration.RefreshCookieName);
 
         return new WebApiResult();
     }
