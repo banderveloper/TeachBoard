@@ -24,17 +24,16 @@ public class CreateGroupCommandHandler : IRequestHandler<CreateGroupCommand, Gro
 
     public async Task<Group> Handle(CreateGroupCommand request, CancellationToken cancellationToken)
     {
-        request.Name = request.Name.Trim().Normalize();
-
         var existingGroup =
-            await _context.Groups.FirstOrDefaultAsync(g => g.Name.ToLower() == request.Name.ToLower(),
+            await _context.Groups.FirstOrDefaultAsync(g => string.Equals(g.Name.ToLower(), request.Name.ToLower()),
                 cancellationToken);
 
         if (existingGroup is not null)
-            throw new AlreadyExistsException
+            throw new ExpectedApiException
             {
-                Error = "group_already_exists",
-                ErrorDescription = $"Group with name {request.Name} already exists",
+                ErrorCode = "group_already_exists",
+                PublicErrorMessage = "Group with given name already exists",
+                LogErrorMessage = $"CreateGroup command error. Group with name {request.Name} already exists",
                 ReasonField = "name"
             };
 

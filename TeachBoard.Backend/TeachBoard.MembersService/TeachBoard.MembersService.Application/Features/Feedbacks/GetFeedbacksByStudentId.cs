@@ -1,17 +1,17 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using TeachBoard.MembersService.Application.Exceptions;
 using TeachBoard.MembersService.Application.Interfaces;
+using TeachBoard.MembersService.Domain.Entities;
 
 namespace TeachBoard.MembersService.Application.Features.Feedbacks;
 
 // Query
-public class GetFeedbacksByStudentIdQuery : IRequest<FeedbacksListModel>
+public class GetFeedbacksByStudentIdQuery : IRequest<IList<Feedback>>
 {
     public int StudentId { get; set; }
 }
 
-public class GetFeedbacksByStudentIdQueryHandler : IRequestHandler<GetFeedbacksByStudentIdQuery, FeedbacksListModel>
+public class GetFeedbacksByStudentIdQueryHandler : IRequestHandler<GetFeedbacksByStudentIdQuery, IList<Feedback>>
 {
     private readonly IApplicationDbContext _context;
 
@@ -20,21 +20,13 @@ public class GetFeedbacksByStudentIdQueryHandler : IRequestHandler<GetFeedbacksB
         _context = context;
     }
 
-    public async Task<FeedbacksListModel> Handle(GetFeedbacksByStudentIdQuery request,
+    public async Task<IList<Feedback>> Handle(GetFeedbacksByStudentIdQuery request,
         CancellationToken cancellationToken)
     {
         var feedbacks = await _context.Feedbacks
             .Where(f => f.StudentId == request.StudentId)
             .ToListAsync(cancellationToken);
 
-        if (feedbacks.Count == 0)
-            throw new NotFoundException
-            {
-                Error = "feedbacks_not_found",
-                ErrorDescription = $"Feedbacks with student id {request.StudentId} not found",
-                ReasonField = "studentId"
-            };
-
-        return new FeedbacksListModel { Feedbacks = feedbacks };
+        return feedbacks;
     }
 }

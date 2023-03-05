@@ -6,13 +6,13 @@ using TeachBoard.MembersService.Domain.Entities;
 namespace TeachBoard.MembersService.Application.Features.Groups;
 
 // Query
-public class GetGroupByIdQuery : IRequest<Group>
+public class GetGroupByIdQuery : IRequest<Group?>
 {
     public int GroupId { get; set; }
 }
 
 // Handler
-public class GetGroupByIdQueryHandler : IRequestHandler<GetGroupByIdQuery, Group>
+public class GetGroupByIdQueryHandler : IRequestHandler<GetGroupByIdQuery, Group?>
 {
     private readonly IApplicationDbContext _context;
 
@@ -21,18 +21,10 @@ public class GetGroupByIdQueryHandler : IRequestHandler<GetGroupByIdQuery, Group
         _context = context;
     }
 
-    public async Task<Group> Handle(GetGroupByIdQuery request, CancellationToken cancellationToken)
+    public async Task<Group?> Handle(GetGroupByIdQuery request, CancellationToken cancellationToken)
     {
-        var group = await _context.Groups.FindAsync(request.GroupId, cancellationToken);
-
-        if (group is null)
-            throw new NotFoundException
-            {
-                Error = "group_not_found",
-                ErrorDescription = $"Group with id {request.GroupId} not found",
-                ReasonField = "id"
-            };
-
+        var group = await _context.Groups.FindAsync(new object[] { request.GroupId }, cancellationToken);
+        
         return group;
     }
 }

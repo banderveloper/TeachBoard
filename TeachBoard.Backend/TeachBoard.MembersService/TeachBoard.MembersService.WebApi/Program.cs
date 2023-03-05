@@ -1,4 +1,4 @@
-using System.Net.Mime;
+using System.Net;
 using System.Text.Json;
 using System.Reflection;
 using Microsoft.Extensions.Options;
@@ -6,8 +6,11 @@ using TeachBoard.MembersService.Application;
 using TeachBoard.MembersService.Persistence;
 using TeachBoard.MembersService.WebApi.Middleware;
 using TeachBoard.MembersService.Application.Mappings;
-using TeachBoard.MembersService.WebApi.Models.Validation;
 using TeachBoard.MembersService.Application.Configurations;
+using TeachBoard.MembersService.Domain.Enums;
+using TeachBoard.MembersService.WebApi;
+using TeachBoard.MembersService.WebApi.ActionResults;
+using TeachBoard.MembersService.WebApi.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,14 +41,20 @@ builder.Services.AddControllers()
         // lowercase for json keys
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+        
+        // FeedbackDirection enum to string converter
+        options.JsonSerializerOptions.Converters.Add(new CustomJsonStringEnumConverter<FeedbackDirection>());
     })
     .ConfigureApiBehaviorOptions(options =>
     {
-        // custom validation error response
+        // adding validation error and 422 http to WebApiResponse while model state is not valid
         options.InvalidModelStateResponseFactory = context =>
         {
-            var result = new ValidationFailedResult(context.ModelState);
-            result.ContentTypes.Add(MediaTypeNames.Application.Json);
+            var result = new WebApiResult
+            {
+                Error = new ValidationResultModel(context.ModelState),
+                StatusCode = HttpStatusCode.UnprocessableEntity
+            };
 
             return result;
         };
@@ -101,9 +110,3 @@ app.UseCors("AllowAll");
 app.MapControllers();
 
 app.Run();
-
-
-// for integration tests
-public partial class Program
-{
-}

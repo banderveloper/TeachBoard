@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace TeachBoard.IdentityService.WebApi.ActionResults;
+namespace TeachBoard.MembersService.WebApi.ActionResults;
 
 /// <summary>
 /// Unified response model with nullable data and error, returned in each point

@@ -29,11 +29,11 @@ public class CreateTeacherCommandHandler : IRequestHandler<CreateTeacherCommand,
             .FirstOrDefaultAsync(t => t.UserId == request.UserId, cancellationToken);
 
         if (existingTeacher is not null)
-            throw new AlreadyExistsException
+            throw new ExpectedApiException
             {
-                Error = "teacher_already_exists",
-                ErrorDescription = $"Teacher with user id {request.UserId} already exists",
-                ReasonField = "userId"
+                ErrorCode = "teacher_already_exists",
+                PublicErrorMessage = "One teacher is already bound to given user profile",
+                LogErrorMessage = $"CreateTeacher command error. Teacher with user id {request.UserId} already exists"
             };
         
         // if ok - create

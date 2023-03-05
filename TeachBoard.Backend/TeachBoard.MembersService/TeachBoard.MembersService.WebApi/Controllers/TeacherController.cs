@@ -1,15 +1,13 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using TeachBoard.MembersService.Application.Exceptions;
 using TeachBoard.MembersService.Application.Features.Teachers;
-using TeachBoard.MembersService.Application.Features.Teachers.Common;
-using TeachBoard.MembersService.Application.Validation;
 using TeachBoard.MembersService.Domain.Entities;
+using TeachBoard.MembersService.WebApi.ActionResults;
 using TeachBoard.MembersService.WebApi.Models.Teacher;
+using TeachBoard.MembersService.WebApi.Validation;
 
 namespace TeachBoard.MembersService.WebApi.Controllers;
 
-[ValidateModel]
 [ApiController]
 [Route("teachers")]
 [Produces("application/json")]
@@ -27,68 +25,60 @@ public class TeacherController : ControllerBase
     /// </summary>
     /// <param name="id">Teacher id</param>
     /// <response code="200">Success. Teacher returns.</response>
-    /// <response code="404">Teacher with given id not found (teacher_not_found)</response>
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(Teacher), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Student>> GetById(int id)
+    public async Task<ActionResult<Teacher>> GetById(int id)
     {
         var query = new GetTeacherByIdQuery { TeacherId = id };
         var teacher = await _mediator.Send(query);
 
-        return Ok(teacher);
+        return new WebApiResult(teacher);
     }
 
     /// <summary>
     /// Create teacher
     /// </summary>
-    /// <param name="model">Teacher creation model</param>
-    /// <response code="200">Success. Teacher created</response>
-    /// <response code="409">Teacher with given user id already exists (teacher_already_exists)</response>
+    /// <param name="model">New teacher data</param>
+    /// <response code="200">Success / teacher_already_exists</response>
+    /// <response code="422">Invalid model</response>
     [HttpPost]
     [ProducesResponseType(typeof(Teacher), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<Teacher>> Create([FromBody] CreateTeacherRequestModel model)
     {
-        if (!ModelState.IsValid)
-            return UnprocessableEntity(model);
-
         var command = new CreateTeacherCommand { UserId = model.UserId };
         var teacher = await _mediator.Send(command);
 
-        return teacher;
+        return new WebApiResult(teacher);
     }
 
     /// <summary>
     /// Get all teachers
     /// </summary>
-    /// <response code="200">Success. Teachers returns.</response>
-    /// <response code="404">Teachers not found (teachers_not_found)</response>
+    /// <response code="200">Success</response>
     [HttpGet]
-    [ProducesResponseType(typeof(TeachersListModel), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<TeachersListModel>> GetAll()
+    [ProducesResponseType(typeof(IList<Teacher>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IList<Teacher>>> GetAll()
     {
         var query = new GetAllTeachersQuery();
         var teacher = await _mediator.Send(query);
 
-        return Ok(teacher);
+        return new WebApiResult(teacher);
     }
 
     /// <summary>
     /// Delete teacher by user id
     /// </summary>
-    /// <response code="200">Success. Teacher deleted</response>
-    /// <response code="404">Teacher not found (teacher_not_found)</response>
+    /// <response code="200">Success / teacher_not_found</response>
     [HttpDelete("by-user/{userId:int}")]
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteByUserId(int userId)
     {
+        var command = new DeleteTeacherByUserIdCommand { UserId = userId };
         // Delete by id
-        await _mediator.Send(new DeleteTeacherByUserIdCommand { UserId = userId });
+        await _mediator.Send(command);
 
-        return Ok();
+        return new WebApiResult();
     }
 
     /// <summary>
@@ -96,15 +86,13 @@ public class TeacherController : ControllerBase
     /// </summary>
     /// <param name="teacherId">List of teachers ids</param>
     /// <response code="200">Success. Teachers returned</response>
-    /// <response code="404">Teachers with given id not found (teachers_not_found)</response>
     [HttpGet("by-ids")]
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<TeachersListModel>> GetTeachersByIds([FromQuery] List<int> teacherId)
+    public async Task<ActionResult<IList<Teacher>>> GetTeachersByIds([FromQuery] List<int> teacherId)
     {
         var query = new GetTeachersByIdsQuery { Ids = teacherId };
         var teachers = await _mediator.Send(query);
 
-        return teachers;
+        return new WebApiResult(teachers);
     }
 }

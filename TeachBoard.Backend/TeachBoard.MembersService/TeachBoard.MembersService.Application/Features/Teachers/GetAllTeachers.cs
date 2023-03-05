@@ -1,18 +1,17 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using TeachBoard.MembersService.Application.Exceptions;
-using TeachBoard.MembersService.Application.Features.Teachers.Common;
 using TeachBoard.MembersService.Application.Interfaces;
+using TeachBoard.MembersService.Domain.Entities;
 
 namespace TeachBoard.MembersService.Application.Features.Teachers;
 
 // Query
-public class GetAllTeachersQuery : IRequest<TeachersListModel>
+public class GetAllTeachersQuery : IRequest<IList<Teacher>>
 {
 }
 
 // Handler
-public class GetAllTeachersQueryHandler : IRequestHandler<GetAllTeachersQuery, TeachersListModel>
+public class GetAllTeachersQueryHandler : IRequestHandler<GetAllTeachersQuery, IList<Teacher>>
 {
     private readonly IApplicationDbContext _context;
 
@@ -21,20 +20,10 @@ public class GetAllTeachersQueryHandler : IRequestHandler<GetAllTeachersQuery, T
         _context = context;
     }
 
-    public async Task<TeachersListModel> Handle(GetAllTeachersQuery request, CancellationToken cancellationToken)
+    public async Task<IList<Teacher>> Handle(GetAllTeachersQuery request, CancellationToken cancellationToken)
     {
         var teachers = await _context.Teachers.ToListAsync(cancellationToken);
 
-        if (teachers.Count == 0)
-            throw new NotFoundException
-            {
-                Error = "teachers_not_found",
-                ErrorDescription = "Teachers not found"
-            };
-
-        return new TeachersListModel
-        {
-            Teachers = teachers
-        };
+        return teachers;
     }
 }

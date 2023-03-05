@@ -1,20 +1,18 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using TeachBoard.MembersService.Application.Exceptions;
-using TeachBoard.MembersService.Application.Features.Students.Common;
 using TeachBoard.MembersService.Application.Interfaces;
 using TeachBoard.MembersService.Domain.Entities;
 
 namespace TeachBoard.MembersService.Application.Features.Students;
 
 // Query
-public class GetStudentsByGroupIdQuery : IRequest<StudentsListModel>
+public class GetStudentsByGroupIdQuery : IRequest<IList<Student>>
 {
     public int GroupId { get; set; }
 }
 
 // Handler
-public class GetStudentsByGroupIdQueryHandler : IRequestHandler<GetStudentsByGroupIdQuery, StudentsListModel>
+public class GetStudentsByGroupIdQueryHandler : IRequestHandler<GetStudentsByGroupIdQuery, IList<Student>>
 {
     private readonly IApplicationDbContext _context;
 
@@ -23,21 +21,13 @@ public class GetStudentsByGroupIdQueryHandler : IRequestHandler<GetStudentsByGro
         _context = context;
     }
 
-    public async Task<StudentsListModel> Handle(GetStudentsByGroupIdQuery request, CancellationToken cancellationToken)
+    public async Task<IList<Student>> Handle(GetStudentsByGroupIdQuery request, CancellationToken cancellationToken)
     {
         var students = await _context.Students
             .Where(s => s.GroupId == request.GroupId)
             .ToListAsync(cancellationToken);
 
-        if (students.Count == 0)
-            throw new NotFoundException
-            {
-                Error = "students_not_found",
-                ErrorDescription = $"Students with group id {request.GroupId} not found",
-                ReasonField = "groupId"
-            };
-        
-        return new StudentsListModel { Students = students };
+        return students;
     }
 }
 
