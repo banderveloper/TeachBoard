@@ -3,8 +3,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.IdentityService.Application.CQRS.Commands;
 using TeachBoard.IdentityService.Application.CQRS.Queries;
-using TeachBoard.IdentityService.Application.Exceptions;
-using TeachBoard.IdentityService.Domain.Entities;
 using TeachBoard.IdentityService.WebApi.ActionResults;
 using TeachBoard.IdentityService.WebApi.Models.User;
 using TeachBoard.IdentityService.WebApi.Validation;
