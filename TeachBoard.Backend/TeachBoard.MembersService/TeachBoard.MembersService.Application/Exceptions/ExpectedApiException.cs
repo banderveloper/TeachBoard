@@ -20,14 +20,12 @@ public interface IExpectedApiException
     /// Public error message, sent to client
     /// </summary>
     /// <example>User with given username already exists</example>
-    [JsonPropertyName("message")]
     public string? PublicErrorMessage { get; set; }
 
     /// <summary>
     /// Private error message for logger
     /// </summary>
     /// <example>User with username 'banderveloper' already exists</example>
-    [JsonIgnore]
     public string? LogErrorMessage { get; set; }
 }
 

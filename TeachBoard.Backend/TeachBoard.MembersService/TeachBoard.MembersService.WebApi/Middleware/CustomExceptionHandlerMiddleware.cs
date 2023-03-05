@@ -41,7 +41,7 @@ public class CustomExceptionHandlerMiddleware
                 {
                     expectedApiException.ErrorCode,
                     expectedApiException.ReasonField,
-                    expectedApiException.PublicErrorMessage
+                    message = expectedApiException.PublicErrorMessage
                 };
                 break;
 
