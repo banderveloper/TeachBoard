@@ -2,16 +2,14 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.MembersService.Application.Features.Feedbacks;
-using TeachBoard.MembersService.Application.Validation;
 using TeachBoard.MembersService.Domain.Entities;
 using TeachBoard.MembersService.Domain.Enums;
 using TeachBoard.MembersService.WebApi.ActionResults;
 using TeachBoard.MembersService.WebApi.Models.Feedback;
-using TeachBoard.MembersService.WebApi.Models.Validation;
+using TeachBoard.MembersService.WebApi.Validation;
 
 namespace TeachBoard.MembersService.WebApi.Controllers;
 
-[ValidateModel]
 [ApiController]
 [Route("feedbacks")]
 [Produces("application/json")]

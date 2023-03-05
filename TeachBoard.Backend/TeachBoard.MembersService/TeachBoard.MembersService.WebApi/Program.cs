@@ -6,11 +6,11 @@ using TeachBoard.MembersService.Application;
 using TeachBoard.MembersService.Persistence;
 using TeachBoard.MembersService.WebApi.Middleware;
 using TeachBoard.MembersService.Application.Mappings;
-using TeachBoard.MembersService.WebApi.Models.Validation;
 using TeachBoard.MembersService.Application.Configurations;
 using TeachBoard.MembersService.Domain.Enums;
 using TeachBoard.MembersService.WebApi;
 using TeachBoard.MembersService.WebApi.ActionResults;
+using TeachBoard.MembersService.WebApi.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
 
