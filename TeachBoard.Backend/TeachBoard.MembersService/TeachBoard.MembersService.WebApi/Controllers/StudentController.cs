@@ -6,6 +6,7 @@ using TeachBoard.MembersService.Application.Features.Students;
 using TeachBoard.MembersService.Application.Features.Students.Common;
 using TeachBoard.MembersService.Application.Validation;
 using TeachBoard.MembersService.Domain.Entities;
+using TeachBoard.MembersService.WebApi.ActionResults;
 using TeachBoard.MembersService.WebApi.Models.Student;
 
 namespace TeachBoard.MembersService.WebApi.Controllers;
@@ -39,7 +40,7 @@ public class StudentController : ControllerBase
         var query = new GetStudentByIdQuery { StudentId = id };
         var student = await _mediator.Send(query);
 
-        return Ok(student);
+        return new WebApiResult(student);
     }
 
     /// <summary>
@@ -56,7 +57,7 @@ public class StudentController : ControllerBase
         var query = new GetStudentsByGroupIdQuery { GroupId = groupId };
         var students = await _mediator.Send(query);
 
-        return Ok(students);
+        return new WebApiResult(students);
     }
 
     /// <summary>
@@ -78,7 +79,7 @@ public class StudentController : ControllerBase
         var command = new CreateStudentCommand { GroupId = model.GroupId, UserId = model.UserId };
         var student = await _mediator.Send(command);
 
-        return student;
+        return new WebApiResult(student);
     }
 
     /// <summary>
@@ -94,7 +95,7 @@ public class StudentController : ControllerBase
         // Delete by id
         await _mediator.Send(new DeleteStudentByUserIdCommand { UserId = userId });
 
-        return Ok();
+        return new WebApiResult();
     }
 
     /// <summary>
@@ -111,7 +112,7 @@ public class StudentController : ControllerBase
         var query = new GetStudentGroupMembersByStudentIdQuery { StudentId = studentId };
         var students = await _mediator.Send(query);
 
-        return Ok(students);
+        return new WebApiResult(students);
     }
 
     /// <summary>
@@ -128,7 +129,7 @@ public class StudentController : ControllerBase
         var query = new GetStudentGroupMembersByUserIdQuery { UserId = userId };
         var students = await _mediator.Send(query);
 
-        return Ok(students);
+        return new WebApiResult(students);
     }
 
     /// <summary>
@@ -145,7 +146,7 @@ public class StudentController : ControllerBase
         var query = new GetStudentByUserIdQuery { UserId = userId };
         var student = await _mediator.Send(query);
 
-        return student;
+        return new WebApiResult(student);
     }
 
     /// <summary>
@@ -166,6 +167,6 @@ public class StudentController : ControllerBase
         var command = _mapper.Map<SetStudentGroupCommand>(model);
         await _mediator.Send(command);
 
-        return Ok();
+        return new WebApiResult();
     }
 }

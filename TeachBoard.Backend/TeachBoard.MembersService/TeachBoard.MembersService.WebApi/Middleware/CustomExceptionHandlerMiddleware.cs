@@ -1,15 +1,20 @@
 ﻿using System.Net;
-using TeachBoard.MembersService.Application.Exceptions;
+using Microsoft.AspNetCore.Mvc;
+using TeachBoard.MembersService.WebApi.ActionResults;
 
 namespace TeachBoard.MembersService.WebApi.Middleware;
 
 public class CustomExceptionHandlerMiddleware
 {
     private readonly RequestDelegate _next;
+    private readonly ILogger<CustomExceptionHandlerMiddleware> _logger;
 
-    public CustomExceptionHandlerMiddleware(RequestDelegate next)
-        => _next = next;
-    
+    public CustomExceptionHandlerMiddleware(RequestDelegate next, ILogger<CustomExceptionHandlerMiddleware> logger)
+    {
+        _next = next;
+        _logger = logger;
+    }
+
     public async Task InvokeAsync(HttpContext context)
     {
         try
@@ -22,36 +27,42 @@ public class CustomExceptionHandlerMiddleware
         }
     }
 
-    private Task HandleExceptionAsync(HttpContext context, Exception exception)
+    private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
-        var statusCode = HttpStatusCode.InternalServerError;
-        IApiException? result = null;
+        context.Response.ContentType = "application/json";
+        var response = new WebApiResult();
 
         switch (exception)
         {
-            case NotFoundException notFoundException:
-                statusCode = HttpStatusCode.NotFound;
-                result = notFoundException;
-                break;
-            case AlreadyExistsException alreadyExistsException:
-                statusCode = HttpStatusCode.Conflict;
-                result = alreadyExistsException;
-                break;
+            // case IExpectedApiException expectedApiException:
+            //     response.Error = new
+            //     {
+            //         expectedApiException.ErrorCode,
+            //         expectedApiException.ReasonField,
+            //         expectedApiException.PublicErrorMessage
+            //     };
+            //     break;
+            //
+            // case INotAcceptableRequestException notAcceptableRequestException:
+            //     response.StatusCode = HttpStatusCode.NotAcceptable;
+            //     response.Error = new
+            //     {
+            //         notAcceptableRequestException.ErrorCode
+            //     };
+            //     break;
+
             default:
-                Console.WriteLine(exception);
+                response.Error = new { error = "unknown_error" };
+                response.StatusCode = HttpStatusCode.InternalServerError;
+
+                _logger.LogError(exception.ToString());
                 break;
         }
 
-        context.Response.ContentType = "application/json";
-        context.Response.StatusCode = (int)statusCode;
-
-        return result is not null
-            ? context.Response.WriteAsJsonAsync(result)
-            : context.Response.WriteAsJsonAsync(new
-            {
-                error = "unknown_error",
-                errorDescription = "Unknown server error"
-            });
+        await response.ExecuteResultAsync(new ActionContext
+        {
+            HttpContext = context
+        });
     }
 }
 

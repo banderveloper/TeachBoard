@@ -6,6 +6,7 @@ using TeachBoard.MembersService.Application.Features.Feedbacks;
 using TeachBoard.MembersService.Application.Validation;
 using TeachBoard.MembersService.Domain.Entities;
 using TeachBoard.MembersService.Domain.Enums;
+using TeachBoard.MembersService.WebApi.ActionResults;
 using TeachBoard.MembersService.WebApi.Models.Feedback;
 
 namespace TeachBoard.MembersService.WebApi.Controllers;
@@ -38,7 +39,7 @@ public class FeedbackController : ControllerBase
         var query = new GetAllFeedbacksByDirectionQuery { Direction = FeedbackDirection.TeacherToStudent };
         var feedbacksModel = await _mediator.Send(query);
 
-        return Ok(feedbacksModel);
+        return new WebApiResult(feedbacksModel);
     }
 
     /// <summary>
@@ -54,7 +55,7 @@ public class FeedbackController : ControllerBase
         var query = new GetAllFeedbacksByDirectionQuery { Direction = FeedbackDirection.StudentToTeacher };
         var feedbacksModel = await _mediator.Send(query);
 
-        return Ok(feedbacksModel);
+        return new WebApiResult(feedbacksModel);
     }
 
     /// <summary>
@@ -76,7 +77,7 @@ public class FeedbackController : ControllerBase
 
         var feedback = await _mediator.Send(command);
 
-        return Ok(feedback);
+        return new WebApiResult(feedback);
     }
 
     /// <summary>
@@ -98,7 +99,7 @@ public class FeedbackController : ControllerBase
 
         var feedback = await _mediator.Send(command);
 
-        return Ok(feedback);
+        return new WebApiResult(feedback);
     }
 
     /// <summary>
@@ -113,7 +114,7 @@ public class FeedbackController : ControllerBase
     {
         var feedbacksModel = await _mediator.Send(new GetFeedbacksByStudentIdQuery { StudentId = studentId });
 
-        return Ok(feedbacksModel);
+        return new WebApiResult(feedbacksModel);
     }
 
     /// <summary>
@@ -128,6 +129,6 @@ public class FeedbackController : ControllerBase
     {
         var feedbacksModel = await _mediator.Send(new GetFeedbacksByTeacherIdQuery { TeacherId = teacherId });
 
-        return Ok(feedbacksModel);
+        return new WebApiResult(feedbacksModel);
     }
 }

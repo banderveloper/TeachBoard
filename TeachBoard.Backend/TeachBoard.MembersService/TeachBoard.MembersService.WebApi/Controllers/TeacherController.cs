@@ -5,6 +5,7 @@ using TeachBoard.MembersService.Application.Features.Teachers;
 using TeachBoard.MembersService.Application.Features.Teachers.Common;
 using TeachBoard.MembersService.Application.Validation;
 using TeachBoard.MembersService.Domain.Entities;
+using TeachBoard.MembersService.WebApi.ActionResults;
 using TeachBoard.MembersService.WebApi.Models.Teacher;
 
 namespace TeachBoard.MembersService.WebApi.Controllers;
@@ -36,7 +37,7 @@ public class TeacherController : ControllerBase
         var query = new GetTeacherByIdQuery { TeacherId = id };
         var teacher = await _mediator.Send(query);
 
-        return Ok(teacher);
+        return new WebApiResult(teacher);
     }
 
     /// <summary>
@@ -56,7 +57,7 @@ public class TeacherController : ControllerBase
         var command = new CreateTeacherCommand { UserId = model.UserId };
         var teacher = await _mediator.Send(command);
 
-        return teacher;
+        return new WebApiResult(teacher);
     }
 
     /// <summary>
@@ -72,7 +73,7 @@ public class TeacherController : ControllerBase
         var query = new GetAllTeachersQuery();
         var teacher = await _mediator.Send(query);
 
-        return Ok(teacher);
+        return new WebApiResult(teacher);
     }
 
     /// <summary>
@@ -88,7 +89,7 @@ public class TeacherController : ControllerBase
         // Delete by id
         await _mediator.Send(new DeleteTeacherByUserIdCommand { UserId = userId });
 
-        return Ok();
+        return new WebApiResult();
     }
 
     /// <summary>
@@ -105,6 +106,6 @@ public class TeacherController : ControllerBase
         var query = new GetTeachersByIdsQuery { Ids = teacherId };
         var teachers = await _mediator.Send(query);
 
-        return teachers;
+        return new WebApiResult(teachers);
     }
 }

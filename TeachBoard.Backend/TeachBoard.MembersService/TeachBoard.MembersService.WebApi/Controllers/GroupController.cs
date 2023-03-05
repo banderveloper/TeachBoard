@@ -6,6 +6,7 @@ using TeachBoard.MembersService.Application.Features.Groups;
 using TeachBoard.MembersService.Application.Features.Students;
 using TeachBoard.MembersService.Application.Validation;
 using TeachBoard.MembersService.Domain.Entities;
+using TeachBoard.MembersService.WebApi.ActionResults;
 using TeachBoard.MembersService.WebApi.Models.Group;
 
 namespace TeachBoard.MembersService.WebApi.Controllers;
@@ -38,7 +39,7 @@ public class GroupController : ControllerBase
         var query = new GetAllGroupsQuery();
         var groupsModel = await _mediator.Send(query);
 
-        return Ok(groupsModel);
+        return new WebApiResult(groupsModel);
     }
 
     /// <summary>
@@ -54,7 +55,7 @@ public class GroupController : ControllerBase
         var query = new GetGroupByIdQuery { GroupId = id };
         var group = await _mediator.Send(query);
 
-        return Ok(group);
+        return new WebApiResult(group);
     }
 
     /// <summary>
@@ -70,7 +71,7 @@ public class GroupController : ControllerBase
         var query = new GetGroupByNameQuery { GroupName = name };
         var group = await _mediator.Send(query);
 
-        return Ok(group);
+        return new WebApiResult(group);
     }
 
     /// <summary>
@@ -90,7 +91,7 @@ public class GroupController : ControllerBase
         var command = new CreateGroupCommand { Name = model.Name };
         var group = await _mediator.Send(command);
 
-        return Ok(group);
+        return new WebApiResult(group);
     }
     
     /// <summary>
@@ -107,6 +108,6 @@ public class GroupController : ControllerBase
         var query = new GetStudentGroupByUserIdQuery { UserId = userId };
         var group = await _mediator.Send(query);
 
-        return group;
+        return new WebApiResult(group);
     }
 }

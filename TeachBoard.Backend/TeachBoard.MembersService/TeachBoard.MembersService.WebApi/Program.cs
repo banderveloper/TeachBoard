@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Mime;
 using System.Text.Json;
 using System.Reflection;
@@ -8,6 +9,7 @@ using TeachBoard.MembersService.WebApi.Middleware;
 using TeachBoard.MembersService.Application.Mappings;
 using TeachBoard.MembersService.WebApi.Models.Validation;
 using TeachBoard.MembersService.Application.Configurations;
+using TeachBoard.MembersService.WebApi.ActionResults;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,11 +43,14 @@ builder.Services.AddControllers()
     })
     .ConfigureApiBehaviorOptions(options =>
     {
-        // custom validation error response
+        // adding validation error and 422 http to WebApiResponse while model state is not valid
         options.InvalidModelStateResponseFactory = context =>
         {
-            var result = new ValidationFailedResult(context.ModelState);
-            result.ContentTypes.Add(MediaTypeNames.Application.Json);
+            var result = new WebApiResult
+            {
+                Error = new ValidationResultModel(context.ModelState),
+                StatusCode = HttpStatusCode.UnprocessableEntity
+            };
 
             return result;
         };
