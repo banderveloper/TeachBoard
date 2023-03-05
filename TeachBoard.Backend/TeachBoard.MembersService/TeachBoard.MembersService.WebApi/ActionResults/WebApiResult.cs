@@ -27,7 +27,7 @@ public class WebApiResult : ActionResult
         response.ContentType = "application/json";
         response.StatusCode = (int)StatusCode;
 
-        if (Error is null) Data ??= "{}";
+        if (Error is null) Data ??= new object();
 
         await response.WriteAsJsonAsync(this);
     }
