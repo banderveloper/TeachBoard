@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using TeachBoard.MembersService.Application.Exceptions;
 using TeachBoard.MembersService.Application.Features.Feedbacks;
 using TeachBoard.MembersService.Application.Validation;
 using TeachBoard.MembersService.Domain.Entities;
 using TeachBoard.MembersService.Domain.Enums;
 using TeachBoard.MembersService.WebApi.ActionResults;
 using TeachBoard.MembersService.WebApi.Models.Feedback;
+using TeachBoard.MembersService.WebApi.Models.Validation;
 
 namespace TeachBoard.MembersService.WebApi.Controllers;
 
@@ -29,11 +29,9 @@ public class FeedbackController : ControllerBase
     /// <summary>
     /// Get all teacher to student feedbacks
     /// </summary>
-    /// <response code="200">Success. Feedbacks returns</response>
-    /// <response code="404">Teacher to student feedbacks not found (feedbacks_not_found)</response>
+    /// <response code="200">Success</response>
     [HttpGet("teacher-student")]
     [ProducesResponseType(typeof(IList<Feedback>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IList<Feedback>>> GetAllTeacherToStudentFeedbacks()
     {
         var query = new GetAllFeedbacksByDirectionQuery { Direction = FeedbackDirection.TeacherToStudent };
@@ -46,10 +44,8 @@ public class FeedbackController : ControllerBase
     /// Get all student to teacher feedbacks
     /// </summary>
     /// <response code="200">Success. Feedbacks returns</response>
-    /// <response code="404">Student to teacher feedbacks not found (feedbacks_not_found)</response>
     [HttpGet("student-teacher")]
     [ProducesResponseType(typeof(IList<Feedback>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IList<Feedback>>> GetAllStudentToTeacherFeedbacks()
     {
         var query = new GetAllFeedbacksByDirectionQuery { Direction = FeedbackDirection.StudentToTeacher };
@@ -61,11 +57,12 @@ public class FeedbackController : ControllerBase
     /// <summary>
     /// Create teacher to student feedback
     /// </summary>
-    /// <response code="200">Success. Feedback created and returned.</response>
-    /// <response code="404">Student/teacher by student/teacher id not found (student_not_found) (teacher_not_found)</response>
+    /// <param name="model">Feedback data</param>
+    /// <response code="200">Success / student_not_found / teacher_not_found</response>
+    /// <response code="422">Invalid model</response>
     [HttpPost("teacher-student")]
     [ProducesResponseType(typeof(Feedback), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<Feedback>> CreateTeacherToStudentFeedback(
         [FromBody] CreateFeedbackRequestModel model)
     {
@@ -80,11 +77,12 @@ public class FeedbackController : ControllerBase
     /// <summary>
     /// Create student to teacher feedback
     /// </summary>
-    /// <response code="200">Success. Feedback created and returned.</response>
-    /// <response code="404">Student/teacher by student/teacher id not found (student_not_found) (teacher_not_found)</response>
+    /// <param name="model">Feedback data</param>
+    /// <response code="200">Success / student_not_found / teacher_not_found</response>
+    /// <response code="422">Invalid model</response>
     [HttpPost("student-teacher")]
     [ProducesResponseType(typeof(Feedback), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<Feedback>> CreateStudentToTeacherFeedback(
         [FromBody] CreateFeedbackRequestModel model)
     {
@@ -99,11 +97,10 @@ public class FeedbackController : ControllerBase
     /// <summary>
     /// Get feedbacks by student id
     /// </summary>
-    /// <response code="200">Success. Feedbacks returns</response>
-    /// <response code="404">Feedbacks with given student id not found (feedbacks_not_found)</response>
+    /// <param name="studentId">Student id</param>
+    /// <response code="200">Success</response>
     [HttpGet("by-student/{studentId:int}")]
     [ProducesResponseType(typeof(IList<Feedback>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IList<Feedback>>> GetFeedbacksByStudentId(int studentId)
     {
         var query = new GetFeedbacksByStudentIdQuery { StudentId = studentId };
@@ -115,11 +112,10 @@ public class FeedbackController : ControllerBase
     /// <summary>
     /// Get feedbacks by teacher id
     /// </summary>
-    /// <response code="200">Success. Feedbacks returns</response>
-    /// <response code="404">Feedbacks with given teacher id not found (feedbacks_not_found)</response>
+    /// <param name="teacherId">Teacher id</param>
+    /// <response code="200">Success</response>
     [HttpGet("by-teacher/{teacherId:int}")]
     [ProducesResponseType(typeof(IList<Feedback>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IList<Feedback>>> GetFeedbacksByTeacherId(int teacherId)
     {
         var query = new GetFeedbacksByTeacherIdQuery { TeacherId = teacherId };
