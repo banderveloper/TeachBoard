@@ -1,5 +1,4 @@
 using System.Net;
-using System.Net.Mime;
 using System.Text.Json;
 using System.Reflection;
 using Microsoft.Extensions.Options;
@@ -9,6 +8,8 @@ using TeachBoard.MembersService.WebApi.Middleware;
 using TeachBoard.MembersService.Application.Mappings;
 using TeachBoard.MembersService.WebApi.Models.Validation;
 using TeachBoard.MembersService.Application.Configurations;
+using TeachBoard.MembersService.Domain.Enums;
+using TeachBoard.MembersService.WebApi;
 using TeachBoard.MembersService.WebApi.ActionResults;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -40,6 +41,9 @@ builder.Services.AddControllers()
         // lowercase for json keys
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+        
+        // FeedbackDirection enum to string converter
+        options.JsonSerializerOptions.Converters.Add(new CustomJsonStringEnumConverter<FeedbackDirection>());
     })
     .ConfigureApiBehaviorOptions(options =>
     {
