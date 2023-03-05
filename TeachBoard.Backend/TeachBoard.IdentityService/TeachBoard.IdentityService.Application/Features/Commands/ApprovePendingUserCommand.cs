@@ -35,7 +35,7 @@ public class ApprovePendingUserCommandHandler : IRequestHandler<ApprovePendingUs
         if (pendingUser is null)
             throw new ExpectedApiException
             {
-                ErrorCode = "pending_user_not_found",
+                ErrorCode = ErrorCode.PendingUserNotFound,
                 ReasonField = "registerCode",
                 PublicErrorMessage = "Pending user with given register code does not exists",
                 LogErrorMessage =
@@ -46,7 +46,7 @@ public class ApprovePendingUserCommandHandler : IRequestHandler<ApprovePendingUs
         if (DateTime.Now > pendingUser.ExpiresAt)
             throw new ExpectedApiException
             {
-                ErrorCode = "pending_user_expired",
+                ErrorCode = ErrorCode.PendingUserExpired,
                 PublicErrorMessage = "Pending user registration time expired",
                 LogErrorMessage =
                     $"Approve pending error. Requested pending user expired at [{pendingUser.ExpiresAt.ToUniversalTime()}]"
@@ -62,7 +62,7 @@ public class ApprovePendingUserCommandHandler : IRequestHandler<ApprovePendingUs
         if (userByUsername is not null)
             throw new ExpectedApiException
             {
-                ErrorCode = "user_already_exists",
+                ErrorCode = ErrorCode.UserAlreadyExists,
                 ReasonField = "userName",
                 PublicErrorMessage = "User with given username already exists",
                 LogErrorMessage = $"Approve pending error. Username [{request.UserName}] already exists"

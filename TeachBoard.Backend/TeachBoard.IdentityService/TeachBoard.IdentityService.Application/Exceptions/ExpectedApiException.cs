@@ -5,10 +5,9 @@ namespace TeachBoard.IdentityService.Application.Exceptions;
 public interface IExpectedApiException
 {
     /// <summary>
-    /// String respesentation of error code
+    /// Error code, added to response error model as snake_case_string
     /// </summary>
-    /// <example>username_already_exists</example>
-    public string ErrorCode { get; set; }
+    public ErrorCode ErrorCode { get; set; }
 
     /// <summary>
     /// Model field/property, caused an error
@@ -33,7 +32,7 @@ public interface IExpectedApiException
 
 public class ExpectedApiException : Exception, IExpectedApiException
 {
-    public string ErrorCode { get; set; } = "unknown_error";
+    public ErrorCode ErrorCode { get; set; } = ErrorCode.Unknown;
     public string? ReasonField { get; set; }
     public string? PublicErrorMessage { get; set; }
     public string? LogErrorMessage { get; set; }

@@ -1,5 +1,7 @@
 ﻿using System.Net;
+using System.Runtime.InteropServices.JavaScript;
 using Microsoft.AspNetCore.Mvc;
+using TeachBoard.IdentityService.Application;
 using TeachBoard.IdentityService.Application.Exceptions;
 using TeachBoard.IdentityService.WebApi.ActionResults;
 
@@ -36,11 +38,12 @@ public class CustomExceptionHandlerMiddleware
         switch (exception)
         {
             case IExpectedApiException expectedApiException:
+                response.StatusCode = HttpStatusCode.OK;
                 response.Error = new
                 {
                     expectedApiException.ErrorCode,
                     expectedApiException.ReasonField,
-                    expectedApiException.PublicErrorMessage
+                    message = expectedApiException.PublicErrorMessage
                 };
                 break;
 
@@ -53,7 +56,7 @@ public class CustomExceptionHandlerMiddleware
                 break;
 
             default:
-                response.Error = new { error = "unknown_error" };
+                response.Error = new { error = ErrorCode.Unknown };
                 response.StatusCode = HttpStatusCode.InternalServerError;
 
                 _logger.LogError(exception.ToString());

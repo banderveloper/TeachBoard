@@ -27,11 +27,11 @@ public class CookieProvider
     public Guid GetRefreshTokenFromCookie(HttpRequest request)
     {
         if (!request.Cookies.ContainsKey(_cookieConfiguration.RefreshCookieName))
-            throw new NotAcceptableRequestException { ErrorCode = "cookie_refresh_token_not_passed" };
+            throw new NotAcceptableRequestException { ErrorCode = ErrorCode.CookieRefreshTokenNotPassed };
         
         // Try to extract refresh token from cookie. If it is absent - exception
         if (!request.Cookies.TryGetValue(_cookieConfiguration.RefreshCookieName, out var refreshToken))
-            throw new NotAcceptableRequestException { ErrorCode = "cookie_refresh_token_not_passed" };
+            throw new NotAcceptableRequestException { ErrorCode = ErrorCode.CookieRefreshTokenNotPassed };
 
         return Guid.Parse(refreshToken);
     }

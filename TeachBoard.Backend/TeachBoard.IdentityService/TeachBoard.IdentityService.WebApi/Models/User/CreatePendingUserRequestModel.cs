@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using AutoMapper;
+using TeachBoard.IdentityService.Application.Converters;
 using TeachBoard.IdentityService.Application.Features.Commands;
 using TeachBoard.IdentityService.Application.Mappings;
 using TeachBoard.IdentityService.Domain.Enums;
@@ -9,7 +10,7 @@ namespace TeachBoard.IdentityService.WebApi.Models.User;
 
 public class CreatePendingUserRequestModel : IMappable
 {
-    [JsonConverter(typeof(CustomJsonStringEnumConverter<UserRole>))]
+    [JsonConverter(typeof(JsonStringEnumConverter<UserRole>))]
     public UserRole Role { get; set; } = UserRole.Unspecified;
 
     [Required]

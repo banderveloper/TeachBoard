@@ -32,7 +32,7 @@ public class GetUserByCredentialsQueryHandler : IRequestHandler<GetUserByCredent
         if (user is null)
             throw new ExpectedApiException
             {
-                ErrorCode = "user_not_found",
+                ErrorCode = ErrorCode.UserNotFound,
                 ReasonField = "userName",
                 PublicErrorMessage = "User with given username not found",
                 LogErrorMessage = $"Get user by credentials error. User with username [{request.UserName}] not found"
@@ -42,7 +42,7 @@ public class GetUserByCredentialsQueryHandler : IRequestHandler<GetUserByCredent
         if (request.Password.ToSha256() != user.PasswordHash)
             throw new ExpectedApiException
             {
-                ErrorCode = "user_password_incorrect",
+                ErrorCode = ErrorCode.UserPasswordIncorrect,
                 PublicErrorMessage = "Incorrect password to given user",
                 LogErrorMessage = $"Get user by credentials error. Wrong password to user [{user.UserName}]"
             };

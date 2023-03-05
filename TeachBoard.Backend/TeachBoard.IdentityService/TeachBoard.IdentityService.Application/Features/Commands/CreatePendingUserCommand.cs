@@ -61,7 +61,7 @@ public class CreatePendingUserCommandHandler : IRequestHandler<CreatePendingUser
 
                 throw new ExpectedApiException
                 {
-                    ErrorCode = existingPropertyName + "_already_exists",
+                    ErrorCode = ErrorCode.UserAlreadyExists,
                     ReasonField = existingPropertyName,
                     PublicErrorMessage = $"User with given {existingPropertyName} already exists",
                     LogErrorMessage =

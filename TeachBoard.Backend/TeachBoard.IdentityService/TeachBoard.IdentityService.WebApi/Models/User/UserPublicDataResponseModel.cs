@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using AutoMapper;
+using TeachBoard.IdentityService.Application.Converters;
 using TeachBoard.IdentityService.Application.Mappings;
 using TeachBoard.IdentityService.Domain.Enums;
 
@@ -11,7 +12,7 @@ public class UserPublicDataResponseModel : IMappable
     
     public string UserName { get; set; } = string.Empty;
 
-    [JsonConverter(typeof(CustomJsonStringEnumConverter<UserRole>))]
+    [JsonConverter(typeof(JsonStringEnumConverter<UserRole>))]
     public UserRole Role { get; set; } = UserRole.Unspecified;
     
     public string? FirstName { get; set; }

@@ -33,7 +33,7 @@ public class UpdateRefreshSessionCommandHandler : IRequestHandler<UpdateRefreshS
         if (existingSession is null)
             throw new ExpectedApiException
             {
-                ErrorCode = "session_not_found",
+                ErrorCode = ErrorCode.SessionNotFound,
                 PublicErrorMessage = "Session bound to given token not found",
                 LogErrorMessage = $"Update refresh session error. Refresh token ['{request.RefreshToken}'] not found"
             };

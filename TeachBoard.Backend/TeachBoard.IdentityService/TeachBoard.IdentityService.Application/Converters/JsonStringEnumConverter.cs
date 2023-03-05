@@ -1,11 +1,9 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace TeachBoard.IdentityService.WebApi;
+namespace TeachBoard.IdentityService.Application.Converters;
 
-public class CustomJsonStringEnumConverter<T> : JsonConverter<T> where T : Enum
+public class JsonStringEnumConverter<T> : JsonConverter<T> where T : Enum
 {
     public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {

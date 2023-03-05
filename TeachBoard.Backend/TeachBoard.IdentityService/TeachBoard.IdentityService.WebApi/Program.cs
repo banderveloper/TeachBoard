@@ -2,6 +2,7 @@ using System.Net;
 using System.Reflection;
 using System.Text.Json;
 using TeachBoard.IdentityService.Application;
+using TeachBoard.IdentityService.Application.Converters;
 using TeachBoard.IdentityService.Application.Mappings;
 using TeachBoard.IdentityService.Domain.Enums;
 using TeachBoard.IdentityService.Persistence;
@@ -39,7 +40,10 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
         
         // UserRole enum to string converter
-        options.JsonSerializerOptions.Converters.Add(new CustomJsonStringEnumConverter<UserRole>());
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter<UserRole>());
+
+        // Error code enum to snake_case_string converter
+        options.JsonSerializerOptions.Converters.Add(new SnakeCaseStringEnumConverter<ErrorCode>());
     })
     .ConfigureApiBehaviorOptions(options =>
     {

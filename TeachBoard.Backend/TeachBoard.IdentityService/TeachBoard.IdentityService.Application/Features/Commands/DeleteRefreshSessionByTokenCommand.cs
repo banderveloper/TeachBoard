@@ -28,7 +28,7 @@ public class DeleteRefreshSessionByTokenCommandHandler : IRequestHandler<DeleteR
         if (existingSession is null)
             throw new ExpectedApiException
             {
-                ErrorCode = "session_not_found",
+                ErrorCode = ErrorCode.SessionNotFound,
                 PublicErrorMessage = "Session bound to given token not found",
                 LogErrorMessage =
                     $"Delete refresh session by refresh error. Refresh token ['{request.RefreshToken}'] not found"
