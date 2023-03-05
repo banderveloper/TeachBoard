@@ -4,7 +4,9 @@ using System.Text.Json;
 using Microsoft.Extensions.Options;
 using TeachBoard.EducationService.Application;
 using TeachBoard.EducationService.Application.Configurations;
+using TeachBoard.EducationService.Application.Converters;
 using TeachBoard.EducationService.Application.Mappings;
+using TeachBoard.EducationService.Domain.Enums;
 using TeachBoard.EducationService.Persistence;
 using TeachBoard.EducationService.WebApi.Middleware;
 using TeachBoard.EducationService.WebApi.Models.Validation;
@@ -31,6 +33,10 @@ builder.Services.AddControllers()
         // lowercase for json keys
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+        
+        // models enums to string converter
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter<AttendanceStatus>());
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter<StudentExaminationStatus>());
     })
     .ConfigureApiBehaviorOptions(options =>
     {

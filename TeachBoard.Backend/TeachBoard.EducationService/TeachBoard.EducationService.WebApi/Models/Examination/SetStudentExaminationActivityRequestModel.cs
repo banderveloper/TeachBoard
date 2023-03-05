@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using AutoMapper;
+using TeachBoard.EducationService.Application.Converters;
 using TeachBoard.EducationService.Application.Features.Examination;
 using TeachBoard.EducationService.Application.Mappings;
 using TeachBoard.EducationService.Domain.Enums;
@@ -14,6 +16,7 @@ public class SetStudentExaminationActivityRequestModel : IMappable
     [Required] public int ExaminationId { get; set; }
 
     [Required]
+    [JsonConverter(typeof(JsonStringEnumConverter<StudentExaminationStatus>))]
     public StudentExaminationStatus Status { get; set; }
 
     public void Mapping(Profile profile)
