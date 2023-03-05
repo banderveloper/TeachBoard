@@ -5,9 +5,8 @@ namespace TeachBoard.MembersService.Application.Exceptions;
 public interface IExpectedApiException
 {
     /// <summary>
-    /// String representation of error code
+    /// Exception error code, sent to client in response as snake_case_string
     /// </summary>
-    /// <example>username_already_exists</example>
     public ErrorCode ErrorCode { get; set; }
 
     /// <summary>
@@ -31,7 +30,7 @@ public interface IExpectedApiException
 
 public class ExpectedApiException : Exception, IExpectedApiException
 {
-    public ErrorCode ErrorCode { get; set; }
+    public ErrorCode ErrorCode { get; set; } = ErrorCode.Unknown;
     public string? ReasonField { get; set; }
     public string? PublicErrorMessage { get; set; }
     public string? LogErrorMessage { get; set; }
