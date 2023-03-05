@@ -26,15 +26,7 @@ public class GetFeedbacksByStudentIdQueryHandler : IRequestHandler<GetFeedbacksB
         var feedbacks = await _context.Feedbacks
             .Where(f => f.StudentId == request.StudentId)
             .ToListAsync(cancellationToken);
-
-        if (feedbacks.Count == 0)
-            throw new NotFoundException
-            {
-                Error = "feedbacks_not_found",
-                ErrorDescription = $"Feedbacks with student id {request.StudentId} not found",
-                ReasonField = "studentId"
-            };
-
+        
         return new FeedbacksListModel { Feedbacks = feedbacks };
     }
 }

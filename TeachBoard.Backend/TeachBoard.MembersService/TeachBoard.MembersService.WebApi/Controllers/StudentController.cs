@@ -34,7 +34,7 @@ public class StudentController : ControllerBase
     /// <response code="404">Student with given id not found (student_not_found)</response>
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(Student), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Student>> GetStudentById(int id)
     {
         var query = new GetStudentByIdQuery { StudentId = id };
@@ -51,7 +51,7 @@ public class StudentController : ControllerBase
     /// <response code="404">Students with given group id not found (students_not_found)</response>
     [HttpGet("by-group/{groupId:int}")]
     [ProducesResponseType(typeof(StudentsListModel), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<StudentsListModel>> GetStudentsByGroupId(int groupId)
     {
         var query = new GetStudentsByGroupIdQuery { GroupId = groupId };
@@ -69,8 +69,8 @@ public class StudentController : ControllerBase
     /// <response code="409">Student with given user id already exists (student_already_exists)</response>
     [HttpPost]
     [ProducesResponseType(typeof(Student), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status409Conflict)]
     public async Task<ActionResult<Student>> CreateStudent([FromBody] CreateStudentRequestModel model)
     {
         if (!ModelState.IsValid)
@@ -89,7 +89,7 @@ public class StudentController : ControllerBase
     /// <response code="404">Student not found (student_not_found)</response>
     [HttpDelete("by-user/{userId:int}")]
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteByUserId(int userId)
     {
         // Delete by id
@@ -106,7 +106,7 @@ public class StudentController : ControllerBase
     /// <response code="404">Student with given id not found (student_not_found) / Student does not belong to any group (group_not_found)</response>
     [HttpGet("group-members-by-student/{studentId:int}")]
     [ProducesResponseType(typeof(StudentsListModel), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<StudentsListModel>> GetStudentGroupMembersByStudentId(int studentId)
     {
         var query = new GetStudentGroupMembersByStudentIdQuery { StudentId = studentId };
@@ -123,7 +123,7 @@ public class StudentController : ControllerBase
     /// <response code="404">Student with given user id not found (student_not_found) / Student does not belong to any group (group_not_found)</response>
     [HttpGet("group-members-by-user/{userId:int}")]
     [ProducesResponseType(typeof(Student), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<StudentsListModel>> GetStudentGroupMembersByUserId(int userId)
     {
         var query = new GetStudentGroupMembersByUserIdQuery { UserId = userId };
@@ -140,7 +140,7 @@ public class StudentController : ControllerBase
     /// <response code="404">Student with given user id not found (student_not_found</response>
     [HttpGet("by-user/{userId:int}")]
     [ProducesResponseType(typeof(Student), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Student>> GetStudentByUserId(int userId)
     {
         var query = new GetStudentByUserIdQuery { UserId = userId };

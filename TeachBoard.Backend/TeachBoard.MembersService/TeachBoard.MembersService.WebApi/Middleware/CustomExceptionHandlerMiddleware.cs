@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Mvc;
+using TeachBoard.MembersService.Application.Exceptions;
 using TeachBoard.MembersService.WebApi.ActionResults;
 
 namespace TeachBoard.MembersService.WebApi.Middleware;
@@ -34,22 +35,14 @@ public class CustomExceptionHandlerMiddleware
 
         switch (exception)
         {
-            // case IExpectedApiException expectedApiException:
-            //     response.Error = new
-            //     {
-            //         expectedApiException.ErrorCode,
-            //         expectedApiException.ReasonField,
-            //         expectedApiException.PublicErrorMessage
-            //     };
-            //     break;
-            //
-            // case INotAcceptableRequestException notAcceptableRequestException:
-            //     response.StatusCode = HttpStatusCode.NotAcceptable;
-            //     response.Error = new
-            //     {
-            //         notAcceptableRequestException.ErrorCode
-            //     };
-            //     break;
+            case IExpectedApiException expectedApiException:
+                response.Error = new
+                {
+                    expectedApiException.ErrorCode,
+                    expectedApiException.ReasonField,
+                    expectedApiException.PublicErrorMessage
+                };
+                break;
 
             default:
                 response.Error = new { error = "unknown_error" };

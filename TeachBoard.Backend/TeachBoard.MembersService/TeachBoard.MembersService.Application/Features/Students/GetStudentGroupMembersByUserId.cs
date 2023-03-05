@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using TeachBoard.MembersService.Application.Exceptions;
 using TeachBoard.MembersService.Application.Features.Students.Common;
 using TeachBoard.MembersService.Application.Interfaces;
+using TeachBoard.MembersService.Domain.Entities;
 
 namespace TeachBoard.MembersService.Application.Features.Students;
 
@@ -29,31 +30,11 @@ public class GetStudentGroupMembersByUserIdQueryHandler
                 cancellationToken);
 
         if (studentByUserId is null)
-            throw new NotFoundException
-            {
-                Error = "student_not_found",
-                ErrorDescription = $"Student with user id '{request.UserId}' not found",
-                ReasonField = "userId"
-            };
-
-        if (studentByUserId.GroupId is null)
-            throw new NotFoundException
-            {
-                Error = "group_not_found",
-                ErrorDescription = $"Student with id '{studentByUserId.Id}' does not belong to any group",
-                ReasonField = "groupId"
-            };
+            return new StudentsListModel() { Students = new List<Student>() };
 
         var studentGroupMembers = await _context.Students
             .Where(s => s.GroupId == studentByUserId.GroupId)
             .ToListAsync(cancellationToken);
-
-        if (studentGroupMembers.Count == 0)
-            throw new NotFoundException
-            {
-                Error = "group_members_not_found",
-                ErrorDescription = $"Student with id '{studentByUserId.UserId}' does not have group so-members"
-            };
 
         return new StudentsListModel
         {

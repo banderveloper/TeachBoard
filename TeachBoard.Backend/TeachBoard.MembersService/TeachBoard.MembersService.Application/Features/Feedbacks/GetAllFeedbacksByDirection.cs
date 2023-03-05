@@ -31,17 +31,9 @@ public class
             .Where(f => f.Direction == request.Direction)
             .ToListAsync(cancellationToken);
 
-        if (feedbacks.Count == 0)
-            throw new NotFoundException
-            {
-                Error = "feedbacks_not_found",
-                ErrorDescription = "Feedbacks not found"
-            };
-
         return new FeedbacksListModel
         {
             Feedbacks = feedbacks
         };
     }
 }
-

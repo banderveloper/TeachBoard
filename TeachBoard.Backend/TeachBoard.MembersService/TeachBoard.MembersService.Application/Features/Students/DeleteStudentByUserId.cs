@@ -28,11 +28,11 @@ public class DeleteStudentByUserIdCommandHandler : IRequestHandler<DeleteStudent
             .ToListAsync(cancellationToken);
 
         if (students.Count == 0)
-            throw new NotFoundException
+            throw new ExpectedApiException
             {
-                Error = "student_not_found",
-                ErrorDescription = $"Student with user id {request.UserId} not found",
-                ReasonField = "userId"
+                ErrorCode = "student_not_found",
+                PublicErrorMessage = "Student cannot be deleted because it does not exists",
+                LogErrorMessage = $"DeleteStudentByUserId error. Student with user id {request.UserId} does not exists"
             };
         
         _context.Students.RemoveRange(students);

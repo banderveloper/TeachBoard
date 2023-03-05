@@ -6,13 +6,13 @@ using TeachBoard.MembersService.Domain.Entities;
 namespace TeachBoard.MembersService.Application.Features.Students;
 
 // Query
-public class GetStudentByIdQuery : IRequest<Student>
+public class GetStudentByIdQuery : IRequest<Student?>
 {
     public int StudentId { get; set; }
 }
 
 // Handler
-public class GetStudentByIdQueryHandler : IRequestHandler<GetStudentByIdQuery, Student>
+public class GetStudentByIdQueryHandler : IRequestHandler<GetStudentByIdQuery, Student?>
 {
     private readonly IApplicationDbContext _context;
 
@@ -21,18 +21,10 @@ public class GetStudentByIdQueryHandler : IRequestHandler<GetStudentByIdQuery, S
         _context = context;
     }
 
-    public async Task<Student> Handle(GetStudentByIdQuery request, CancellationToken cancellationToken)
+    public async Task<Student?> Handle(GetStudentByIdQuery request, CancellationToken cancellationToken)
     {
-        var student = await _context.Students.FindAsync(request.StudentId, cancellationToken);
-
-        if (student is null)
-            throw new NotFoundException
-            {
-                Error = "student_not_found",
-                ErrorDescription = $"Student with id {request.StudentId} not found",
-                ReasonField = "id"
-            };
-
+        var student = await _context.Students.FindAsync(new object[] {request.StudentId}, cancellationToken);
+        
         return student;
     }
 }

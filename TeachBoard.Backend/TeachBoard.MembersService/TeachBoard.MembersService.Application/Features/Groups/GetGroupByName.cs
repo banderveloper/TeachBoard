@@ -7,13 +7,13 @@ using TeachBoard.MembersService.Domain.Entities;
 namespace TeachBoard.MembersService.Application.Features.Groups;
 
 // Query
-public class GetGroupByNameQuery : IRequest<Group>
+public class GetGroupByNameQuery : IRequest<Group?>
 {
     public string GroupName { get; set; } = string.Empty;
 }
 
 // Handler
-public class GetGroupByNameQueryHandler : IRequestHandler<GetGroupByNameQuery, Group>
+public class GetGroupByNameQueryHandler : IRequestHandler<GetGroupByNameQuery, Group?>
 {
     private readonly IApplicationDbContext _context;
 
@@ -22,21 +22,11 @@ public class GetGroupByNameQueryHandler : IRequestHandler<GetGroupByNameQuery, G
         _context = context;
     }
 
-    public async Task<Group> Handle(GetGroupByNameQuery request, CancellationToken cancellationToken)
+    public async Task<Group?> Handle(GetGroupByNameQuery request, CancellationToken cancellationToken)
     {
-        request.GroupName = request.GroupName.Trim().Normalize();
-
         var group = await _context.Groups
-            .FirstOrDefaultAsync(g => g.Name.ToLower() == request.GroupName.ToLower(),
+            .FirstOrDefaultAsync(g => string.Equals(g.Name.ToLower(), request.GroupName.ToLower()),
                 cancellationToken);
-
-        if (group is null)
-            throw new NotFoundException
-            {
-                Error = "group_not_found",
-                ErrorDescription = $"Group with name {request.GroupName} not found",
-                ReasonField = "name"
-            };
 
         return group;
     }

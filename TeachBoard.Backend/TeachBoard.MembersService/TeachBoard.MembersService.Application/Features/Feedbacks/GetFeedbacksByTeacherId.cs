@@ -27,14 +27,6 @@ public class GetFeedbacksByTeacherIdQueryHandler : IRequestHandler<GetFeedbacksB
             .Where(f => f.TeacherId == request.TeacherId)
             .ToListAsync(cancellationToken);
 
-        if (feedbacks.Count == 0)
-            throw new NotFoundException
-            {
-                Error = "feedbacks_not_found",
-                ErrorDescription = $"Feedbacks with teacher id {request.TeacherId} not found",
-                ReasonField = "teacherId"
-            };
-
         return new FeedbacksListModel { Feedbacks = feedbacks };
     }
 }

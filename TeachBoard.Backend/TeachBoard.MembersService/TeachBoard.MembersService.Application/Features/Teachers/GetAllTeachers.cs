@@ -25,13 +25,6 @@ public class GetAllTeachersQueryHandler : IRequestHandler<GetAllTeachersQuery, T
     {
         var teachers = await _context.Teachers.ToListAsync(cancellationToken);
 
-        if (teachers.Count == 0)
-            throw new NotFoundException
-            {
-                Error = "teachers_not_found",
-                ErrorDescription = "Teachers not found"
-            };
-
         return new TeachersListModel
         {
             Teachers = teachers

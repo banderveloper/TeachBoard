@@ -26,13 +26,6 @@ public class GetTeachersByIdsQueryHandler : IRequestHandler<GetTeachersByIdsQuer
             .Where(t => request.Ids.Contains(t.Id))
             .ToListAsync(cancellationToken);
 
-        if (teachers.Count == 0)
-            throw new NotFoundException
-            {
-                Error = "teachers_not_found",
-                ErrorDescription = $"Teachers with ids '{string.Join(", ", request.Ids)}' not found"
-            };
-
         return new TeachersListModel { Teachers = teachers };
     }
 }

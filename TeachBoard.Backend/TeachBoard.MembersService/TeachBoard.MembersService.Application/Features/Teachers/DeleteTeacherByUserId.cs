@@ -28,11 +28,11 @@ public class DeleteTeacherByUserIdCommandHandler : IRequestHandler<DeleteTeacher
             .ToListAsync(cancellationToken);
 
         if (teachers.Count == 0)
-            throw new NotFoundException
+            throw new ExpectedApiException
             {
-                Error = "teacher_not_found",
-                ErrorDescription = $"Teacher with user id {request.UserId} not found",
-                ReasonField = "userId"
+                ErrorCode = "teacher_not_found",
+                PublicErrorMessage = "Teacher cannot be deleted because it does not exists",
+                LogErrorMessage = $"DeleteTeacherByUserId error. Teacher with user id {request.UserId} does not exists"
             };
         
         _context.Teachers.RemoveRange(teachers);

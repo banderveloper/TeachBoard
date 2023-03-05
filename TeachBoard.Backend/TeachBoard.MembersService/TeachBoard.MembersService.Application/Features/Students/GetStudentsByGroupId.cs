@@ -28,14 +28,6 @@ public class GetStudentsByGroupIdQueryHandler : IRequestHandler<GetStudentsByGro
         var students = await _context.Students
             .Where(s => s.GroupId == request.GroupId)
             .ToListAsync(cancellationToken);
-
-        if (students.Count == 0)
-            throw new NotFoundException
-            {
-                Error = "students_not_found",
-                ErrorDescription = $"Students with group id {request.GroupId} not found",
-                ReasonField = "groupId"
-            };
         
         return new StudentsListModel { Students = students };
     }

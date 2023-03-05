@@ -31,7 +31,7 @@ public class TeacherController : ControllerBase
     /// <response code="404">Teacher with given id not found (teacher_not_found)</response>
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(Teacher), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Student>> GetById(int id)
     {
         var query = new GetTeacherByIdQuery { TeacherId = id };
@@ -48,7 +48,7 @@ public class TeacherController : ControllerBase
     /// <response code="409">Teacher with given user id already exists (teacher_already_exists)</response>
     [HttpPost]
     [ProducesResponseType(typeof(Teacher), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status409Conflict)]
     public async Task<ActionResult<Teacher>> Create([FromBody] CreateTeacherRequestModel model)
     {
         if (!ModelState.IsValid)
@@ -67,7 +67,7 @@ public class TeacherController : ControllerBase
     /// <response code="404">Teachers not found (teachers_not_found)</response>
     [HttpGet]
     [ProducesResponseType(typeof(TeachersListModel), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<TeachersListModel>> GetAll()
     {
         var query = new GetAllTeachersQuery();
@@ -83,7 +83,7 @@ public class TeacherController : ControllerBase
     /// <response code="404">Teacher not found (teacher_not_found)</response>
     [HttpDelete("by-user/{userId:int}")]
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteByUserId(int userId)
     {
         // Delete by id
@@ -100,7 +100,7 @@ public class TeacherController : ControllerBase
     /// <response code="404">Teachers with given id not found (teachers_not_found)</response>
     [HttpGet("by-ids")]
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<TeachersListModel>> GetTeachersByIds([FromQuery] List<int> teacherId)
     {
         var query = new GetTeachersByIdsQuery { Ids = teacherId };

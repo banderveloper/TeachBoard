@@ -28,23 +28,23 @@ public class CreateFeedbackCommandHandler : IRequestHandler<CreateFeedbackComman
     public async Task<Feedback> Handle(CreateFeedbackCommand request, CancellationToken cancellationToken)
     {
         // check teacher existing by id
-        var existingTeacher = await _context.Teachers.FindAsync(request.TeacherId, cancellationToken);
+        var existingTeacher = await _context.Teachers.FindAsync(new object[] { request.TeacherId }, cancellationToken);
         if (existingTeacher is null)
-            throw new NotFoundException
+            throw new ExpectedApiException
             {
-                Error = "teacher_not_found",
-                ErrorDescription = $"Teacher with id {request.TeacherId} not found",
-                ReasonField = "id"
+                ErrorCode = "teacher_not_found",
+                PublicErrorMessage = $"Teacher not found",
+                LogErrorMessage = $"Create feedback error. Teacher with id [{request.TeacherId}] not found"
             };
 
         // check student existing by id
-        var existingStudent = await _context.Students.FindAsync(request.StudentId, cancellationToken);
+        var existingStudent = await _context.Students.FindAsync(new object[] { request.StudentId }, cancellationToken);
         if (existingStudent is null)
-            throw new NotFoundException
+            throw new ExpectedApiException
             {
-                Error = "student_not_found",
-                ErrorDescription = $"Student with id {request.StudentId} not found",
-                ReasonField = "id"
+                ErrorCode = "student_not_found",
+                PublicErrorMessage = $"Student not found",
+                LogErrorMessage = $"CreateFeedback command error. Student with id [{request.StudentId}] not found"
             };
 
         // if ok - create
@@ -56,11 +56,10 @@ public class CreateFeedbackCommandHandler : IRequestHandler<CreateFeedbackComman
             Rating = request.Rating,
             Text = request.Text
         };
-        
+
         _context.Feedbacks.Add(feedback);
         await _context.SaveChangesAsync(cancellationToken);
 
         return feedback;
     }
 }
-

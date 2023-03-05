@@ -22,28 +22,28 @@ public class SetStudentGroupCommandHandler : IRequestHandler<SetStudentGroupComm
     public async Task<Unit> Handle(SetStudentGroupCommand request, CancellationToken cancellationToken)
     {
         // Find student by student, if not exists - error
-        var existingStudent = await _context.Students.FindAsync(request.StudentId, cancellationToken);
+        var existingStudent = await _context.Students.FindAsync(new object[] { request.StudentId }, cancellationToken);
         if (existingStudent is null)
-            throw new NotFoundException
+            throw new ExpectedApiException
             {
-                Error = "student_not_found",
-                ErrorDescription = $"Student with id '{request.StudentId}' not found",
-                ReasonField = "studentId"
+                ErrorCode = "student_not_found",
+                PublicErrorMessage = "Student not found",
+                LogErrorMessage = $"SetStudentGroup command error. Student with id {request.StudentId} not found"
             };
 
         // Find existing group, if not exists - error
-        var existingGroup = await _context.Groups.FindAsync(request.GroupId, cancellationToken);
-        if(existingGroup is null)
-            throw new NotFoundException
+        var existingGroup = await _context.Groups.FindAsync(new object[] { request.GroupId }, cancellationToken);
+        if (existingGroup is null)
+            throw new ExpectedApiException
             {
-                Error = "group_not_found",
-                ErrorDescription = $"Group with id '{request.StudentId}' not found",
-                ReasonField = "groupId"
+                ErrorCode = "group_not_found",
+                PublicErrorMessage = "Group not found",
+                LogErrorMessage = $"SetStudentGroup command error. Group with id {request.GroupId} not found"
             };
 
         existingStudent.GroupId = request.GroupId;
         await _context.SaveChangesAsync(cancellationToken);
-        
+
         return Unit.Value;
     }
 }

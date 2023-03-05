@@ -25,13 +25,6 @@ public class GetAllGroupsQueryHandler : IRequestHandler<GetAllGroupsQuery, Group
     {
         var groups = await _context.Groups.ToListAsync(cancellationToken);
 
-        if (groups.Count == 0)
-            throw new NotFoundException
-            {
-                Error = "groups_not_found",
-                ErrorDescription = "Groups not found"
-            };
-
         return new GroupsListModel
         {
             Groups = groups
