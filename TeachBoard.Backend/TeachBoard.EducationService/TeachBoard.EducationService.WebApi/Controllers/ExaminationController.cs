@@ -28,17 +28,15 @@ public class ExaminationController : ControllerBase
     /// Create new examination
     /// </summary>
     /// 
-    /// <param name="model">Create examination model</param>
+    /// <param name="model">New examination data</param>
     /// <returns>Created examination</returns>
     ///
-    /// <response code="200">Success. Examination created and returned</response>
-    /// <response code="400">Examination end time cannot be later than start (invalid_datetime)</response>
-    /// <response code="404">Subject with given id not found (subject_not_found)</response>
+    /// <response code="200">Success / subject_not_found</response>
+    /// <response code="400">invalid_date_time</response>
     /// <response code="422">Invalid model</response>
     [HttpPost]
     [ProducesResponseType(typeof(Examination), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IBadRequestApiException), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<Examination>> CreateExamination([FromBody] CreateExaminationRequestModel model)
     {
@@ -52,15 +50,13 @@ public class ExaminationController : ControllerBase
     /// Create/update student examination activity
     /// </summary>
     /// 
-    /// <param name="model">Create/update student examination activity model</param>
+    /// <param name="model">Examination activity data</param>
     /// <returns>Created/updated examination student activity</returns>
     ///
-    /// <response code="200">Success. Student examination activity created/updated and returned</response>
-    /// <response code="404">Student examination activity with given id not found (examination_not_found)</response>
+    /// <response code="200">Success / examination_not_found</response>
     /// <response code="422">Invalid model</response>
     [HttpPost("student-activity")]
     [ProducesResponseType(typeof(StudentExaminationActivity), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<StudentExaminationActivity>> SetStudentExaminationActivity(
         [FromBody] SetStudentExaminationActivityRequestModel model)
@@ -72,24 +68,20 @@ public class ExaminationController : ControllerBase
     }
     
     /// <summary>
-    /// Get student's examination activities as public data
+    /// Get student's examination activities presentation models
     /// </summary>
     /// 
     /// <param name="studentId">Student id</param>
     /// <returns>List of public examination activities data</returns>
     ///
-    /// <response code="200">Success. List of Student examination activities returned</response>
-    /// <response code="404">Student examination activities with given id student id not found (student_examination_activities_not_found)</response>
-    /// <response code="422">Invalid model</response>
+    /// <response code="200">Success</response>
     [HttpGet("student-activities/{studentId:int}")]
     [ProducesResponseType(typeof(IList<StudentExaminationActivityPresentationDataModel>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<IList<StudentExaminationActivityPresentationDataModel>>> GetStudentExaminationActivities(int studentId)
     {
-        var query = new GetStudentExaminationsActivitiesPublicDataQuery { StudentId = studentId };
-        var model = await _mediator.Send(query);
+        var query = new GetStudentExaminationsActivityPresentationDataModelQuery { StudentId = studentId };
+        var activities = await _mediator.Send(query);
 
-        return new WebApiResult(model);
+        return new WebApiResult(activities);
     }
 }

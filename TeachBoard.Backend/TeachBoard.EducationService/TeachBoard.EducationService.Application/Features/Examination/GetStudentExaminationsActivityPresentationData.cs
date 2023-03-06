@@ -10,24 +10,24 @@ namespace TeachBoard.EducationService.Application.Features.Examination;
 // Get public data of student examination activities (examId, subjectName, grade, status)
 
 public class
-    GetStudentExaminationsActivitiesPublicDataQuery : IRequest<IList<StudentExaminationActivityPresentationDataModel>>
+    GetStudentExaminationsActivityPresentationDataModelQuery : IRequest<IList<StudentExaminationActivityPresentationDataModel>>
 {
     public int StudentId { get; set; }
 }
 
-public class GetStudentExaminationsActivitiesPublicDataQueryHandler : IRequestHandler<
-    GetStudentExaminationsActivitiesPublicDataQuery,
+public class GetStudentExaminationsActivityPresentationDataModelQueryHandler : IRequestHandler<
+    GetStudentExaminationsActivityPresentationDataModelQuery,
     IList<StudentExaminationActivityPresentationDataModel>>
 {
     private readonly IApplicationDbContext _context;
 
-    public GetStudentExaminationsActivitiesPublicDataQueryHandler(IApplicationDbContext context)
+    public GetStudentExaminationsActivityPresentationDataModelQueryHandler(IApplicationDbContext context)
     {
         _context = context;
     }
 
     public async Task<IList<StudentExaminationActivityPresentationDataModel>> Handle(
-        GetStudentExaminationsActivitiesPublicDataQuery request,
+        GetStudentExaminationsActivityPresentationDataModelQuery request,
         CancellationToken cancellationToken)
     {
         // Get given student examination activities, join examinations and subjects names 

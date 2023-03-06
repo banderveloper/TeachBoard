@@ -30,10 +30,8 @@ public class
         CancellationToken cancellationToken)
     {
         var existingExamination =
-            await _context.Examinations
-                .AsTracking()
-                .FirstOrDefaultAsync(e => e.Id == request.ExaminationId, cancellationToken);
-        
+            await _context.Examinations.FindAsync(new object[] { request.ExaminationId }, cancellationToken);
+
         if (existingExamination is null)
             throw new ExpectedApiException
             {
@@ -46,6 +44,7 @@ public class
         // If exam not set - create, otherwise update 
 
         var existingActivity = await _context.StudentExaminationActivities
+            .AsTracking()
             .FirstOrDefaultAsync(a => a.StudentId == request.StudentId &&
                                       a.ExaminationId == request.ExaminationId, cancellationToken);
 
