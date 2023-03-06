@@ -36,15 +36,15 @@ public class CustomExceptionHandlerMiddleware
 
         switch (exception)
         {
-            // case IExpectedApiException expectedApiException:
-            //     response.StatusCode = HttpStatusCode.OK;
-            //     response.Error = new
-            //     {
-            //         expectedApiException.ErrorCode,
-            //         expectedApiException.ReasonField,
-            //         message = expectedApiException.PublicErrorMessage
-            //     };
-            //     break;
+            case IExpectedApiException expectedApiException:
+                response.StatusCode = HttpStatusCode.OK;
+                response.Error = new
+                {
+                    expectedApiException.ErrorCode,
+                    expectedApiException.ReasonField,
+                    message = expectedApiException.PublicErrorMessage
+                };
+                break;
 
             case INotAcceptableRequestException notAcceptableRequestException:
                 response.StatusCode = HttpStatusCode.NotAcceptable;
@@ -61,6 +61,11 @@ public class CustomExceptionHandlerMiddleware
                 {
                     errorCode = ErrorCode.NeededServiceUnavailable
                 };
+                break;
+            
+            case IServiceApiException serviceApiException:
+                response.StatusCode = serviceApiException.StatusCode;
+                response.Error = serviceApiException.Error;
                 break;
 
             default:

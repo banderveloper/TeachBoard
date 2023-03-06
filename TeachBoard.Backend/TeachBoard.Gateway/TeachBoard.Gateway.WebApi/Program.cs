@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using TeachBoard.Gateway.Application;
 using TeachBoard.Gateway.Application.Converters;
+using TeachBoard.Gateway.Application.Exceptions;
 using TeachBoard.Gateway.Application.Refit.Clients;
 using TeachBoard.Gateway.WebApi.Middleware;
 using TeachBoard.Gateway.Application.Services;
@@ -22,7 +23,7 @@ builder.Services.AddControllers()
         // lowercase for json keys
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
-        
+
         // Error code enum to snake_case_string converter
         options.JsonSerializerOptions.Converters.Add(new SnakeCaseStringEnumConverter<ErrorCode>());
     })
@@ -40,8 +41,23 @@ builder.Services.AddControllers()
         };
     });
 
+var settings = new RefitSettings
+{
+    ContentSerializer = new SystemTextJsonContentSerializer(),
+    ExceptionFactory = async httpResponseMessage =>
+    {
+        var responseString = await httpResponseMessage.Content.ReadAsStringAsync();
+        var response = JsonSerializer.Deserialize<WebApiResult>(responseString);
+       
+        if (response?.Error is not null)
+            return new ServiceApiException { Error = response.Error, StatusCode = response.StatusCode };
+
+        return await Task.FromResult<Exception>(null);
+    }
+};
+
 // Register refit clients
-builder.Services.AddRefitClient<IIdentityClient>()
+builder.Services.AddRefitClient<IIdentityClient>(settings)
     .ConfigureHttpClient(client => client.BaseAddress = new Uri(builder.Configuration["ApiAddresses:Identity"]))
     .ConfigurePrimaryHttpMessageHandler(() =>
         new HttpClientHandler
@@ -49,8 +65,8 @@ builder.Services.AddRefitClient<IIdentityClient>()
             UseCookies = false
         });
 
-// builder.Services.AddRefitClient<IMembersClient>()
-//     .ConfigureHttpClient(client => client.BaseAddress = new Uri(builder.Configuration["ApiAddresses:Members"]));
+builder.Services.AddRefitClient<IMembersClient>(settings)
+    .ConfigureHttpClient(client => client.BaseAddress = new Uri(builder.Configuration["ApiAddresses:Members"]));
 //
 // builder.Services.AddRefitClient<IEducationClient>()
 //     .ConfigureHttpClient(client => client.BaseAddress = new Uri(builder.Configuration["ApiAddresses:Education"]));

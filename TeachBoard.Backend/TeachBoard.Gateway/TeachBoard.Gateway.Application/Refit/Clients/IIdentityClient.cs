@@ -28,4 +28,12 @@ public interface IIdentityClient
     /// <param name="refreshCookie">Refresh cookie in format cookie_name=cookie_value</param>
     [Delete("/auth/logout")]
     Task<ApiResponse<ServiceTypedResponse<object>>> Logout([Header("Cookie")] string refreshCookie);
+    
+    /// <summary>
+    /// Approve pending user by register code
+    /// </summary>
+    /// <param name="model">Pending register code, new login and password</param>
+    /// <returns>Created user from pending user</returns>
+    [Post("/user/pending/approve")]
+    Task<ServiceTypedResponse<User>> ApprovePendingUser(ApprovePendingUserRequestModel model);
 }

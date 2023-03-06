@@ -11,7 +11,9 @@ namespace TeachBoard.Gateway.WebApi.ActionResults;
 /// </summary>
 public class WebApiResult : ActionResult
 {
+    [JsonPropertyName("data")]
     public object? Data { get; set; }
+    [JsonPropertyName("error")]
     public object? Error { get; set; }
     [JsonIgnore] public HttpStatusCode StatusCode { get; set; }
 
