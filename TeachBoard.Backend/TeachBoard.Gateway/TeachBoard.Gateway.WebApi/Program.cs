@@ -6,6 +6,8 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using TeachBoard.Gateway.Application;
+using TeachBoard.Gateway.Application.Converters;
 using TeachBoard.Gateway.Application.Refit.Clients;
 using TeachBoard.Gateway.WebApi.Middleware;
 using TeachBoard.Gateway.Application.Services;
@@ -20,6 +22,9 @@ builder.Services.AddControllers()
         // lowercase for json keys
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+        
+        // Error code enum to snake_case_string converter
+        options.JsonSerializerOptions.Converters.Add(new SnakeCaseStringEnumConverter<ErrorCode>());
     })
     .ConfigureApiBehaviorOptions(options =>
     {

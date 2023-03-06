@@ -1,6 +1,8 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TeachBoard.Gateway.Application;
+using TeachBoard.Gateway.Application.Exceptions;
 using TeachBoard.Gateway.Application.Refit.Clients;
 using TeachBoard.Gateway.Application.Refit.RequestModels.Identity;
 using TeachBoard.Gateway.Application.Refit.ResponseModels.Identity;
@@ -41,62 +43,52 @@ public class AuthController : BaseController
         );
     }
 
-    // [HttpPut("refresh")]
-    // public async Task<ActionResult<AuthTokenResponseModel>> Refresh()
-    // {
-    //     if (!Request.Cookies.TryGetValue("TeachBoard-Refresh-Token", out var refreshTokenFromCookie))
-    //     {
-    //         throw new CookieException
-    //         {
-    //             Error = "cookie_not_found",
-    //             ErrorDescription = "Cookie with refresh token not found"
-    //         };
-    //     }
-    //
-    //     // Send refresh query to identity microservice including cookie
-    //     var identityServiceResponse =
-    //         await _identityClient.Refresh($"TeachBoard-Refresh-Token={refreshTokenFromCookie}");
-    //
-    //     // if error from microservice
-    //     if (!identityServiceResponse.IsSuccessStatusCode)
-    //         throw identityServiceResponse.Error;
-    //
-    //     // Transfer cookies from microservice response to headers for client
-    //     _cookieService.TransferCookies(
-    //         sourceHeaders: identityServiceResponse.Headers,
-    //         destinationCookies: Response.Cookies
-    //     );
-    //
-    //     // authmodel with access token and expire time
-    //     return Ok(identityServiceResponse.Content);
-    // }
-    //
-    // [HttpDelete("logout")]
-    // public async Task<IActionResult> Logout()
-    // {
-    //     if (!Request.Cookies.TryGetValue("TeachBoard-Refresh-Token", out var refreshTokenFromCookie))
-    //     {
-    //         throw new CookieException
-    //         {
-    //             Error = "cookie_not_found",
-    //             ErrorDescription = "Cookie with refresh token not found"
-    //         };
-    //     }
-    //
-    //     // Send refresh query to identity microservice including cookie
-    //     var logoutResponse = await _identityClient.Logout($"TeachBoard-Refresh-Token={refreshTokenFromCookie}");
-    //
-    //     // if error from microservice
-    //     if (!logoutResponse.IsSuccessStatusCode)
-    //         throw logoutResponse.Error;
-    //
-    //     // Transfer cookies from microservice response to headers for client
-    //     _cookieService.TransferCookies(
-    //         sourceHeaders: logoutResponse.Headers,
-    //         destinationCookies: Response.Cookies
-    //     );
-    //
-    //     // authmodel with access token and expire time
-    //     return Ok();
-    // }
+    [HttpPut("refresh")]
+    public async Task<ActionResult<AccessTokenResponseModel>> Refresh()
+    {
+        // Get refresh token from cookies. if not passed - error
+        if (!Request.Cookies.TryGetValue("TeachBoard-Refresh-Token", out var refreshTokenFromCookie))
+            throw new NotAcceptableRequestException { ErrorCode = ErrorCode.RefreshCookieNotFound };
+                
+        // Send refresh query to identity microservice including cookie
+        var identityServiceResponse =
+            await _identityClient.Refresh($"TeachBoard-Refresh-Token={refreshTokenFromCookie}");
+        
+        // Transfer cookies from microservice response to headers for client
+        _cookieService.TransferCookies(
+            sourceHeaders: identityServiceResponse.Headers,
+            destinationCookies: Response.Cookies
+        );
+
+        // auth model with access token and expire time
+        return new WebApiResult(
+            data: identityServiceResponse.Content?.Data,
+            error: identityServiceResponse.Content?.Error,
+            statusCode: identityServiceResponse.StatusCode
+        );
+    }
+    
+    [HttpDelete("logout")]
+    public async Task<IActionResult> Logout()
+    {
+        // Get refresh token from cookies. if not passed - error
+        if (!Request.Cookies.TryGetValue("TeachBoard-Refresh-Token", out var refreshTokenFromCookie))
+            throw new NotAcceptableRequestException { ErrorCode = ErrorCode.RefreshCookieNotFound };
+    
+        // Send refresh query to identity microservice including cookie
+        var identityServiceResponse = await _identityClient.Logout($"TeachBoard-Refresh-Token={refreshTokenFromCookie}");
+        
+        // Transfer cookies from microservice response to headers for client
+        _cookieService.TransferCookies(
+            sourceHeaders: identityServiceResponse.Headers,
+            destinationCookies: Response.Cookies
+        );
+    
+        // auth model with access token and expire time
+        return new WebApiResult(
+            data: identityServiceResponse.Content?.Data,
+            error: identityServiceResponse.Content?.Error,
+            statusCode: identityServiceResponse.StatusCode
+        );
+    }
 }
