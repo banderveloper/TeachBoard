@@ -5,12 +5,12 @@ using TeachBoard.EducationService.Application.Interfaces;
 
 namespace TeachBoard.EducationService.Application.Features.Homework;
 
-public class GetHomeworksByGroupIdQuery : IRequest<HomeworksListModel>
+public class GetHomeworksByGroupIdQuery : IRequest<IList<Domain.Entities.Homework>>
 {
     public int GroupId { get; set; }
 }
 
-public class GetHomeworksByGroupIdQueryHandler : IRequestHandler<GetHomeworksByGroupIdQuery, HomeworksListModel>
+public class GetHomeworksByGroupIdQueryHandler : IRequestHandler<GetHomeworksByGroupIdQuery, IList<Domain.Entities.Homework>>
 {
     private readonly IApplicationDbContext _context;
 
@@ -19,21 +19,13 @@ public class GetHomeworksByGroupIdQueryHandler : IRequestHandler<GetHomeworksByG
         _context = context;
     }
 
-    public async Task<HomeworksListModel> Handle(GetHomeworksByGroupIdQuery request,
+    public async Task<IList<Domain.Entities.Homework>> Handle(GetHomeworksByGroupIdQuery request,
         CancellationToken cancellationToken)
     {
         var groupHomeworks = await _context.Homeworks
             .Where(h => h.GroupId == request.GroupId)
             .ToListAsync(cancellationToken);
 
-        if (groupHomeworks.Count == 0)
-            throw new NotFoundException
-            {
-                Error = "homeworks_not_found",
-                ErrorDescription = $"Homeworks for group with id '{request.GroupId}' not found",
-                ReasonField = "groupId"
-            };
-
-        return new HomeworksListModel { Homeworks = groupHomeworks };
+        return groupHomeworks;
     }
 }

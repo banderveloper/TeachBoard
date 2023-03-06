@@ -29,18 +29,22 @@ public class
     public async Task<StudentExaminationActivity> Handle(SetStudentExaminationActivityCommand request,
         CancellationToken cancellationToken)
     {
-        var existingExamination = await _context.Examinations.FindAsync(request.ExaminationId, cancellationToken);
+        var existingExamination =
+            await _context.Examinations.FindAsync(new object[] { request.ExaminationId }, cancellationToken);
+
         if (existingExamination is null)
-            throw new NotFoundException
+            throw new ExpectedApiException
             {
-                Error = "examination_not_found",
-                ErrorDescription = $"Examination with id '{request.ExaminationId}' not found",
-                ReasonField = "examinationId"
+                ErrorCode = ErrorCode.ExaminationNotFound,
+                PublicErrorMessage = "Examination not found",
+                LogErrorMessage =
+                    $"SetStudentExaminationActivityCommand error. Examination with id [{request.ExaminationId}] not found",
             };
 
         // If exam not set - create, otherwise update 
 
         var existingActivity = await _context.StudentExaminationActivities
+            .AsTracking()
             .FirstOrDefaultAsync(a => a.StudentId == request.StudentId &&
                                       a.ExaminationId == request.ExaminationId, cancellationToken);
 

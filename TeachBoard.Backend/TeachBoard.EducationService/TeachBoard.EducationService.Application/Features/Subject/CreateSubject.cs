@@ -21,18 +21,19 @@ public class CreateSubjectCommandHandler : IRequestHandler<CreateSubjectCommand,
         _context = context;
     }
 
-    public async Task<Domain.Entities.Subject> Handle(CreateSubjectCommand request, CancellationToken cancellationToken)
+    public async Task<Domain.Entities.Subject?> Handle(CreateSubjectCommand request, CancellationToken cancellationToken)
     {
         var existingSubject = await _context.Subjects
-            .FirstOrDefaultAsync(s => s.Name.ToLower() == request.Name.ToLower(),
+            .FirstOrDefaultAsync(s => string.Equals(s.Name.ToLower(), request.Name.ToLower()),
                 cancellationToken);
 
         if (existingSubject is not null)
-            throw new AlreadyExistsException
+            throw new ExpectedApiException
             {
-                Error = "subject_already_exists",
-                ErrorDescription = $"Subject with name '{request.Name}' already exists",
-                ReasonField = "name"
+                ErrorCode = ErrorCode.SubjectAlreadyExists,
+                PublicErrorMessage = "Subject with given name already exists",
+                ReasonField = "name",
+                LogErrorMessage = $"CreateSubjectCommand error. Subject with name '{request.Name}' already exists",
             };
 
         var newSubject = new Domain.Entities.Subject

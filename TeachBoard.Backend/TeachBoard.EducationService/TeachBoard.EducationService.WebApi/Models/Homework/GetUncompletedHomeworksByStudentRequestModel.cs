@@ -11,6 +11,6 @@ public class GetUncompletedHomeworksByStudentRequestModel : IMappable
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<GetUncompletedHomeworksByStudentRequestModel, GetUncompletedHomeworksByStudentQuery>();
+        profile.CreateMap<GetUncompletedHomeworksByStudentRequestModel, GetUncompletedHomeworksPresentationDataByStudentQuery>();
     }
 }

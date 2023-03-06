@@ -4,15 +4,15 @@ using Microsoft.AspNetCore.Mvc;
 using TeachBoard.EducationService.Application.Exceptions;
 using TeachBoard.EducationService.Application.Features.Homework;
 using TeachBoard.EducationService.Domain.Entities;
+using TeachBoard.EducationService.WebApi.ActionResults;
 using TeachBoard.EducationService.WebApi.Models.Homework;
-using TeachBoard.EducationService.WebApi.Models.Validation;
+using TeachBoard.EducationService.WebApi.Validation;
 
 namespace TeachBoard.EducationService.WebApi.Controllers;
 
 [Route("homeworks")]
 [ApiController]
 [Produces("application/json")]
-[ValidateModel]
 public class HomeworkController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -28,23 +28,20 @@ public class HomeworkController : ControllerBase
     /// Create new homework
     /// </summary>
     /// 
-    /// <param name="requestModel">Create homework requestModel</param>
+    /// <param name="model">Create homework requestModel</param>
     /// <returns>Created homework</returns>
     ///
-    /// <response code="200">Success. Homework created and returned</response>
-    /// <response code="422">Invalid requestModel</response>
+    /// <response code="200">Success </response>
+    /// <response code="422">Invalid model</response>
     [HttpPost]
     [ProducesResponseType(typeof(Homework), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
-    public async Task<ActionResult<Homework>> CreateHomework([FromBody] CreateHomeworkRequestModel requestModel)
+    public async Task<ActionResult<Homework>> CreateHomework([FromBody] CreateHomeworkRequestModel model)
     {
-        if (!ModelState.IsValid)
-            return UnprocessableEntity(requestModel);
-
-        var command = _mapper.Map<CreateHomeworkCommand>(requestModel);
+        var command = _mapper.Map<CreateHomeworkCommand>(model);
         var createdHomework = await _mediator.Send(command);
 
-        return createdHomework;
+        return new WebApiResult(createdHomework);
     }
 
     /// <summary>
@@ -52,76 +49,57 @@ public class HomeworkController : ControllerBase
     /// </summary>
     /// 
     /// <param name="groupId">Id of the group whose homework to return</param>
-    /// <returns>Created homewirk</returns>
+    /// <returns>List of homeworks for group</returns>
     ///
-    /// <response code="200">Success. Homeworks for given group returned</response>
-    /// <response code="404">Homeworks for given group not found (homeworks_not_found)</response>
+    /// <response code="200">Success</response>>
     [HttpGet("group/{groupId:int}")]
-    [ProducesResponseType(typeof(HomeworksListModel), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<HomeworksListModel>> GetHomeworksByGroupId(int groupId)
+    [ProducesResponseType(typeof(IList<Homework>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IList<Homework>>> GetHomeworksByGroupId(int groupId)
     {
         var query = new GetHomeworksByGroupIdQuery { GroupId = groupId };
-        var homeworksModel = await _mediator.Send(query);
+        var homeworks = await _mediator.Send(query);
 
-        return homeworksModel;
+        return new WebApiResult(homeworks);
     }
 
     /// <summary>
-    /// Сomplete given by teacher homework as student
+    /// Complete given by teacher homework as student
     /// </summary>
     /// 
-    /// <param name="model">Completing homework model</param>
+    /// <param name="model">Completing homework data</param>
     /// <returns>Completed homework</returns>
     ///
-    /// <response code="200">Success. Homework completed and returned</response>
-    /// <response code="404">
-    /// Homework with given id not found (homework_not_found)
-    /// Homework with given id to given group not found (homework_not_found)
-    /// </response>
-    /// <response code="409">Student already completed this homework (completed_homework_already_exists)</response>
-    /// <response code="422">Invalid requestModel</response>
+    /// <response code="200">Success / homework_not_found / completed_homework_already_exists</response>
+    /// <response code="422">Invalid model</response>
     [HttpPost("complete")]
     [ProducesResponseType(typeof(CompletedHomework), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<CompletedHomework>> CompleteHomework([FromBody] CompleteHomeworkRequestModel model)
     {
-        if (!ModelState.IsValid)
-            return UnprocessableEntity(model);
-
         var command = _mapper.Map<CompleteHomeworkCommand>(model);
         var completedHomework = await _mediator.Send(command);
 
-        return completedHomework;
+        return new WebApiResult(completedHomework);
     }
 
     /// <summary>
     /// Check completed homework (set grade and comment)
     /// </summary>
     /// 
-    /// <param name="model">Checking homework model</param>
+    /// <param name="model">Checking homework data</param>
     /// <returns>Checked completed homework</returns>
     ///
-    /// <response code="200">Success. Homework checked and returned</response>
-    /// <response code="404">Completed homework with given id not found (homework_not_found)</response>
-    /// <response code="423">Completed homework with given id was added by another teacher, checking is denied (completed_homework_invalid_teacher)</response>
-    /// <response code="422">Invalid requestModel</response>
-    [HttpPost("check-сompleted")]
+    /// <response code="200">Success / completed_homework_not_found</response>
+    /// <response code="422">Invalid model</response>
+    [HttpPost("check-completed")]
     [ProducesResponseType(typeof(CompletedHomework), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status423Locked)]
     public async Task<ActionResult<CompletedHomework>> CheckHomework([FromBody] CheckHomeworkRequestModel model)
     {
-        if (!ModelState.IsValid)
-            return UnprocessableEntity(model);
-
         var command = _mapper.Map<CheckHomeworkCommand>(model);
         var completedHomework = await _mediator.Send(command);
 
-        return completedHomework;
+        return new WebApiResult(completedHomework);
     }
 
     /// <summary>
@@ -132,16 +110,14 @@ public class HomeworkController : ControllerBase
     /// <returns>List of completed homeworks full data</returns>
     ///
     /// <response code="200">Success. Completed homeworks full data by student returned</response>
-    /// <response code="404">Completed homeworks of student with given id not found (completed_homeworks_not_found)</response>
-    [HttpGet("full-completed/{studentId:int}")]
-    [ProducesResponseType(typeof(FullCompletedHomeworksListModel), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<FullCompletedHomeworksListModel>> GetFullCompletedHomeworksByStudentId(int studentId)
+    [HttpGet("completed/{studentId:int}")]
+    [ProducesResponseType(typeof(IList<CompletedHomeworkPresentationDataModel>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IList<CompletedHomeworkPresentationDataModel>>> GetFullCompletedHomeworksByStudentId(int studentId)
     {
-        var query = new GetFullCompletedHomeworksByStudentIdQuery { StudentId = studentId };
+        var query = new GetCompletedHomeworksPresentationDataByStudentIdQuery { StudentId = studentId };
         var completedHomeworks = await _mediator.Send(query);
 
-        return completedHomeworks;
+        return new WebApiResult(completedHomeworks);
     }
 
     /// <summary>
@@ -150,19 +126,17 @@ public class HomeworkController : ControllerBase
     /// 
     /// <param name="studentId">Student id</param>
     /// <param name="groupId">Student's group id</param>
-    /// <returns>List of uncompleted homeworks as public datas</returns>
+    /// <returns>List of uncompleted homeworks presentation</returns>
     ///
     /// <response code="200">Success. Uncompleted homeworks full data by student returned</response>
-    /// <response code="404">Uncompleted homeworks of student with given id not found (uncompleted_homeworks_not_found)</response>
     [HttpGet("uncompleted-homeworks/{studentId:int}/{groupId:int}")]
-    [ProducesResponseType(typeof(FullCompletedHomeworksListModel), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<UncompletedHomeworksPublicListModel>> GetUncompletedHomeworksByStudent(int studentId,
+    [ProducesResponseType(typeof(IList<UncompletedHomeworkPresentationDataModel>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IList<UncompletedHomeworkPresentationDataModel>>> GetUncompletedHomeworksByStudent(int studentId,
         int groupId)
     {
-        var query = new GetUncompletedHomeworksByStudentQuery { StudentId = studentId, GroupId = groupId };
+        var query = new GetUncompletedHomeworksPresentationDataByStudentQuery { StudentId = studentId, GroupId = groupId };
         var uncompletedHomeworks = await _mediator.Send(query);
 
-        return uncompletedHomeworks;
+        return new WebApiResult(uncompletedHomeworks);
     }
 }

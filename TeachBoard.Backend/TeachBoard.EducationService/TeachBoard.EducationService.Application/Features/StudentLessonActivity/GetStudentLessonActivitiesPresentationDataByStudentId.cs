@@ -1,35 +1,42 @@
-﻿using MediatR;
+﻿using System.Text.Json.Serialization;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using TeachBoard.EducationService.Application.Converters;
 using TeachBoard.EducationService.Application.Exceptions;
 using TeachBoard.EducationService.Application.Interfaces;
 using TeachBoard.EducationService.Domain.Enums;
 
 namespace TeachBoard.EducationService.Application.Features.StudentLessonActivity;
 
-public class GetStudentLessonActivitiesByStudentIdQuery : IRequest<StudentLessonActivityPublicListModel>
+public class
+    GetStudentLessonActivitiesPresentationDataByStudentIdQuery : IRequest<
+        IList<StudentLessonActivityPresentationDataModel>>
 {
     public int StudentId { get; set; }
 }
 
-public class GetStudentLessonActivitiesByStudentIdQueryHandler
-    : IRequestHandler<GetStudentLessonActivitiesByStudentIdQuery, StudentLessonActivityPublicListModel>
+public class GetStudentLessonActivitiesPresentationDataByStudentIdQueryHandler
+    : IRequestHandler<GetStudentLessonActivitiesPresentationDataByStudentIdQuery,
+        IList<StudentLessonActivityPresentationDataModel>>
 {
     private readonly IApplicationDbContext _context;
 
-    public GetStudentLessonActivitiesByStudentIdQueryHandler(IApplicationDbContext context)
+    public GetStudentLessonActivitiesPresentationDataByStudentIdQueryHandler(IApplicationDbContext context)
     {
         _context = context;
     }
 
-    public async Task<StudentLessonActivityPublicListModel> Handle(GetStudentLessonActivitiesByStudentIdQuery request,
+    public async Task<IList<StudentLessonActivityPresentationDataModel>> Handle(
+        GetStudentLessonActivitiesPresentationDataByStudentIdQuery request,
         CancellationToken cancellationToken)
     {
         var activities = await _context.StudentLessonActivities
             .Include(sla => sla.Lesson)
             .ThenInclude(lesson => lesson.Subject)
             .Where(sla => sla.StudentId == request.StudentId)
-            .Select(sla => new StudentLessonActivityPublicModel()
+            .Select(sla => new StudentLessonActivityPresentationDataModel
             {
+                StudentId = sla.StudentId,
                 AttendanceStatus = sla.AttendanceStatus,
                 LessonId = sla.LessonId,
                 LessonTopic = sla.Lesson.Topic,
@@ -39,29 +46,20 @@ public class GetStudentLessonActivitiesByStudentIdQueryHandler
             })
             .ToListAsync(cancellationToken);
 
-        if (activities.Count == 0)
-            throw new NotFoundException
-            {
-                Error = "student_lesson_activities_not_found",
-                ErrorDescription = $"Student lesson activities with student id '{request.StudentId}' not found",
-                ReasonField = "studentId"
-            };
-
-        return new StudentLessonActivityPublicListModel { Activities = activities };
+        return activities;
     }
 }
 
-public class StudentLessonActivityPublicModel
+public class StudentLessonActivityPresentationDataModel
 {
+    public int StudentId { get; set; }
     public int LessonId { get; set; }
     public string LessonTopic { get; set; }
     public string SubjectName { get; set; }
+
+    [JsonConverter(typeof(JsonStringEnumConverter<AttendanceStatus>))]
     public AttendanceStatus AttendanceStatus { get; set; }
+
     public int? Grade { get; set; }
     public DateTime ActivityCreatedAt { get; set; }
-}
-
-public class StudentLessonActivityPublicListModel
-{
-    public IList<StudentLessonActivityPublicModel> Activities { get; set; }
 }

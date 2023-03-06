@@ -5,32 +5,25 @@ using TeachBoard.EducationService.Application.Interfaces;
 
 namespace TeachBoard.EducationService.Application.Features.Lesson;
 
-public class GetFutureLessonsQuery : IRequest<LessonsListModel>
+public class GetFutureLessonsQuery : IRequest<IList<Domain.Entities.Lesson>>
 {
 }
 
-public class GetFutureLessonsQueryHandler : IRequestHandler<GetFutureLessonsQuery, LessonsListModel>
+public class GetFutureLessonsQueryHandler : IRequestHandler<GetFutureLessonsQuery, IList<Domain.Entities.Lesson>>
 {
-    private IApplicationDbContext _context;
+    private readonly  IApplicationDbContext _context;
 
     public GetFutureLessonsQueryHandler(IApplicationDbContext context)
     {
         _context = context;
     }
 
-    public async Task<LessonsListModel> Handle(GetFutureLessonsQuery request, CancellationToken cancellationToken)
+    public async Task<IList<Domain.Entities.Lesson>> Handle(GetFutureLessonsQuery request, CancellationToken cancellationToken)
     {
         var lessons = await _context.Lessons
             .Where(l => l.StartsAt > DateTime.Now)
             .ToListAsync(cancellationToken);
 
-        if (lessons.Count == 0)
-            throw new NotFoundException
-            {
-                Error = "lessons_not_found",
-                ErrorDescription = $"Future lessons (from {DateTime.Now.ToUniversalTime()}) not found"
-            };
-
-        return new LessonsListModel { Lessons = lessons };
+        return lessons;
     }
 }

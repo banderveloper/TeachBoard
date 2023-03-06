@@ -22,26 +22,27 @@ public class CreateExaminationCommandHandler : IRequestHandler<CreateExamination
         _context = context;
     }
 
-    public async Task<Domain.Entities.Examination> Handle(CreateExaminationCommand request, CancellationToken cancellationToken)
+    public async Task<Domain.Entities.Examination> Handle(CreateExaminationCommand request,
+        CancellationToken cancellationToken)
     {
         // if end time later than start time
         if (request.StartsAt > request.EndsAt)
-            throw new InvalidDateTimeException
+            throw new BadRequestApiException
             {
-                Error = "invalid_datetime",
-                ErrorDescription = "Examination end time cannot be later than start",
+                ErrorCode = ErrorCode.InvalidDateTime,
+                PublicErrorMessage = "Examination finish time cannot be later than start",
                 ReasonField = "endsAt"
             };
-        
-        var existingSubject = await _context.Subjects.FindAsync(request.SubjectId, cancellationToken);
+
+        var existingSubject = await _context.Subjects.FindAsync(new object[] { request.SubjectId }, cancellationToken);
         if (existingSubject is null)
-            throw new NotFoundException
+            throw new ExpectedApiException
             {
-                Error = "subject_not_found",
-                ErrorDescription = $"Subject with id '{request.SubjectId}' not found",
-                ReasonField = "subjectId"
+                ErrorCode = ErrorCode.SubjectNotFound,
+                PublicErrorMessage = $"Subject not found",
+                LogErrorMessage = $"CreateExaminationCommand error. Subject with id [{request.SubjectId}] not found"
             };
-            
+
         // todo check existing examination to group?
 
         var examination = new Domain.Entities.Examination

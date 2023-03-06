@@ -5,30 +5,32 @@ using TeachBoard.EducationService.Application.Interfaces;
 
 namespace TeachBoard.EducationService.Application.Features.Homework;
 
-public class GetFullCompletedHomeworksByStudentIdQuery : IRequest<FullCompletedHomeworksListModel>
+public class GetCompletedHomeworksPresentationDataByStudentIdQuery : IRequest<IList<CompletedHomeworkPresentationDataModel>>
 {
     public int StudentId { get; set; }
 }
 
-public class GetFullCompletedHomeworksByStudentIdQueryHandler : IRequestHandler<
-    GetFullCompletedHomeworksByStudentIdQuery, FullCompletedHomeworksListModel>
+public class GetCompletedHomeworksPresentationDataByStudentIdQueryHandler : IRequestHandler<
+    GetCompletedHomeworksPresentationDataByStudentIdQuery, IList<CompletedHomeworkPresentationDataModel>>
 {
-    private IApplicationDbContext _context;
+    private readonly IApplicationDbContext _context;
 
-    public GetFullCompletedHomeworksByStudentIdQueryHandler(IApplicationDbContext context)
+    public GetCompletedHomeworksPresentationDataByStudentIdQueryHandler(IApplicationDbContext context)
     {
         _context = context;
     }
 
-    public async Task<FullCompletedHomeworksListModel> Handle(GetFullCompletedHomeworksByStudentIdQuery request,
+    public async Task<IList<CompletedHomeworkPresentationDataModel>> Handle(GetCompletedHomeworksPresentationDataByStudentIdQuery request,
         CancellationToken cancellationToken)
     {
-        var fullCompletedHomeworks = await _context.CompletedHomeworks
+        // Get completed homeworks with full data joining subjects and homeworks
+        var completedHomeworks = await _context.CompletedHomeworks
             .Include(ch => ch.Homework)
             .ThenInclude(homework => homework.Subject)
             .Where(ch => ch.StudentId == request.StudentId)
-            .Select(completedHomework => new FullCompletedHomework
+            .Select(completedHomework => new CompletedHomeworkPresentationDataModel
             {
+                StudentId = completedHomework.StudentId,
                 HomeworkId = completedHomework.HomeworkId,
                 Grade = completedHomework.Grade,
                 CheckingTeacherComment = completedHomework.CheckingTeacherComment,
@@ -41,19 +43,13 @@ public class GetFullCompletedHomeworksByStudentIdQueryHandler : IRequestHandler<
             })
             .ToListAsync(cancellationToken);
 
-        if (fullCompletedHomeworks.Count == 0)
-            throw new NotFoundException
-            {
-                Error = "completed_homeworks_not_found",
-                ErrorDescription = $"Student with id '{request.StudentId}' does not have completed homeworks"
-            };
-
-        return new FullCompletedHomeworksListModel { CompletedHomeworks = fullCompletedHomeworks };
+        return completedHomeworks;
     }
 }
 
-public class FullCompletedHomework
+public class CompletedHomeworkPresentationDataModel
 {
+    public int StudentId { get; set; }
     public int CompletedHomeworkId { get; set; }
     public int HomeworkId { get; set; }
     public int CheckingTeacherId { get; set; }
@@ -63,9 +59,4 @@ public class FullCompletedHomework
     public string? TaskFilePath { get; set; }
     public string SubjectName { get; set; }
     public DateTime CreatedAt { get; set; }
-}
-
-public class FullCompletedHomeworksListModel
-{
-    public IList<FullCompletedHomework> CompletedHomeworks { get; set; }
 }

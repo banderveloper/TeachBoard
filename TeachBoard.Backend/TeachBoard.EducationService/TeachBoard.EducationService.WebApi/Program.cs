@@ -1,13 +1,17 @@
+using System.Net;
 using System.Net.Mime;
 using System.Reflection;
 using System.Text.Json;
 using Microsoft.Extensions.Options;
 using TeachBoard.EducationService.Application;
 using TeachBoard.EducationService.Application.Configurations;
+using TeachBoard.EducationService.Application.Converters;
 using TeachBoard.EducationService.Application.Mappings;
+using TeachBoard.EducationService.Domain.Enums;
 using TeachBoard.EducationService.Persistence;
+using TeachBoard.EducationService.WebApi.ActionResults;
 using TeachBoard.EducationService.WebApi.Middleware;
-using TeachBoard.EducationService.WebApi.Models.Validation;
+using TeachBoard.EducationService.WebApi.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,14 +35,24 @@ builder.Services.AddControllers()
         // lowercase for json keys
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+        
+        // models enums to string converter
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter<AttendanceStatus>());
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter<StudentExaminationStatus>());
+        
+        // Error code enum to snake_case_string converter
+        options.JsonSerializerOptions.Converters.Add(new SnakeCaseStringEnumConverter<ErrorCode>());
     })
     .ConfigureApiBehaviorOptions(options =>
     {
-        // custom validation error response
+        // adding validation error and 422 http to WebApiResponse while model state is not valid
         options.InvalidModelStateResponseFactory = context =>
         {
-            var result = new ValidationFailedResult(context.ModelState);
-            result.ContentTypes.Add(MediaTypeNames.Application.Json);
+            var result = new WebApiResult
+            {
+                Error = new ValidationResultModel(context.ModelState),
+                StatusCode = HttpStatusCode.UnprocessableEntity
+            };
 
             return result;
         };

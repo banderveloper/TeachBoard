@@ -27,23 +27,25 @@ public class CompleteHomeworkCommandHandler : IRequestHandler<CompleteHomeworkCo
     public async Task<CompletedHomework> Handle(CompleteHomeworkCommand request, CancellationToken cancellationToken)
     {
         // if homework with given id does not exists - exception
-        var existingHomework = await _context.Homeworks.FindAsync(request.HomeworkId, cancellationToken);
+        var existingHomework =
+            await _context.Homeworks.FindAsync(new object[] { request.HomeworkId }, cancellationToken);
+
         if (existingHomework is null)
-            throw new NotFoundException
+            throw new ExpectedApiException
             {
-                Error = "homework_not_found",
-                ErrorDescription = $"Homework with id '{request.HomeworkId}' not found",
-                ReasonField = "homeworkId"
+                ErrorCode = ErrorCode.HomeworkNotFound,
+                PublicErrorMessage = "Homework not found",
+                LogErrorMessage = $"CompleteHomeworkCommand error. Homework with id [{request.HomeworkId}] not found",
             };
 
         // if student's group not equals to homework group id 
         if (existingHomework.GroupId != request.StudentGroupId)
-            throw new NotFoundException
+            throw new ExpectedApiException
             {
-                Error = "homework_not_found",
-                ErrorDescription =
-                    $"Homework with id '{request.HomeworkId}' to group with id '{request.StudentGroupId}' not found",
-                ReasonField = "homeworkId"
+                ErrorCode = ErrorCode.HomeworkNotFound,
+                PublicErrorMessage = "Homework to given group not found",
+                LogErrorMessage =
+                    $"CompleteHomeworkCommand error. Homework with id '{request.HomeworkId}' to group with id '{request.StudentGroupId}' not found",
             };
 
         // if student with given id already completed homework with given id - exception
@@ -53,13 +55,13 @@ public class CompleteHomeworkCommandHandler : IRequestHandler<CompleteHomeworkCo
                                        ch.StudentId == request.StudentId, cancellationToken);
 
         if (existingCompletedHomework is not null)
-            throw new AlreadyExistsException
+            throw new ExpectedApiException
             {
-                Error = "completed_homework_already_exists",
-                ErrorDescription =
-                    $"Student with id '{request.StudentId}' has already completed homework with id '{request.HomeworkId}'"
+                ErrorCode = ErrorCode.CompletedHomeworkAlreadyExists,
+                PublicErrorMessage = "Given homework is already completed by student",
+                LogErrorMessage =
+                    $"CompleteHomeworkCommand error. Student with id '{request.StudentId}' has already completed homework with id '{request.HomeworkId}'"
             };
-
 
         // if all ok - complete homework, create entity
         var completedHomework = new CompletedHomework
