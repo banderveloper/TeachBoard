@@ -1,0 +1,24 @@
+name: Test
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  docker:
+    timeout-minutes: 2
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Build containers
+      run: docker-compose -f "TeachBoard.Backend/docker-compose.yml" build
+      
+    - name: Push containers to hub
+    - run: docker-compose -f "TeachBoard.Backend/docker-compose.yml" push
