@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using AutoMapper;
 using TeachBoard.EducationService.Application.Converters;
 using TeachBoard.EducationService.Application.Features.Lesson;
+using TeachBoard.EducationService.Application.Features.StudentLessonActivity;
 using TeachBoard.EducationService.Application.Mappings;
 using TeachBoard.EducationService.Domain.Enums;
 

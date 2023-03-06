@@ -1,18 +1,23 @@
-﻿using MediatR;
+﻿using System.Text.Json.Serialization;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using TeachBoard.EducationService.Application.Converters;
 using TeachBoard.EducationService.Application.Exceptions;
 using TeachBoard.EducationService.Application.Interfaces;
 using TeachBoard.EducationService.Domain.Enums;
 
 namespace TeachBoard.EducationService.Application.Features.StudentLessonActivity;
 
-public class GetStudentLessonActivitiesPresentationDataByStudentIdQuery : IRequest<IList<StudentLessonActivityPresentationDataModel>>
+public class
+    GetStudentLessonActivitiesPresentationDataByStudentIdQuery : IRequest<
+        IList<StudentLessonActivityPresentationDataModel>>
 {
     public int StudentId { get; set; }
 }
 
 public class GetStudentLessonActivitiesPresentationDataByStudentIdQueryHandler
-    : IRequestHandler<GetStudentLessonActivitiesPresentationDataByStudentIdQuery, IList<StudentLessonActivityPresentationDataModel>>
+    : IRequestHandler<GetStudentLessonActivitiesPresentationDataByStudentIdQuery,
+        IList<StudentLessonActivityPresentationDataModel>>
 {
     private readonly IApplicationDbContext _context;
 
@@ -21,7 +26,8 @@ public class GetStudentLessonActivitiesPresentationDataByStudentIdQueryHandler
         _context = context;
     }
 
-    public async Task<IList<StudentLessonActivityPresentationDataModel>> Handle(GetStudentLessonActivitiesPresentationDataByStudentIdQuery request,
+    public async Task<IList<StudentLessonActivityPresentationDataModel>> Handle(
+        GetStudentLessonActivitiesPresentationDataByStudentIdQuery request,
         CancellationToken cancellationToken)
     {
         var activities = await _context.StudentLessonActivities
@@ -50,7 +56,10 @@ public class StudentLessonActivityPresentationDataModel
     public int LessonId { get; set; }
     public string LessonTopic { get; set; }
     public string SubjectName { get; set; }
+
+    [JsonConverter(typeof(JsonStringEnumConverter<AttendanceStatus>))]
     public AttendanceStatus AttendanceStatus { get; set; }
+
     public int? Grade { get; set; }
     public DateTime ActivityCreatedAt { get; set; }
 }

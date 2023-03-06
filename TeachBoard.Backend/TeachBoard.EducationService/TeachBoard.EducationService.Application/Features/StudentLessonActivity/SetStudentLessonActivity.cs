@@ -4,7 +4,7 @@ using TeachBoard.EducationService.Application.Exceptions;
 using TeachBoard.EducationService.Application.Interfaces;
 using TeachBoard.EducationService.Domain.Enums;
 
-namespace TeachBoard.EducationService.Application.Features.Lesson;
+namespace TeachBoard.EducationService.Application.Features.StudentLessonActivity;
 
 public class SetStudentLessonActivityCommand : IRequest<Domain.Entities.StudentLessonActivity>
 {

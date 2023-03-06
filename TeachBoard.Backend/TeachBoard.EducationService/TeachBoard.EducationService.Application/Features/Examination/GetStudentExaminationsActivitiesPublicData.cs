@@ -1,5 +1,7 @@
-﻿using MediatR;
+﻿using System.Text.Json.Serialization;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using TeachBoard.EducationService.Application.Converters;
 using TeachBoard.EducationService.Application.Interfaces;
 using TeachBoard.EducationService.Domain.Enums;
 
@@ -7,12 +9,14 @@ namespace TeachBoard.EducationService.Application.Features.Examination;
 
 // Get public data of student examination activities (examId, subjectName, grade, status)
 
-public class GetStudentExaminationsActivitiesPublicDataQuery : IRequest<IList<StudentExaminationActivityPresentationDataModel>>
+public class
+    GetStudentExaminationsActivitiesPublicDataQuery : IRequest<IList<StudentExaminationActivityPresentationDataModel>>
 {
     public int StudentId { get; set; }
 }
 
-public class GetStudentExaminationsActivitiesPublicDataQueryHandler : IRequestHandler<GetStudentExaminationsActivitiesPublicDataQuery,
+public class GetStudentExaminationsActivitiesPublicDataQueryHandler : IRequestHandler<
+    GetStudentExaminationsActivitiesPublicDataQuery,
     IList<StudentExaminationActivityPresentationDataModel>>
 {
     private readonly IApplicationDbContext _context;
@@ -22,11 +26,12 @@ public class GetStudentExaminationsActivitiesPublicDataQueryHandler : IRequestHa
         _context = context;
     }
 
-    public async Task<IList<StudentExaminationActivityPresentationDataModel>> Handle(GetStudentExaminationsActivitiesPublicDataQuery request,
+    public async Task<IList<StudentExaminationActivityPresentationDataModel>> Handle(
+        GetStudentExaminationsActivitiesPublicDataQuery request,
         CancellationToken cancellationToken)
     {
         // Get given student examination activities, join examinations and subjects names 
-        
+
         var studentExaminationsActivities = await _context.StudentExaminationActivities
             .Where(sta => sta.StudentId == request.StudentId)
             .Include(sea => sea.Examination)
@@ -51,5 +56,7 @@ public class StudentExaminationActivityPresentationDataModel
     public int ExaminationId { get; set; }
     public string SubjectName { get; set; }
     public int? Grade { get; set; }
+
+    [JsonConverter(typeof(JsonStringEnumConverter<StudentExaminationStatus>))]
     public StudentExaminationStatus Status { get; set; }
 }
