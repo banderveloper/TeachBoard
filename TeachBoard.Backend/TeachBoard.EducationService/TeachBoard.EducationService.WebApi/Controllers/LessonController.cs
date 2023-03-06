@@ -7,13 +7,12 @@ using TeachBoard.EducationService.Application.Features.StudentLessonActivity;
 using TeachBoard.EducationService.Domain.Entities;
 using TeachBoard.EducationService.WebApi.ActionResults;
 using TeachBoard.EducationService.WebApi.Models.Lesson;
-using TeachBoard.EducationService.WebApi.Models.Validation;
+using TeachBoard.EducationService.WebApi.Validation;
 
 namespace TeachBoard.EducationService.WebApi.Controllers;
 
 [ApiController]
 [Route("lessons")]
-[ValidateModel]
 [Produces("application/json")]
 public class LessonController : ControllerBase
 {
@@ -42,9 +41,6 @@ public class LessonController : ControllerBase
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<Lesson>> CreateLesson([FromBody] CreateLessonRequestModel model)
     {
-        if (!ModelState.IsValid)
-            return UnprocessableEntity(model);
-
         var command = _mapper.Map<CreateLessonCommand>(model);
         var createdLesson = await _mediator.Send(command);
 

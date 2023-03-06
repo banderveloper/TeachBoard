@@ -6,14 +6,13 @@ using TeachBoard.EducationService.Application.Features.Subject;
 using TeachBoard.EducationService.Domain.Entities;
 using TeachBoard.EducationService.WebApi.ActionResults;
 using TeachBoard.EducationService.WebApi.Models.Subject;
-using TeachBoard.EducationService.WebApi.Models.Validation;
+using TeachBoard.EducationService.WebApi.Validation;
 
 namespace TeachBoard.EducationService.WebApi.Controllers;
 
 [ApiController]
 [Route("subjects")]
 [Produces("application/json")]
-[ValidateModel]
 public class SubjectController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -41,9 +40,6 @@ public class SubjectController : ControllerBase
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<Subject>> CreateSubject([FromBody] CreateSubjectRequestModel model)
     {
-        if (!ModelState.IsValid)
-            return UnprocessableEntity(model);
-
         var command = _mapper.Map<CreateSubjectCommand>(model);
 
         var createdSubject = await _mediator.Send(command);

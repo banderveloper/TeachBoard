@@ -6,14 +6,13 @@ using TeachBoard.EducationService.Application.Features.Homework;
 using TeachBoard.EducationService.Domain.Entities;
 using TeachBoard.EducationService.WebApi.ActionResults;
 using TeachBoard.EducationService.WebApi.Models.Homework;
-using TeachBoard.EducationService.WebApi.Models.Validation;
+using TeachBoard.EducationService.WebApi.Validation;
 
 namespace TeachBoard.EducationService.WebApi.Controllers;
 
 [Route("homeworks")]
 [ApiController]
 [Produces("application/json")]
-[ValidateModel]
 public class HomeworkController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -39,9 +38,6 @@ public class HomeworkController : ControllerBase
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<Homework>> CreateHomework([FromBody] CreateHomeworkRequestModel requestModel)
     {
-        if (!ModelState.IsValid)
-            return UnprocessableEntity(requestModel);
-
         var command = _mapper.Map<CreateHomeworkCommand>(requestModel);
         var createdHomework = await _mediator.Send(command);
 
@@ -89,9 +85,6 @@ public class HomeworkController : ControllerBase
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<CompletedHomework>> CompleteHomework([FromBody] CompleteHomeworkRequestModel model)
     {
-        if (!ModelState.IsValid)
-            return UnprocessableEntity(model);
-
         var command = _mapper.Map<CompleteHomeworkCommand>(model);
         var completedHomework = await _mediator.Send(command);
 
@@ -116,9 +109,6 @@ public class HomeworkController : ControllerBase
     [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status423Locked)]
     public async Task<ActionResult<CompletedHomework>> CheckHomework([FromBody] CheckHomeworkRequestModel model)
     {
-        if (!ModelState.IsValid)
-            return UnprocessableEntity(model);
-
         var command = _mapper.Map<CheckHomeworkCommand>(model);
         var completedHomework = await _mediator.Send(command);
 

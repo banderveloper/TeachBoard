@@ -1,6 +1,6 @@
 ﻿using TeachBoard.EducationService.Application.Extensions;
 
-namespace TeachBoard.EducationService.WebApi.Models.Validation;
+namespace TeachBoard.EducationService.WebApi.Validation;
 
 /// <summary>
 /// Field validation error item
