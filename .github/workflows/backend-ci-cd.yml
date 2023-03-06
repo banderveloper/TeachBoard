@@ -1,24 +1,34 @@
-name: Test
+name: Build and Push Docker Compose
 
 on:
   push:
     branches:
-    - master
-  pull_request:
-    branches:
-    - master
+      - master
+
+env:
+  COMPOSE_FILE: TeachBoard.Backend/docker-compose.yml
+  DOCKER_USERNAME: kpssnik
+  DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
 
 jobs:
-  docker:
-    timeout-minutes: 2
+  build:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout
-      uses: actions/checkout@v1
-
-    - name: Build containers
-      run: docker-compose -f "TeachBoard.Backend/docker-compose.yml" build
-      
-    - name: Push containers to hub
-    - run: docker-compose -f "TeachBoard.Backend/docker-compose.yml" push
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ env.DOCKER_USERNAME }}
+          password: ${{ env.DOCKER_PASSWORD }}
+          
+      - name: Build and push Docker Compose
+        run: |
+          docker-compose -f ${{ env.COMPOSE_FILE }} build
+          docker-compose -f ${{ env.COMPOSE_FILE }} push ${{ env.DOCKER_HUB_REPO }}
+          
+      - name: Clean up
+        run: |
+          docker-compose -f ${{ env.COMPOSE_FILE }} down
+          docker image prune -af
