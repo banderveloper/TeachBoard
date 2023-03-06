@@ -3,16 +3,17 @@
 namespace TeachBoard.Gateway.Application.Validation;
 
 // Returning validation error model
-public class ValidationResultModel  
-{  
-    public string Message { get; }
-    public List<ValidationError> Errors { get; }  
+public class ValidationResultModel
+{
+    public string ErrorCode { get; } = "validation_failed";
+    public IList<ValidationError> InvalidFields { get; }
 
-    public ValidationResultModel(ModelStateDictionary modelState)  
-    {  
-        Message = "Validation Failed";  
-        Errors = modelState.Keys  
-            .SelectMany(key => modelState[key].Errors.Select(x => new ValidationError(key, x.ErrorMessage)))  
-            .ToList();  
-    }  
-}  
+    public ValidationResultModel(ModelStateDictionary modelState)
+    {
+        InvalidFields = modelState.Keys.SelectMany(key =>
+                modelState[key].Errors.Select(x =>
+                    new ValidationError(key.Replace("$.", ""),
+                        x.ErrorMessage)))
+            .ToList();
+    }
+}
