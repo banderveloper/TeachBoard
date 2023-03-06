@@ -37,6 +37,9 @@ builder.Services.AddControllers()
         // models enums to string converter
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter<AttendanceStatus>());
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter<StudentExaminationStatus>());
+        
+        // Error code enum to snake_case_string converter
+        options.JsonSerializerOptions.Converters.Add(new SnakeCaseStringEnumConverter<ErrorCode>());
     })
     .ConfigureApiBehaviorOptions(options =>
     {
