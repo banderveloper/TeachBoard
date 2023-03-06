@@ -6,30 +6,31 @@ using TeachBoard.EducationService.Domain.Enums;
 
 namespace TeachBoard.EducationService.Application.Features.StudentLessonActivity;
 
-public class GetStudentLessonActivitiesByStudentIdQuery : IRequest<StudentLessonActivityPublicListModel>
+public class GetStudentLessonActivitiesPresentationDataByStudentIdQuery : IRequest<IList<StudentLessonActivityPresentationDataModel>>
 {
     public int StudentId { get; set; }
 }
 
-public class GetStudentLessonActivitiesByStudentIdQueryHandler
-    : IRequestHandler<GetStudentLessonActivitiesByStudentIdQuery, StudentLessonActivityPublicListModel>
+public class GetStudentLessonActivitiesPresentationDataByStudentIdQueryHandler
+    : IRequestHandler<GetStudentLessonActivitiesPresentationDataByStudentIdQuery, IList<StudentLessonActivityPresentationDataModel>>
 {
     private readonly IApplicationDbContext _context;
 
-    public GetStudentLessonActivitiesByStudentIdQueryHandler(IApplicationDbContext context)
+    public GetStudentLessonActivitiesPresentationDataByStudentIdQueryHandler(IApplicationDbContext context)
     {
         _context = context;
     }
 
-    public async Task<StudentLessonActivityPublicListModel> Handle(GetStudentLessonActivitiesByStudentIdQuery request,
+    public async Task<IList<StudentLessonActivityPresentationDataModel>> Handle(GetStudentLessonActivitiesPresentationDataByStudentIdQuery request,
         CancellationToken cancellationToken)
     {
         var activities = await _context.StudentLessonActivities
             .Include(sla => sla.Lesson)
             .ThenInclude(lesson => lesson.Subject)
             .Where(sla => sla.StudentId == request.StudentId)
-            .Select(sla => new StudentLessonActivityPublicModel()
+            .Select(sla => new StudentLessonActivityPresentationDataModel
             {
+                StudentId = sla.StudentId,
                 AttendanceStatus = sla.AttendanceStatus,
                 LessonId = sla.LessonId,
                 LessonTopic = sla.Lesson.Topic,
@@ -38,22 +39,18 @@ public class GetStudentLessonActivitiesByStudentIdQueryHandler
                 ActivityCreatedAt = sla.CreatedAt
             })
             .ToListAsync(cancellationToken);
-        
-        return new StudentLessonActivityPublicListModel { Activities = activities };
+
+        return activities;
     }
 }
 
-public class StudentLessonActivityPublicModel
+public class StudentLessonActivityPresentationDataModel
 {
+    public int StudentId { get; set; }
     public int LessonId { get; set; }
     public string LessonTopic { get; set; }
     public string SubjectName { get; set; }
     public AttendanceStatus AttendanceStatus { get; set; }
     public int? Grade { get; set; }
     public DateTime ActivityCreatedAt { get; set; }
-}
-
-public class StudentLessonActivityPublicListModel
-{
-    public IList<StudentLessonActivityPublicModel> Activities { get; set; }
 }

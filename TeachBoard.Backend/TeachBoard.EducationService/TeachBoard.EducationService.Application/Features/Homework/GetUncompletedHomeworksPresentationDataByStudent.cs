@@ -5,23 +5,24 @@ using TeachBoard.EducationService.Application.Interfaces;
 
 namespace TeachBoard.EducationService.Application.Features.Homework;
 
-public class GetUncompletedHomeworksByStudentQuery : IRequest<UncompletedHomeworksPublicListModel>
+public class GetUncompletedHomeworksPresentationDataByStudentQuery : IRequest<IList<UncompletedHomeworkPresentationDataModel>>
 {
     public int StudentId { get; set; }
     public int GroupId { get; set; }
 }
 
-public class GetUncompletedHomeworksByStudentQueryHandler : IRequestHandler<GetUncompletedHomeworksByStudentQuery,
-    UncompletedHomeworksPublicListModel>
+public class GetUncompletedHomeworksPresentationDataByStudentQueryHandler : IRequestHandler<GetUncompletedHomeworksPresentationDataByStudentQuery,
+    IList<UncompletedHomeworkPresentationDataModel>>
 {
     private readonly IApplicationDbContext _context;
 
-    public GetUncompletedHomeworksByStudentQueryHandler(IApplicationDbContext context)
+    public GetUncompletedHomeworksPresentationDataByStudentQueryHandler(IApplicationDbContext context)
     {
         _context = context;
     }
 
-    public async Task<UncompletedHomeworksPublicListModel> Handle(GetUncompletedHomeworksByStudentQuery request,
+    public async Task<IList<UncompletedHomeworkPresentationDataModel>> Handle(
+        GetUncompletedHomeworksPresentationDataByStudentQuery request,
         CancellationToken cancellationToken)
     {
         // completed homeworks by student
@@ -35,7 +36,7 @@ public class GetUncompletedHomeworksByStudentQueryHandler : IRequestHandler<GetU
             await _context.Homeworks
                 .Include(h => h.Subject)
                 .Where(h => h.GroupId == request.GroupId && !studentCompletedHomeworkIds.Contains(h.Id))
-                .Select(h => new UncompletedHomeworkPublicModel
+                .Select(h => new UncompletedHomeworkPresentationDataModel
                 {
                     HomeworkId = h.Id,
                     TeacherId = h.TeacherId,
@@ -44,21 +45,16 @@ public class GetUncompletedHomeworksByStudentQueryHandler : IRequestHandler<GetU
                     CreatedAt = h.CreatedAt
                 })
                 .ToListAsync(cancellationToken);
-        
-        return new UncompletedHomeworksPublicListModel { UncompletedHomeworks = uncompletedHomeworks };
+
+        return uncompletedHomeworks;
     }
 }
 
-public class UncompletedHomeworkPublicModel
+public class UncompletedHomeworkPresentationDataModel
 {
     public int HomeworkId { get; set; }
     public string SubjectName { get; set; }
     public int TeacherId { get; set; }
     public string FilePath { get; set; }
     public DateTime CreatedAt { get; set; }
-}
-
-public class UncompletedHomeworksPublicListModel
-{
-    public IList<UncompletedHomeworkPublicModel> UncompletedHomeworks { get; set; }
 }

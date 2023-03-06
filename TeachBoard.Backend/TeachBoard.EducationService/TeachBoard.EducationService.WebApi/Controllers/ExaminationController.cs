@@ -89,12 +89,12 @@ public class ExaminationController : ControllerBase
     /// <response code="404">Student examination activies with given id student id not found (student_examination_activities_not_found)</response>
     /// <response code="422">Invalid model</response>
     [HttpGet("student-activities/{studentId:int}")]
-    [ProducesResponseType(typeof(StudentExaminationsPublicDataListModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IList<StudentExaminationActivityPresentationDataModel>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
-    public async Task<ActionResult<StudentExaminationsPublicDataListModel>> GetStudentExaminationActivities(int studentId)
+    public async Task<ActionResult<IList<StudentExaminationActivityPresentationDataModel>>> GetStudentExaminationActivities(int studentId)
     {
-        var query = new GetStudentExaminationsActivitiesQuery { StudentId = studentId };
+        var query = new GetStudentExaminationsActivitiesPublicDataQuery { StudentId = studentId };
         var model = await _mediator.Send(query);
 
         return new WebApiResult(model);

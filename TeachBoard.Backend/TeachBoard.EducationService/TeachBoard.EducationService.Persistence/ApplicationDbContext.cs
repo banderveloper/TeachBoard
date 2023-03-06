@@ -12,7 +12,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Lesson> Lessons { get; set; }
     public DbSet<StudentExaminationActivity> StudentExaminationActivities { get; set; }
     public DbSet<StudentLessonActivity> StudentLessonActivities { get; set; }
-    public DbSet<Subject> Subjects { get; set; }
+    public DbSet<Subject?> Subjects { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)

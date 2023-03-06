@@ -60,9 +60,9 @@ public class LessonController : ControllerBase
     /// <response code="200">Success. Lesson returned</response>
     /// <response code="404">Future lessons not found (lessons_not_found)</response>
     [HttpGet("future")]
-    [ProducesResponseType(typeof(LessonsListModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IList<Lesson>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<LessonsListModel>> GetFutureLessons()
+    public async Task<ActionResult<IList<Lesson>>> GetFutureLessons()
     {
         var query = new GetFutureLessonsQuery();
         var lessonsModel = await _mediator.Send(query);
@@ -79,9 +79,9 @@ public class LessonController : ControllerBase
     /// <response code="200">Success. Lessons returned</response>
     /// <response code="404">Lessons not found (lessons_not_found)</response>
     [HttpGet("by-group/{groupId:int}")]
-    [ProducesResponseType(typeof(LessonsListModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IList<Lesson>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<LessonsListModel>> GetLessonsByGroupId(int groupId)
+    public async Task<ActionResult<IList<Lesson>>> GetLessonsByGroupId(int groupId)
     {
         var query = new GetLessonsByGroupIdQuery { GroupId = groupId };
         var lessonsModel = await _mediator.Send(query);
@@ -125,12 +125,12 @@ public class LessonController : ControllerBase
     /// <response code="200">Success. Student lesson activities returned</response>
     /// <response code="404">Student lesson activities witn given student id not found (student_lesson_activities_not_found)</response>
     [HttpGet("student-activities/{studentId:int}")]
-    [ProducesResponseType(typeof(StudentLessonActivityPublicListModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IList<StudentLessonActivityPresentationDataModel>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<StudentLessonActivityPublicListModel>> GetStudentLessonActivitiesByStudentId(
+    public async Task<ActionResult<IList<StudentLessonActivityPresentationDataModel>>> GetStudentLessonActivitiesByStudentId(
         int studentId)
     {
-        var query = new GetStudentLessonActivitiesByStudentIdQuery { StudentId = studentId };
+        var query = new GetStudentLessonActivitiesPresentationDataByStudentIdQuery { StudentId = studentId };
 
         var activitiesListModel = await _mediator.Send(query);
         return new WebApiResult(activitiesListModel);

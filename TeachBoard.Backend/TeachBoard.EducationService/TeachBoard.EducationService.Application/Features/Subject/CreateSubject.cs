@@ -21,7 +21,7 @@ public class CreateSubjectCommandHandler : IRequestHandler<CreateSubjectCommand,
         _context = context;
     }
 
-    public async Task<Domain.Entities.Subject> Handle(CreateSubjectCommand request, CancellationToken cancellationToken)
+    public async Task<Domain.Entities.Subject?> Handle(CreateSubjectCommand request, CancellationToken cancellationToken)
     {
         var existingSubject = await _context.Subjects
             .FirstOrDefaultAsync(s => string.Equals(s.Name.ToLower(), request.Name.ToLower()),

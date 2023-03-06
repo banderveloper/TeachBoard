@@ -58,9 +58,9 @@ public class HomeworkController : ControllerBase
     /// <response code="200">Success. Homeworks for given group returned</response>
     /// <response code="404">Homeworks for given group not found (homeworks_not_found)</response>
     [HttpGet("group/{groupId:int}")]
-    [ProducesResponseType(typeof(HomeworksListModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IList<Homework>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<HomeworksListModel>> GetHomeworksByGroupId(int groupId)
+    public async Task<ActionResult<IList<Homework>>> GetHomeworksByGroupId(int groupId)
     {
         var query = new GetHomeworksByGroupIdQuery { GroupId = groupId };
         var homeworksModel = await _mediator.Send(query);
@@ -135,11 +135,11 @@ public class HomeworkController : ControllerBase
     /// <response code="200">Success. Completed homeworks full data by student returned</response>
     /// <response code="404">Completed homeworks of student with given id not found (completed_homeworks_not_found)</response>
     [HttpGet("full-completed/{studentId:int}")]
-    [ProducesResponseType(typeof(FullCompletedHomeworksListModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IList<CompletedHomeworkPresentationDataModel>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<FullCompletedHomeworksListModel>> GetFullCompletedHomeworksByStudentId(int studentId)
+    public async Task<ActionResult<IList<CompletedHomeworkPresentationDataModel>>> GetFullCompletedHomeworksByStudentId(int studentId)
     {
-        var query = new GetFullCompletedHomeworksByStudentIdQuery { StudentId = studentId };
+        var query = new GetCompletedHomeworksPresentationDataByStudentIdQuery { StudentId = studentId };
         var completedHomeworks = await _mediator.Send(query);
 
         return new WebApiResult(completedHomeworks);
@@ -156,12 +156,12 @@ public class HomeworkController : ControllerBase
     /// <response code="200">Success. Uncompleted homeworks full data by student returned</response>
     /// <response code="404">Uncompleted homeworks of student with given id not found (uncompleted_homeworks_not_found)</response>
     [HttpGet("uncompleted-homeworks/{studentId:int}/{groupId:int}")]
-    [ProducesResponseType(typeof(FullCompletedHomeworksListModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IList<UncompletedHomeworkPresentationDataModel>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<UncompletedHomeworksPublicListModel>> GetUncompletedHomeworksByStudent(int studentId,
+    public async Task<ActionResult<IList<UncompletedHomeworkPresentationDataModel>>> GetUncompletedHomeworksByStudent(int studentId,
         int groupId)
     {
-        var query = new GetUncompletedHomeworksByStudentQuery { StudentId = studentId, GroupId = groupId };
+        var query = new GetUncompletedHomeworksPresentationDataByStudentQuery { StudentId = studentId, GroupId = groupId };
         var uncompletedHomeworks = await _mediator.Send(query);
 
         return new WebApiResult(uncompletedHomeworks);

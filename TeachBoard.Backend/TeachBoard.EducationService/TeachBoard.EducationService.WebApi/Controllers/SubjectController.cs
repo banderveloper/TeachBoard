@@ -79,9 +79,9 @@ public class SubjectController : ControllerBase
     /// <response code="200">Success. Subjects returned</response>
     /// <response code="404">No subjects found (subjects_not_found)</response>
     [HttpGet]
-    [ProducesResponseType(typeof(SubjectsListModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IList<Subject>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<SubjectsListModel>> GetAllSubjects()
+    public async Task<ActionResult<IList<Subject>>> GetAllSubjects()
     {
         var query = new GetAllSubjectsQuery();
         var subjectsModel = await _mediator.Send(query);

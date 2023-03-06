@@ -12,7 +12,7 @@ public interface IApplicationDbContext
     DbSet<Lesson> Lessons { get; set; }
     DbSet<StudentExaminationActivity> StudentExaminationActivities { get; set; }
     DbSet<StudentLessonActivity> StudentLessonActivities { get; set; }
-    DbSet<Subject> Subjects { get; set; }
+    DbSet<Subject?> Subjects { get; set; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }
