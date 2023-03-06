@@ -17,7 +17,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\TeachBoard.Gateway.Application\TeachBoard.Gateway.Application.csproj" />
-      <ProjectReference Include="..\TeachBoard.Gateway.Domain\TeachBoard.Gateway.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>

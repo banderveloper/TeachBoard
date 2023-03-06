@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TeachBoard.Gateway.Application.Enums;
 using TeachBoard.Gateway.Application.Exceptions;
 using TeachBoard.Gateway.Application.Models.Identity.Request;
 using TeachBoard.Gateway.Application.Models.Identity.Response;
 using TeachBoard.Gateway.Application.Models.Members.Request;
 using TeachBoard.Gateway.Application.RefitClients;
 using TeachBoard.Gateway.Application.Validation;
-using TeachBoard.Gateway.Domain.Enums;
 
 namespace TeachBoard.Gateway.WebApi.Controllers;
 

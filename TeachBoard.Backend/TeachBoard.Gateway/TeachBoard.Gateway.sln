@@ -6,8 +6,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentatio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeachBoard.Gateway.WebApi", "TeachBoard.Gateway.WebApi\TeachBoard.Gateway.WebApi.csproj", "{AFD1238D-1D6A-4A3E-A5F0-35522267B3B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeachBoard.Gateway.Domain", "TeachBoard.Gateway.Domain\TeachBoard.Gateway.Domain.csproj", "{B3DBE9C0-6098-4948-A50E-1DD4827015DD}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeachBoard.Gateway.Application", "TeachBoard.Gateway.Application\TeachBoard.Gateway.Application.csproj", "{3568E02C-DDCB-4F6E-A051-111A4C31D58C}"
 EndProject
 Global
@@ -17,7 +15,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{AFD1238D-1D6A-4A3E-A5F0-35522267B3B6} = {0C37E3FA-F127-4E1F-97B6-61BCF975744A}
-		{B3DBE9C0-6098-4948-A50E-1DD4827015DD} = {E8C65B7B-BF15-4A20-BE9D-C422045B4365}
 		{3568E02C-DDCB-4F6E-A051-111A4C31D58C} = {E8C65B7B-BF15-4A20-BE9D-C422045B4365}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
@@ -25,10 +22,6 @@ Global
 		{AFD1238D-1D6A-4A3E-A5F0-35522267B3B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AFD1238D-1D6A-4A3E-A5F0-35522267B3B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AFD1238D-1D6A-4A3E-A5F0-35522267B3B6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B3DBE9C0-6098-4948-A50E-1DD4827015DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B3DBE9C0-6098-4948-A50E-1DD4827015DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B3DBE9C0-6098-4948-A50E-1DD4827015DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B3DBE9C0-6098-4948-A50E-1DD4827015DD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3568E02C-DDCB-4F6E-A051-111A4C31D58C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3568E02C-DDCB-4F6E-A051-111A4C31D58C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3568E02C-DDCB-4F6E-A051-111A4C31D58C}.Release|Any CPU.ActiveCfg = Release|Any CPU

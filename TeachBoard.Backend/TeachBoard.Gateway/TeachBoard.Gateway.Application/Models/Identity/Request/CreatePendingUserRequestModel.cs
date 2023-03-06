@@ -1,6 +1,4 @@
-﻿using TeachBoard.Gateway.Domain.Enums;
-
-namespace TeachBoard.Gateway.Application.Models.Identity.Request;
+﻿namespace TeachBoard.Gateway.Application.Models.Identity.Request;
 
 public class CreatePendingUserRequestModel
 {

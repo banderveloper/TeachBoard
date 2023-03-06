@@ -1,4 +1,4 @@
-﻿using TeachBoard.Gateway.Domain.Enums;
+﻿using TeachBoard.Gateway.Application.Enums;
 
 namespace TeachBoard.Gateway.Application.Models.Education.Response;
 

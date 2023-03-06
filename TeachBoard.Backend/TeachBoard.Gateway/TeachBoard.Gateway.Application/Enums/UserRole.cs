@@ -1,4 +1,4 @@
-﻿namespace TeachBoard.Gateway.Domain.Enums;
+﻿namespace TeachBoard.Gateway.Application.Enums;
 
 public enum UserRole
 {
