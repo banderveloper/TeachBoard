@@ -43,6 +43,7 @@ public class GetUserByCredentialsQueryHandler : IRequestHandler<GetUserByCredent
             throw new ExpectedApiException
             {
                 ErrorCode = ErrorCode.UserPasswordIncorrect,
+                ReasonField = "password",
                 PublicErrorMessage = "Incorrect password to given user",
                 LogErrorMessage = $"Get user by credentials error. Wrong password to user [{user.UserName}]"
             };

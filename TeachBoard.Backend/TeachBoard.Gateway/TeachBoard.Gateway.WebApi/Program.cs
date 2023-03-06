@@ -1,4 +1,4 @@
-using System.Net.Mime;
+using System.Net;
 using System.Reflection;
 using System.Text;
 using Refit;
@@ -6,10 +6,11 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using TeachBoard.Gateway.Application.Refit.Clients;
 using TeachBoard.Gateway.WebApi.Middleware;
-using TeachBoard.Gateway.Application.RefitClients;
 using TeachBoard.Gateway.Application.Services;
 using TeachBoard.Gateway.Application.Validation;
+using TeachBoard.Gateway.WebApi.ActionResults;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,11 +23,13 @@ builder.Services.AddControllers()
     })
     .ConfigureApiBehaviorOptions(options =>
     {
-        // custom validation error response
         options.InvalidModelStateResponseFactory = context =>
         {
-            var result = new ValidationFailedResult(context.ModelState);
-            result.ContentTypes.Add(MediaTypeNames.Application.Json);
+            var result = new WebApiResult
+            {
+                Error = new ValidationResultModel(context.ModelState),
+                StatusCode = HttpStatusCode.UnprocessableEntity
+            };
 
             return result;
         };
@@ -41,11 +44,11 @@ builder.Services.AddRefitClient<IIdentityClient>()
             UseCookies = false
         });
 
-builder.Services.AddRefitClient<IMembersClient>()
-    .ConfigureHttpClient(client => client.BaseAddress = new Uri(builder.Configuration["ApiAddresses:Members"]));
-
-builder.Services.AddRefitClient<IEducationClient>()
-    .ConfigureHttpClient(client => client.BaseAddress = new Uri(builder.Configuration["ApiAddresses:Education"]));
+// builder.Services.AddRefitClient<IMembersClient>()
+//     .ConfigureHttpClient(client => client.BaseAddress = new Uri(builder.Configuration["ApiAddresses:Members"]));
+//
+// builder.Services.AddRefitClient<IEducationClient>()
+//     .ConfigureHttpClient(client => client.BaseAddress = new Uri(builder.Configuration["ApiAddresses:Education"]));
 
 builder.Services.AddScoped<CookieService>();
 
