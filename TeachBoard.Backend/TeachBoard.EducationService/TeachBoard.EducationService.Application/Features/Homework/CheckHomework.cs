@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using TeachBoard.EducationService.Application.Exceptions;
 using TeachBoard.EducationService.Application.Interfaces;
 using TeachBoard.EducationService.Domain.Entities;
@@ -25,7 +26,8 @@ public class CheckHomeworkCommandHandler : IRequestHandler<CheckHomeworkCommand,
     public async Task<CompletedHomework> Handle(CheckHomeworkCommand request, CancellationToken cancellationToken)
     {
         var completedHomework = await _context.CompletedHomeworks
-            .FindAsync(request.CompletedHomeworkId, cancellationToken);
+            .AsTracking()
+            .FirstOrDefaultAsync(ch => ch.Id == request.CompletedHomeworkId, cancellationToken);
 
         if (completedHomework is null)
             throw new ExpectedApiException

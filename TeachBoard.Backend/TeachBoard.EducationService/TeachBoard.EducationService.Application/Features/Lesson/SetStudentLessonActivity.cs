@@ -53,6 +53,7 @@ public class SetStudentLessonActivityCommandHandler
 
         // try get student activity
         var existingActivity = await _context.StudentLessonActivities
+            .AsTracking()
             .FirstOrDefaultAsync(sla => sla.LessonId == request.LessonId &&
                                         sla.StudentId == request.StudentId,
                 cancellationToken);

@@ -30,7 +30,9 @@ public class
         CancellationToken cancellationToken)
     {
         var existingExamination =
-            await _context.Examinations.FindAsync(new object[] { request.ExaminationId }, cancellationToken);
+            await _context.Examinations
+                .AsTracking()
+                .FirstOrDefaultAsync(e => e.Id == request.ExaminationId, cancellationToken);
         
         if (existingExamination is null)
             throw new ExpectedApiException
