@@ -13,7 +13,7 @@ public class GetFullCompletedHomeworksByStudentIdQuery : IRequest<FullCompletedH
 public class GetFullCompletedHomeworksByStudentIdQueryHandler : IRequestHandler<
     GetFullCompletedHomeworksByStudentIdQuery, FullCompletedHomeworksListModel>
 {
-    private IApplicationDbContext _context;
+    private readonly IApplicationDbContext _context;
 
     public GetFullCompletedHomeworksByStudentIdQueryHandler(IApplicationDbContext context)
     {
@@ -40,14 +40,7 @@ public class GetFullCompletedHomeworksByStudentIdQueryHandler : IRequestHandler<
                 CreatedAt = completedHomework.CreatedAt
             })
             .ToListAsync(cancellationToken);
-
-        if (fullCompletedHomeworks.Count == 0)
-            throw new NotFoundException
-            {
-                Error = "completed_homeworks_not_found",
-                ErrorDescription = $"Student with id '{request.StudentId}' does not have completed homeworks"
-            };
-
+        
         return new FullCompletedHomeworksListModel { CompletedHomeworks = fullCompletedHomeworks };
     }
 }

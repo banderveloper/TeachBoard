@@ -6,7 +6,7 @@ using TeachBoard.EducationService.Domain.Enums;
 
 namespace TeachBoard.EducationService.Application.Features.Examination;
 
-// Get public data of student examination activites (examId, subjectName, grade, status)
+// Get public data of student examination activities (examId, subjectName, grade, status)
 
 public class GetStudentExaminationsActivitiesQuery : IRequest<StudentExaminationsPublicDataListModel>
 {
@@ -39,15 +39,7 @@ public class GetStudentExaminationActivitiesQueryHandler : IRequestHandler<GetSt
                 SubjectName = sea.Examination.Subject.Name
             })
             .ToListAsync(cancellationToken);
-
-        if (studentExaminationsActivities.Count == 0)
-            throw new NotFoundException
-            {
-                Error = "student_examination_activities_not_found",
-                ErrorDescription = $"Examination activities of student with id '{request.StudentId}' not found",
-                ReasonField = "studentId"
-            };
-
+        
         return new StudentExaminationsPublicDataListModel
         {
             Examinations = studentExaminationsActivities

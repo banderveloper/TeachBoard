@@ -38,15 +38,7 @@ public class GetStudentLessonActivitiesByStudentIdQueryHandler
                 ActivityCreatedAt = sla.CreatedAt
             })
             .ToListAsync(cancellationToken);
-
-        if (activities.Count == 0)
-            throw new NotFoundException
-            {
-                Error = "student_lesson_activities_not_found",
-                ErrorDescription = $"Student lesson activities with student id '{request.StudentId}' not found",
-                ReasonField = "studentId"
-            };
-
+        
         return new StudentLessonActivityPublicListModel { Activities = activities };
     }
 }

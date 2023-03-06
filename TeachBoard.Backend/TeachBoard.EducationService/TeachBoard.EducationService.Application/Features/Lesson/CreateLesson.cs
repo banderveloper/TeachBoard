@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using TeachBoard.EducationService.Application.Configurations;
 using TeachBoard.EducationService.Application.Exceptions;
+using TeachBoard.EducationService.Application.Features.Subject;
 using TeachBoard.EducationService.Application.Interfaces;
 
 namespace TeachBoard.EducationService.Application.Features.Lesson;
@@ -17,7 +18,6 @@ public class CreateLessonCommand : IRequest<Domain.Entities.Lesson>
     public DateTime? EndsAt { get; set; }
 }
 
-
 public class CreateLessonCommandHandler : IRequestHandler<CreateLessonCommand, Domain.Entities.Lesson>
 {
     private readonly IApplicationDbContext _context;
@@ -31,14 +31,14 @@ public class CreateLessonCommandHandler : IRequestHandler<CreateLessonCommand, D
 
     public async Task<Domain.Entities.Lesson> Handle(CreateLessonCommand request, CancellationToken cancellationToken)
     {
-        var existingSubject = await _context.Subjects.FindAsync(request.SubjectId, cancellationToken);
+        var existingSubject = await _context.Subjects.FindAsync(new object[] { request.SubjectId }, cancellationToken);
 
         if (existingSubject is null)
-            throw new NotFoundException
+            throw new ExpectedApiException
             {
-                Error = "subject_not_found",
-                ErrorDescription = $"Subject with id '{request.SubjectId}' not found",
-                ReasonField = "id"
+                ErrorCode = ErrorCode.SubjectNotFound,
+                PublicErrorMessage = "Subject not found",
+                LogErrorMessage = $"CreateLessonCommand error. Subject with id '{request.SubjectId}' not found",
             };
 
         var newLesson = new Domain.Entities.Lesson
@@ -52,16 +52,15 @@ public class CreateLessonCommandHandler : IRequestHandler<CreateLessonCommand, D
             // if end time not set - set StartTime + 80 minutes (for example)
             EndsAt = request.EndsAt ?? request.StartsAt.AddMinutes(_lessonConfiguration.DefaultDurabilityMinutes),
         };
-        
+
         // if end time later than start time
         if (newLesson.StartsAt > newLesson.EndsAt)
-            throw new InvalidDateTimeException
+            throw new BadRequestApiException
             {
-                Error = "invalid_datetime",
-                ErrorDescription = "Lesson end time cannot be later than start",
+                ErrorCode = ErrorCode.InvalidDateTime,
+                PublicErrorMessage = "Lesson finish time cannot be later than start",
                 ReasonField = "endsAt"
             };
-        
 
         _context.Lessons.Add(newLesson);
         await _context.SaveChangesAsync(cancellationToken);

@@ -28,21 +28,22 @@ public class CheckHomeworkCommandHandler : IRequestHandler<CheckHomeworkCommand,
             .FindAsync(request.CompletedHomeworkId, cancellationToken);
 
         if (completedHomework is null)
-            throw new NotFoundException
+            throw new ExpectedApiException
             {
-                Error = "completed_homework_not_found",
-                ErrorDescription = $"Completed homework with id '{request.CompletedHomeworkId}' not found",
-                ReasonField = "id"
+                ErrorCode = ErrorCode.CompletedHomeworkNotFound,
+                PublicErrorMessage = "Completed homework not found",
+                LogErrorMessage =
+                    $"CheckHomeworkCommand error. Completed homework with id [{request.CompletedHomeworkId}] not found",
             };
 
         // If homework was added by another teacher - exception
         if (completedHomework.CheckingTeacherId != request.TeacherId)
-            throw new HomeworkAccessException
+            throw new ExpectedApiException
             {
-                Error = "completed_homework_invalid_teacher",
-                ErrorDescription =
-                    $"Completed homework with id '{completedHomework.Id}' was added by another teacher, checking is denied",
-                ReasonField = "teacherId"
+                ErrorCode = ErrorCode.CompletedHomeworkInvalidTeacher,
+                PublicErrorMessage = "Homework was added by another teacher, checking unavailable",
+                LogErrorMessage =
+                    $"CheckHomeworkCommand error. Completed homework with id [{completedHomework.Id}] was added by teacher with id [{completedHomework.CheckingTeacherId}], but checking teacher id is [{request.TeacherId}]",
             };
 
         completedHomework.Grade = request.Grade;

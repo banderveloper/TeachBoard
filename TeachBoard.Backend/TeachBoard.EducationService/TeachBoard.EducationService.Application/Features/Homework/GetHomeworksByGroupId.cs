@@ -26,14 +26,6 @@ public class GetHomeworksByGroupIdQueryHandler : IRequestHandler<GetHomeworksByG
             .Where(h => h.GroupId == request.GroupId)
             .ToListAsync(cancellationToken);
 
-        if (groupHomeworks.Count == 0)
-            throw new NotFoundException
-            {
-                Error = "homeworks_not_found",
-                ErrorDescription = $"Homeworks for group with id '{request.GroupId}' not found",
-                ReasonField = "groupId"
-            };
-
         return new HomeworksListModel { Homeworks = groupHomeworks };
     }
 }

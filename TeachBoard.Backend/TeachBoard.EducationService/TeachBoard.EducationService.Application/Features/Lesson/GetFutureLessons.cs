@@ -11,7 +11,7 @@ public class GetFutureLessonsQuery : IRequest<LessonsListModel>
 
 public class GetFutureLessonsQueryHandler : IRequestHandler<GetFutureLessonsQuery, LessonsListModel>
 {
-    private IApplicationDbContext _context;
+    private readonly  IApplicationDbContext _context;
 
     public GetFutureLessonsQueryHandler(IApplicationDbContext context)
     {
@@ -23,13 +23,6 @@ public class GetFutureLessonsQueryHandler : IRequestHandler<GetFutureLessonsQuer
         var lessons = await _context.Lessons
             .Where(l => l.StartsAt > DateTime.Now)
             .ToListAsync(cancellationToken);
-
-        if (lessons.Count == 0)
-            throw new NotFoundException
-            {
-                Error = "lessons_not_found",
-                ErrorDescription = $"Future lessons (from {DateTime.Now.ToUniversalTime()}) not found"
-            };
 
         return new LessonsListModel { Lessons = lessons };
     }

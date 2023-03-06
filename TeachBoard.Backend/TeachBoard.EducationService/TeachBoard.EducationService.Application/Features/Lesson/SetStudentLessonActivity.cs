@@ -28,25 +28,29 @@ public class SetStudentLessonActivityCommandHandler
         CancellationToken cancellationToken)
     {
         // try get existing lesson by id, and throw exception if it is not exists
-        var existingLesson = await _context.Lessons.FindAsync(request.LessonId, cancellationToken);
+        var existingLesson = await _context.Lessons.FindAsync(new object[] { request.LessonId }, cancellationToken);
+
         if (existingLesson is null)
-            throw new NotFoundException
+            throw new ExpectedApiException
             {
-                Error = "lesson_not_found",
-                ErrorDescription = $"Lesson with id '{request.LessonId}' not found",
-                ReasonField = "id"
+                ErrorCode = ErrorCode.LessonNotFound,
+                PublicErrorMessage = "Lesson not found",
+                LogErrorMessage =
+                    $"SetStudentLessonActivityCommand error. Lesson with id '{request.LessonId}' not found",
             };
 
         // if lesson is not started yet - exception
         if (existingLesson.StartsAt > DateTime.Now)
         {
-            throw new InvalidDateTimeException
+            throw new ExpectedApiException
             {
-                Error = "lesson_not_started",
-                ErrorDescription = "Lesson is not started, impossible to set student activity"
+                ErrorCode = ErrorCode.LessonNotStarted,
+                PublicErrorMessage = "Lesson is not started yet, impossible to set student activity",
+                LogErrorMessage =
+                    $"SetStudentLessonActivityCommand error. Lesson is not started. Expected start time: [{existingLesson.StartsAt.ToUniversalTime()}], request time: [{DateTime.Now.ToUniversalTime()}]"
             };
         }
-        
+
         // try get student activity
         var existingActivity = await _context.StudentLessonActivities
             .FirstOrDefaultAsync(sla => sla.LessonId == request.LessonId &&
@@ -59,6 +63,7 @@ public class SetStudentLessonActivityCommandHandler
             existingActivity.AttendanceStatus = request.AttendanceStatus;
             existingActivity.Grade = request.Grade;
         }
+
         // if not exists - create
         else
         {

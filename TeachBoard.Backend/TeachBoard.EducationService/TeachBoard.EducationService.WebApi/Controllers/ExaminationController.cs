@@ -38,8 +38,8 @@ public class ExaminationController : ControllerBase
     /// <response code="422">Invalid model</response>
     [HttpPost]
     [ProducesResponseType(typeof(Examination), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<Examination>> CreateExamination([FromBody] CreateExaminationRequestModel model)
     {
@@ -64,7 +64,7 @@ public class ExaminationController : ControllerBase
     /// <response code="422">Invalid model</response>
     [HttpPost("student-activity")]
     [ProducesResponseType(typeof(StudentExaminationActivity), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<StudentExaminationActivity>> SetStudentExaminationActivity(
         [FromBody] SetStudentExaminationActivityRequestModel model)
@@ -90,7 +90,7 @@ public class ExaminationController : ControllerBase
     /// <response code="422">Invalid model</response>
     [HttpGet("student-activities/{studentId:int}")]
     [ProducesResponseType(typeof(StudentExaminationsPublicDataListModel), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<StudentExaminationsPublicDataListModel>> GetStudentExaminationActivities(int studentId)
     {

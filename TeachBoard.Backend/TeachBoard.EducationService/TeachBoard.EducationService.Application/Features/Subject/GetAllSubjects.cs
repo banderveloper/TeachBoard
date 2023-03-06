@@ -22,13 +22,6 @@ public class GetAllSubjectsQueryHandler : IRequestHandler<GetAllSubjectsQuery, S
     {
         var subjects = await _context.Subjects.ToListAsync(cancellationToken);
 
-        if (subjects.Count == 0)
-            throw new NotFoundException
-            {
-                Error = "subjects_not_found",
-                ErrorDescription = "Subjects not found"
-            };
-
         return new SubjectsListModel { Subjects = subjects };
     }
 }

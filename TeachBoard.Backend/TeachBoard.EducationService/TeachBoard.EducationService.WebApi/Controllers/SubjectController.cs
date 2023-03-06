@@ -37,7 +37,7 @@ public class SubjectController : ControllerBase
     /// <response code="422">Invalid model</response>
     [HttpPost]
     [ProducesResponseType(typeof(Subject), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<Subject>> CreateSubject([FromBody] CreateSubjectRequestModel model)
     {
@@ -61,7 +61,7 @@ public class SubjectController : ControllerBase
     /// <response code="404">Subject with given id not found (subject_not_found)</response>
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(Subject), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Subject>> GetSubjectById(int id)
     {
         var query = new GetSubjectByIdQuery { SubjectId = id };
@@ -80,7 +80,7 @@ public class SubjectController : ControllerBase
     /// <response code="404">No subjects found (subjects_not_found)</response>
     [HttpGet]
     [ProducesResponseType(typeof(SubjectsListModel), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<SubjectsListModel>> GetAllSubjects()
     {
         var query = new GetAllSubjectsQuery();
@@ -97,7 +97,7 @@ public class SubjectController : ControllerBase
     /// <response code="404">Subject with given id not found (subject_not_found)</response>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteSubjectById(int id)
     {
         var query = new DeleteSubjectByIdCommand { SubjectId = id };

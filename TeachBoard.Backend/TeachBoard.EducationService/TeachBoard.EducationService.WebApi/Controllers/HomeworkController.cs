@@ -59,7 +59,7 @@ public class HomeworkController : ControllerBase
     /// <response code="404">Homeworks for given group not found (homeworks_not_found)</response>
     [HttpGet("group/{groupId:int}")]
     [ProducesResponseType(typeof(HomeworksListModel), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<HomeworksListModel>> GetHomeworksByGroupId(int groupId)
     {
         var query = new GetHomeworksByGroupIdQuery { GroupId = groupId };
@@ -84,8 +84,8 @@ public class HomeworkController : ControllerBase
     /// <response code="422">Invalid requestModel</response>
     [HttpPost("complete")]
     [ProducesResponseType(typeof(CompletedHomework), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<CompletedHomework>> CompleteHomework([FromBody] CompleteHomeworkRequestModel model)
     {
@@ -111,9 +111,9 @@ public class HomeworkController : ControllerBase
     /// <response code="422">Invalid requestModel</response>
     [HttpPost("check-сompleted")]
     [ProducesResponseType(typeof(CompletedHomework), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status423Locked)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status423Locked)]
     public async Task<ActionResult<CompletedHomework>> CheckHomework([FromBody] CheckHomeworkRequestModel model)
     {
         if (!ModelState.IsValid)
@@ -136,7 +136,7 @@ public class HomeworkController : ControllerBase
     /// <response code="404">Completed homeworks of student with given id not found (completed_homeworks_not_found)</response>
     [HttpGet("full-completed/{studentId:int}")]
     [ProducesResponseType(typeof(FullCompletedHomeworksListModel), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<FullCompletedHomeworksListModel>> GetFullCompletedHomeworksByStudentId(int studentId)
     {
         var query = new GetFullCompletedHomeworksByStudentIdQuery { StudentId = studentId };
@@ -157,7 +157,7 @@ public class HomeworkController : ControllerBase
     /// <response code="404">Uncompleted homeworks of student with given id not found (uncompleted_homeworks_not_found)</response>
     [HttpGet("uncompleted-homeworks/{studentId:int}/{groupId:int}")]
     [ProducesResponseType(typeof(FullCompletedHomeworksListModel), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IExpectedApiException), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<UncompletedHomeworksPublicListModel>> GetUncompletedHomeworksByStudent(int studentId,
         int groupId)
     {

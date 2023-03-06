@@ -20,14 +20,14 @@ public class DeleteSubjectByIdCommandHandler : IRequestHandler<DeleteSubjectById
 
     public async Task<bool> Handle(DeleteSubjectByIdCommand request, CancellationToken cancellationToken)
     {
-        var subjectToDelete = await _context.Subjects.FindAsync(request.SubjectId, cancellationToken);
+        var subjectToDelete = await _context.Subjects.FindAsync(new object[] { request.SubjectId }, cancellationToken);
 
         if (subjectToDelete is null)
-            throw new NotFoundException
+            throw new ExpectedApiException
             {
-                Error = "subject_not_found",
-                ErrorDescription = $"Subject with id '{request.SubjectId}' not found",
-                ReasonField = "id"
+                ErrorCode = ErrorCode.SubjectNotFound,
+                PublicErrorMessage = "Subject not found",
+                LogErrorMessage = $"DeleteSubjectByIdCommand error. Subject with id '{request.SubjectId}' not found",
             };
 
         _context.Subjects.Remove(subjectToDelete);

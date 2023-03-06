@@ -44,15 +44,7 @@ public class GetUncompletedHomeworksByStudentQueryHandler : IRequestHandler<GetU
                     CreatedAt = h.CreatedAt
                 })
                 .ToListAsync(cancellationToken);
-
         
-        if (uncompletedHomeworks.Count == 0)
-            throw new NotFoundException
-            {
-                Error = "uncompleted_homeworks_not_found",
-                ErrorDescription = $"Student with id '{request.StudentId}' does not have uncompleted homeworks"
-            };
-
         return new UncompletedHomeworksPublicListModel { UncompletedHomeworks = uncompletedHomeworks };
     }
 }
