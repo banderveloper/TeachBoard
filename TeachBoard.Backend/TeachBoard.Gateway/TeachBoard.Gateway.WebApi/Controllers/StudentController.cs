@@ -49,9 +49,11 @@ public class StudentController : BaseController
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<IActionResult> ApproveStudent([FromBody] ApprovePendingUserRequestModel model)
     {
+        // approve pending user and get it
         var identityResponse = await _identityClient.ApprovePendingUser(model);
         var user = identityResponse.Data;
 
+        // create student entity to given user
         await _membersClient.CreateStudent(new CreateStudentRequestModel { UserId = user.Id });
 
         return new WebApiResult();
@@ -74,7 +76,7 @@ public class StudentController : BaseController
         var membersResponse = await _membersClient.GetStudentGroupMembersByUserId(UserId);
         var studentUserIds = membersResponse.Data?.Select(student => student.UserId).ToList();
 
-        // Get users presentations model with name and photo
+        // Get group members users presentation models (name, avatar)
         var identityResponse = await _identityClient.GetUserPresentationDataModels(studentUserIds);
         var usersPresentationsList = identityResponse.Data;
 
@@ -97,6 +99,7 @@ public class StudentController : BaseController
         var membersResponse = await _membersClient.GetStudentGroupByUserId(UserId);
         var studentGroup = membersResponse.Data;
 
+        // get all lessons using student's group id
         var educationResponse = await _educationClient.GetGroupLessons(studentGroup.Id);
         var groupLessons = educationResponse.Data;
     
