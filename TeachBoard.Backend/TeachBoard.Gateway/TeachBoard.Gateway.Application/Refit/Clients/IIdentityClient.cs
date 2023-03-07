@@ -53,4 +53,12 @@ public interface IIdentityClient
     /// <returns>User public data (without password)</returns>
     [Get("/user/{userId}")]
     Task<ServiceTypedResponse<UserPublicData>> GetUserPublicData(int userId);
+
+    /// <summary>
+    /// Create pending user
+    /// </summary>
+    /// <param name="model">New pending user data</param>
+    /// <returns>Registration code and expiration time</returns>
+    [Post("/user/pending")]
+    Task<ServiceTypedResponse<RegisterCodeModel>> CreatePendingUser([Body] CreatePendingUserRequestModel model);
 }

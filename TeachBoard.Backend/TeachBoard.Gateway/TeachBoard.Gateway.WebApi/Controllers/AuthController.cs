@@ -7,6 +7,7 @@ using TeachBoard.Gateway.Application.Refit.Clients;
 using TeachBoard.Gateway.Application.Refit.RequestModels.Identity;
 using TeachBoard.Gateway.Application.Refit.ResponseModels.Identity;
 using TeachBoard.Gateway.Application.Services;
+using TeachBoard.Gateway.Application.Validation;
 using TeachBoard.Gateway.WebApi.ActionResults;
 
 namespace TeachBoard.Gateway.WebApi.Controllers;
@@ -24,11 +25,24 @@ public class AuthController : BaseController
         _cookieService = cookieService;
     }
 
+    /// <summary>
+    /// Sign in using username and password
+    /// </summary>
+    /// 
+    /// <param name="model">Username and password</param>
+    ///
+    /// <response code="200">Success / user_not_found / user_password_incorrect</response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="503">Authentication service is unavailable now</response>
     [HttpPost("login")]
+    [ProducesResponseType(typeof(AccessTokenModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
     public async Task<ActionResult<AccessTokenModel>> Login([FromBody] LoginRequestModel model)
     {
         var identityServiceResponse = await _identityClient.Login(model);
-
+        var accessTokenModel = identityServiceResponse.Content?.Data;
+        
         // Transfer cookies from microservice response to headers for client
         _cookieService.TransferCookies(
             sourceHeaders: identityServiceResponse.Headers,
@@ -36,14 +50,22 @@ public class AuthController : BaseController
         );
 
         // auth model with access token and expire time
-        return new WebApiResult(
-            data: identityServiceResponse.Content?.Data,
-            error: identityServiceResponse.Content?.Error,
-            statusCode: identityServiceResponse.StatusCode
-        );
+        return new WebApiResult(accessTokenModel);
     }
 
+    /// <summary>
+    /// Refresh user session using cookie refresh token 
+    /// </summary>
+    ///
+    /// <remarks>Requires cookie with refresh token</remarks>
+    ///
+    /// <response code="200">Success / session_not_found</response>
+    /// <response code="406">refresh_cookie_not_found</response>
+    /// <response code="503">Authentication service is unavailable now</response>
     [HttpPut("refresh")]
+    [ProducesResponseType(typeof(AccessTokenModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IBadRequestApiException), StatusCodes.Status406NotAcceptable)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
     public async Task<ActionResult<AccessTokenModel>> Refresh()
     {
         // Get refresh token from cookies. if not passed - error
@@ -68,7 +90,19 @@ public class AuthController : BaseController
         );
     }
     
+    /// <summary>
+    /// Logout. End session and destroy refresh token
+    /// </summary>
+    ///
+    /// <remarks>Requires cookie with refresh token</remarks>
+    ///
+    /// <response code="200">Success / session_not_found</response>
+    /// <response code="406">refresh_cookie_not_found</response>
+    /// <response code="503">Authentication service is unavailable now</response>
     [HttpDelete("logout")]
+    [ProducesResponseType(typeof(AccessTokenModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IBadRequestApiException), StatusCodes.Status406NotAcceptable)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
     public async Task<IActionResult> Logout()
     {
         // Get refresh token from cookies. if not passed - error

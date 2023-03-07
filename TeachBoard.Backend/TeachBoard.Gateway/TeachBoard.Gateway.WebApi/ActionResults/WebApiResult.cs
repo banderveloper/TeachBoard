@@ -11,10 +11,8 @@ namespace TeachBoard.Gateway.WebApi.ActionResults;
 /// </summary>
 public class WebApiResult : ActionResult
 {
-    [JsonPropertyName("data")]
-    public object? Data { get; set; }
-    [JsonPropertyName("error")]
-    public object? Error { get; set; }
+    [JsonPropertyName("data")] public object? Data { get; set; }
+    [JsonPropertyName("error")] public object? Error { get; set; }
     [JsonIgnore] public HttpStatusCode StatusCode { get; set; }
 
     public WebApiResult(object? data = null, object? error = null, HttpStatusCode statusCode = HttpStatusCode.OK)
@@ -23,7 +21,7 @@ public class WebApiResult : ActionResult
         Error = error;
         StatusCode = statusCode;
     }
-    
+
     public override async Task ExecuteResultAsync(ActionContext context)
     {
         var response = context.HttpContext.Response;

@@ -51,8 +51,8 @@ var refitSettings = new RefitSettings
         var response = JsonSerializer.Deserialize<WebApiResult>(responseString);
 
         if (response?.Error is not null)
-            return new ServiceApiException { Error = response.Error, StatusCode = httpResponseMessage.StatusCode };
-
+            throw new ServiceApiException { Error = response.Error, StatusCode = httpResponseMessage.StatusCode };
+        
         return await Task.FromResult<Exception>(null);
     }
 };

@@ -14,5 +14,6 @@ public enum ErrorCode
     
     JwtUserIdNotFound,
     NeededServiceUnavailable,
-    RefreshCookieNotFound
+    RefreshCookieNotFound,
+    SetRoleForbidden
 }

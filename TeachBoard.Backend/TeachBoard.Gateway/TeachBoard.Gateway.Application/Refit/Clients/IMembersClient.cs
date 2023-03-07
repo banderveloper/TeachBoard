@@ -37,4 +37,12 @@ public interface IMembersClient
     /// <returns>Student</returns>
     [Get("/students/by-user/{userId}")]
     Task<ServiceTypedResponse<Student>> GetStudentByUserId(int userId);
+
+    /// <summary>
+    /// Set student group
+    /// </summary>
+    /// <param name="model">Student id and group id</param>
+    /// <returns>Empty response</returns>
+    [Put("/students/student-group")]
+    Task<ServiceTypedResponse<object>> SetStudentGroup([Body] SetStudentGroupRequestModel model);
 }

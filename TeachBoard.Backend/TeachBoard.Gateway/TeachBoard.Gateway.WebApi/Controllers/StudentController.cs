@@ -22,7 +22,8 @@ public class StudentController : BaseController
 
     private readonly ILogger<StudentController> _logger;
 
-    public StudentController(IIdentityClient identityClient, IMembersClient membersClient, IEducationClient educationClient, ILogger<StudentController> logger)
+    public StudentController(IIdentityClient identityClient, IMembersClient membersClient,
+        IEducationClient educationClient, ILogger<StudentController> logger)
     {
         _identityClient = identityClient;
         _membersClient = membersClient;
@@ -30,7 +31,7 @@ public class StudentController : BaseController
         _logger = logger;
     }
 
-   
+
     /// <summary>
     /// Approve pending user with student role
     /// </summary>
@@ -43,10 +44,12 @@ public class StudentController : BaseController
     /// group_not_found / student_already_exists
     /// </response>
     /// <response code="422">Invalid model state</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
     [AllowAnonymous]
     [HttpPost("approve-pending")]
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
     public async Task<IActionResult> ApproveStudent([FromBody] ApprovePendingUserRequestModel model)
     {
         // approve pending user and get it
@@ -67,9 +70,11 @@ public class StudentController : BaseController
     ///
     /// <response code="200">Success</response>
     /// <response code="401">Unauthorized</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
     [HttpGet("group-members")]
     [ProducesResponseType(typeof(IList<UserPresentationDataModel>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
     public async Task<ActionResult<IList<UserPresentationDataModel>>> GetStudentGroupMembers()
     {
         // Get student group members user ids
@@ -91,9 +96,11 @@ public class StudentController : BaseController
     ///
     /// <response code="200">Success</response>
     /// <response code="401">Unauthorized</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
     [HttpGet("all-lessons")]
     [ProducesResponseType(typeof(IList<LessonPresentationDataModel>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
     public async Task<ActionResult<IList<LessonPresentationDataModel>>> GetStudentLessons()
     {
         var membersResponse = await _membersClient.GetStudentGroupByUserId(UserId);
@@ -102,7 +109,7 @@ public class StudentController : BaseController
         // get all lessons using student's group id
         var educationResponse = await _educationClient.GetGroupLessons(studentGroup.Id);
         var groupLessons = educationResponse.Data;
-    
+
         return new WebApiResult(groupLessons);
     }
 
@@ -114,9 +121,11 @@ public class StudentController : BaseController
     ///
     /// <response code="200">Success</response>
     /// <response code="401">Unauthorized</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
     [HttpGet("profile-data")]
     [ProducesResponseType(typeof(UserProfileDataResponseModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
     public async Task<ActionResult<UserProfileDataResponseModel>> GetStudentProfileData()
     {
         // Get user public data
@@ -145,23 +154,27 @@ public class StudentController : BaseController
     ///
     /// <response code="200">Success</response>
     /// <response code="401">Unauthorized</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
     [HttpGet("exam-activities")]
     [ProducesResponseType(typeof(IList<StudentExaminationActivityPresentationDataModel>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<IList<StudentExaminationActivityPresentationDataModel>>> GetStudentExaminationsPublicData()
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
+    public async Task<ActionResult<IList<StudentExaminationActivityPresentationDataModel>>>
+        GetStudentExaminationsPublicData()
     {
         var membersResponse = await _membersClient.GetStudentByUserId(UserId);
         var student = membersResponse.Data;
-        
-        if(student?.Id == 0)
-            _logger.LogWarning($"GetStudentExaminationsPublicData warning. User id from token is [{UserId}], but student id is 0");
-        
+
+        if (student?.Id == 0)
+            _logger.LogWarning(
+                $"GetStudentExaminationsPublicData warning. User id from token is [{UserId}], but student id is 0");
+
         var educationResponse = await _educationClient.GetExaminationsActivities(student.Id);
         var examinations = educationResponse.Data;
 
         return new WebApiResult(examinations);
     }
-    
+
     /// <summary>
     /// Get student's completed homeworks
     /// </summary>
@@ -170,23 +183,25 @@ public class StudentController : BaseController
     ///
     /// <response code="200">Success</response>
     /// <response code="401">Unauthorized</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
     [HttpGet("completed-homeworks")]
     [ProducesResponseType(typeof(IList<CompletedHomeworkPresentationDataModel>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
     public async Task<ActionResult<IList<CompletedHomeworkPresentationDataModel>>> GetCompletedHomeworks()
     {
         var membersResponse = await _membersClient.GetStudentByUserId(UserId);
         var student = membersResponse.Data;
-        
-        if(student?.Id == 0)
+
+        if (student?.Id == 0)
             _logger.LogWarning($"GetCompletedHomeworks warning. User id from token is [{UserId}], but student id is 0");
-        
+
         var educationResponse = await _educationClient.GetCompletedHomeworks(student.Id);
         var completedHomeworks = educationResponse.Data;
-    
+
         return new WebApiResult(completedHomeworks);
     }
-    
+
     /// <summary>
     /// Get student's uncompleted homeworks
     /// </summary>
@@ -195,23 +210,26 @@ public class StudentController : BaseController
     ///
     /// <response code="200">Success</response>
     /// <response code="401">Unauthorized</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
     [HttpGet("uncompleted-homeworks")]
     [ProducesResponseType(typeof(IList<UncompletedHomeworkPresentationDataModel>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
     public async Task<ActionResult<IList<UncompletedHomeworkPresentationDataModel>>> GetUncompletedHomeworks()
     {
         var membersResponse = await _membersClient.GetStudentByUserId(UserId);
         var student = membersResponse.Data;
-        
-        if(student?.Id == 0)
-            _logger.LogWarning($"GetUncompletedHomeworks warning. User id from token is [{UserId}], but student id is 0");
-    
+
+        if (student?.Id == 0)
+            _logger.LogWarning(
+                $"GetUncompletedHomeworks warning. User id from token is [{UserId}], but student id is 0");
+
         var educationResponse = await _educationClient.GetUncompletedHomeworks(student.Id, student.GroupId);
         var uncompletedHomeworks = educationResponse.Data;
-    
+
         return new WebApiResult(uncompletedHomeworks);
     }
-    
+
     /// <summary>
     /// Get student's all lessons activities
     /// </summary>
@@ -220,23 +238,26 @@ public class StudentController : BaseController
     ///
     /// <response code="200">Success</response>
     /// <response code="401">Unauthorized</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
     [HttpGet("lessons-activities")]
     [ProducesResponseType(typeof(IList<StudentLessonActivityPresentationDataModel>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
     public async Task<ActionResult<IList<StudentLessonActivityPresentationDataModel>>> GetLessonsActivities()
     {
         var membersResponse = await _membersClient.GetStudentByUserId(UserId);
         var student = membersResponse.Data;
-        
-        if(student?.Id == 0)
-            _logger.LogWarning($"GetUncompletedHomeworks warning. User id from token is [{UserId}], but student id is 0");
-    
+
+        if (student?.Id == 0)
+            _logger.LogWarning(
+                $"GetUncompletedHomeworks warning. User id from token is [{UserId}], but student id is 0");
+
         var educationResponse = await _educationClient.GetLessonsActivity(student.Id);
         var lessonsActivities = educationResponse.Data;
 
         return new WebApiResult(lessonsActivities);
     }
-    
+
     /// <summary>
     /// Complete given by teacher homework
     /// </summary>
@@ -245,14 +266,19 @@ public class StudentController : BaseController
     ///
     /// <response code="200">Success / homework_not_found / completed_homework_already_exists</response>
     /// <response code="401">Unauthorized</response>
+    /// <response code="422">Invalid model</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
     [HttpPost("complete-homework")]
     [ProducesResponseType(typeof(CompletedHomework), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<CompletedHomework>> CompleteHomework([FromBody] CreateCompletedHomeworkRequestModel model)
+    [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
+    public async Task<ActionResult<CompletedHomework>> CompleteHomework(
+        [FromBody] CreateCompletedHomeworkRequestModel model)
     {
         var membersResponse = await _membersClient.GetStudentByUserId(UserId);
         var student = membersResponse.Data;
-    
+
         var completeHomeworkInternalRequest = new CompleteHomeworkInternalRequestModel
         {
             StudentId = student.Id,
