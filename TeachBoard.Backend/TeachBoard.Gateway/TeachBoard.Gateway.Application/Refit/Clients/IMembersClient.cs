@@ -29,4 +29,12 @@ public interface IMembersClient
     /// <returns>Student group</returns>
     [Get("/groups/by-user/{userId}")]
     Task<ServiceTypedResponse<Group>> GetStudentGroupByUserId(int userId);
+
+    /// <summary>
+    /// Get student by user id
+    /// </summary>
+    /// <param name="userId">User id</param>
+    /// <returns>Student</returns>
+    [Get("/students/by-user/{userId}")]
+    Task<ServiceTypedResponse<Student>> GetStudentByUserId(int userId);
 }
