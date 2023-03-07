@@ -72,10 +72,10 @@ public class LessonController : ControllerBase
     ///
     /// <response code="200">Success. Lessons returned</response>
     [HttpGet("by-group/{groupId:int}")]
-    [ProducesResponseType(typeof(IList<Lesson>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IList<Lesson>>> GetLessonsByGroupId(int groupId)
+    [ProducesResponseType(typeof(IList<LessonPresentationDataModel>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IList<LessonPresentationDataModel>>> GetLessonsByGroupId(int groupId)
     {
-        var query = new GetLessonsByGroupIdQuery { GroupId = groupId };
+        var query = new GetLessonsPresentationDataByGroupIdQuery { GroupId = groupId };
         var lessons = await _mediator.Send(query);
 
         return new WebApiResult(lessons);

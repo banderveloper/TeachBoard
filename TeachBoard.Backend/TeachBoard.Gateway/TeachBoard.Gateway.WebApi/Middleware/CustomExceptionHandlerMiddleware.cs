@@ -1,7 +1,8 @@
 ﻿using System.Net;
+using Microsoft.AspNetCore.Mvc;
+using TeachBoard.Gateway.Application;
 using TeachBoard.Gateway.Application.Exceptions;
-using TeachBoard.Gateway.Application.Extensions;
-using CookieException = TeachBoard.Gateway.Application.Exceptions.CookieException;
+using TeachBoard.Gateway.WebApi.ActionResults;
 
 namespace TeachBoard.Gateway.WebApi.Middleware;
 
@@ -30,63 +31,55 @@ public class CustomExceptionHandlerMiddleware
 
     private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
-        var statusCode = HttpStatusCode.InternalServerError;
-        IApiException? responseBody = null;
+        context.Response.ContentType = "application/json";
+        var response = new WebApiResult();
 
         switch (exception)
         {
-            // Exception from microservices
-            case Refit.ApiException refitApiException:
-                statusCode = refitApiException.StatusCode;
-
-                if (statusCode == HttpStatusCode.UnprocessableEntity)
+            case IExpectedApiException expectedApiException:
+                response.StatusCode = HttpStatusCode.OK;
+                response.Error = new
                 {
-                    context.Response.StatusCode = (int)statusCode;
-                    var validationResultDictionary = await refitApiException.ToValidationResultDictionary();
-                    await context.Response.WriteAsJsonAsync(validationResultDictionary);
-
-                    return;
-                }
-
-                responseBody = await refitApiException.ToServiceException();
+                    expectedApiException.ErrorCode,
+                    expectedApiException.ReasonField,
+                    message = expectedApiException.PublicErrorMessage
+                };
                 break;
 
+            case INotAcceptableRequestException notAcceptableRequestException:
+                response.StatusCode = HttpStatusCode.NotAcceptable;
+                response.Error = new
+                {
+                    notAcceptableRequestException.ErrorCode
+                };
+                break;
+            
             // Needed microservice is down
             case HttpRequestException:
-                statusCode = HttpStatusCode.ServiceUnavailable;
+                response.StatusCode = HttpStatusCode.ServiceUnavailable;
+                response.Error = new
+                {
+                    errorCode = ErrorCode.NeededServiceUnavailable
+                };
                 break;
-
-            case JwtPayloadException jwtPayloadException:
-                statusCode = HttpStatusCode.NotAcceptable;
-                responseBody = jwtPayloadException;
-                break;
-
-            case CookieException cookieException:
-                statusCode = HttpStatusCode.NotAcceptable;
-                responseBody = cookieException;
-                break;
-
-            case PermissionException permissionException:
-                statusCode = HttpStatusCode.Forbidden;
-                responseBody = permissionException;
+            
+            case IServiceApiException serviceApiException:
+                response.StatusCode = serviceApiException.StatusCode;
+                response.Error = serviceApiException.Error;
                 break;
 
             default:
+                response.Error = new { error = ErrorCode.Unknown };
+                response.StatusCode = HttpStatusCode.InternalServerError;
+
                 _logger.LogError(exception.ToString());
                 break;
         }
 
-        if (responseBody is not null)
-            await WriteResponseAsync(context, responseBody, statusCode);
-        else
-            await WriteResponseAsync(context, new { error = "unknown_error" }, statusCode);
-    }
-
-    private async Task WriteResponseAsync<T>(HttpContext context, T responseBody, HttpStatusCode statusCode)
-    {
-        context.Response.ContentType = "application/json";
-        context.Response.StatusCode = (int)statusCode;
-        await context.Response.WriteAsJsonAsync(responseBody);
+        await response.ExecuteResultAsync(new ActionContext
+        {
+            HttpContext = context
+        });
     }
 }
 

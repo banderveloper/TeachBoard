@@ -57,7 +57,8 @@ public class UserController : ControllerBase
     [HttpPost("pending/approve")]
     [ProducesResponseType(typeof(UserPublicDataResponseModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
-    public async Task<ActionResult<UserPublicDataResponseModel>> ApprovePendingUser([FromBody] ApprovePendingUserRequestModel model)
+    public async Task<ActionResult<UserPublicDataResponseModel>> ApprovePendingUser(
+        [FromBody] ApprovePendingUserRequestModel model)
     {
         // If everything is ok - it will be created user, pending user will be deleted
         var approveCommand = _mapper.Map<ApprovePendingUserCommand>(model);
@@ -72,14 +73,14 @@ public class UserController : ControllerBase
     /// Get user public data by id
     /// </summary>
     /// 
-    /// <param name="id">User id</param>
+    /// <param name="userId">User id</param>
     ///
     /// <response code="200">Success. User public data returned</response>
-    [HttpGet("{id:int}")]
+    [HttpGet("{userId:int}")]
     [ProducesResponseType(typeof(UserPublicDataResponseModel), StatusCodes.Status200OK)]
-    public async Task<ActionResult<UserPublicDataResponseModel>> GetUserById(int id)
+    public async Task<ActionResult<UserPublicDataResponseModel>> GetUserById(int userId)
     {
-        var query = new GetUserByIdQuery { UserId = id };
+        var query = new GetUserByIdQuery { UserId = userId };
 
         var user = await _mediator.Send(query);
         var responseModel = _mapper.Map<UserPublicDataResponseModel>(user);
@@ -96,7 +97,7 @@ public class UserController : ControllerBase
     /// <response code="200">Success. Users ids, names and photos returned</response>
     [HttpGet("presentation")]
     [ProducesResponseType(typeof(IList<UserPresentationDataModel>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IList<UserPresentationDataModel>>> GetUsersNamesPhotosByIds(
+    public async Task<ActionResult<IList<UserPresentationDataModel>>> GetUserPresentationDataModels(
         [FromQuery] List<int> userIds)
     {
         var query = new GetUsersPresentationDataByIdsQuery { Ids = userIds };

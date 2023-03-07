@@ -9,9 +9,10 @@ public class CookieService
 {
     public void TransferCookies(HttpResponseHeaders sourceHeaders, IResponseCookies destinationCookies)
     {
-        // Retrieve the cookies from the response headers
-        var cookies = sourceHeaders.GetValues("Set-Cookie");
-
+// Retrieve the cookies from the response headers
+        sourceHeaders.TryGetValues("Set-Cookie", out var cookies);
+        if (cookies is null) return;
+        
         foreach (var cookie in cookies)
         {
             var setCookieHeader = SetCookieHeaderValue.Parse(cookie);
@@ -27,7 +28,8 @@ public class CookieService
             };
 
             // Add the cookie to the response
-            destinationCookies.Append(setCookieHeader.Name.ToString(), setCookieHeader.Value.ToString(), cookieOptions);
+            destinationCookies.Append(setCookieHeader.Name.ToString(), setCookieHeader.Value.ToString(),
+                cookieOptions);
         }
     }
 }

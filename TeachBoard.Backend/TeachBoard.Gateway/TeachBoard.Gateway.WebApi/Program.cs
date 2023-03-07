@@ -1,4 +1,4 @@
-using System.Net.Mime;
+using System.Net;
 using System.Reflection;
 using System.Text;
 using Refit;
@@ -6,10 +6,14 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using TeachBoard.Gateway.Application;
+using TeachBoard.Gateway.Application.Converters;
+using TeachBoard.Gateway.Application.Exceptions;
+using TeachBoard.Gateway.Application.Refit.Clients;
 using TeachBoard.Gateway.WebApi.Middleware;
-using TeachBoard.Gateway.Application.RefitClients;
 using TeachBoard.Gateway.Application.Services;
 using TeachBoard.Gateway.Application.Validation;
+using TeachBoard.Gateway.WebApi.ActionResults;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,21 +23,42 @@ builder.Services.AddControllers()
         // lowercase for json keys
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+
+        // Error code enum to snake_case_string converter
+        options.JsonSerializerOptions.Converters.Add(new SnakeCaseStringEnumConverter<ErrorCode>());
     })
     .ConfigureApiBehaviorOptions(options =>
     {
-        // custom validation error response
         options.InvalidModelStateResponseFactory = context =>
         {
-            var result = new ValidationFailedResult(context.ModelState);
-            result.ContentTypes.Add(MediaTypeNames.Application.Json);
+            var result = new WebApiResult
+            {
+                Error = new ValidationResultModel(context.ModelState),
+                StatusCode = HttpStatusCode.UnprocessableEntity
+            };
 
             return result;
         };
     });
 
+// Refit clients settings. Automatically throws exception if response from microservice has error field
+var refitSettings = new RefitSettings
+{
+    ContentSerializer = new SystemTextJsonContentSerializer(),
+    ExceptionFactory = async httpResponseMessage =>
+    {
+        var responseString = await httpResponseMessage.Content.ReadAsStringAsync();
+        var response = JsonSerializer.Deserialize<WebApiResult>(responseString);
+
+        if (response?.Error is not null)
+            throw new ServiceApiException { Error = response.Error, StatusCode = httpResponseMessage.StatusCode };
+        
+        return await Task.FromResult<Exception>(null);
+    }
+};
+
 // Register refit clients
-builder.Services.AddRefitClient<IIdentityClient>()
+builder.Services.AddRefitClient<IIdentityClient>(refitSettings)
     .ConfigureHttpClient(client => client.BaseAddress = new Uri(builder.Configuration["ApiAddresses:Identity"]))
     .ConfigurePrimaryHttpMessageHandler(() =>
         new HttpClientHandler
@@ -41,10 +66,10 @@ builder.Services.AddRefitClient<IIdentityClient>()
             UseCookies = false
         });
 
-builder.Services.AddRefitClient<IMembersClient>()
+builder.Services.AddRefitClient<IMembersClient>(refitSettings)
     .ConfigureHttpClient(client => client.BaseAddress = new Uri(builder.Configuration["ApiAddresses:Members"]));
 
-builder.Services.AddRefitClient<IEducationClient>()
+builder.Services.AddRefitClient<IEducationClient>(refitSettings)
     .ConfigureHttpClient(client => client.BaseAddress = new Uri(builder.Configuration["ApiAddresses:Education"]));
 
 builder.Services.AddScoped<CookieService>();
