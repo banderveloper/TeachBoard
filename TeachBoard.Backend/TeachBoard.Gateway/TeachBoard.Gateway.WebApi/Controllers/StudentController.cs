@@ -1,5 +1,4 @@
-﻿using System.Net;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.Gateway.Application.Refit.Clients;
 using TeachBoard.Gateway.Application.Refit.RequestModels.Education;
@@ -122,7 +121,17 @@ public class StudentController : BaseController
         return new WebApiResult(response);
     }
 
+    /// <summary>
+    /// Get student's examinations activities
+    /// </summary>
+    /// 
+    /// <remarks>Requires in-header JWT-token with user id, bound to student</remarks>
+    ///
+    /// <response code="200">Success</response>
+    /// <response code="401">Unauthorized</response>
     [HttpGet("exam-activities")]
+    [ProducesResponseType(typeof(IList<StudentExaminationActivityPresentationDataModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<IList<StudentExaminationActivityPresentationDataModel>>> GetStudentExaminationsPublicData()
     {
         var membersResponse = await _membersClient.GetStudentByUserId(UserId);
@@ -137,7 +146,17 @@ public class StudentController : BaseController
         return new WebApiResult(examinations);
     }
     
+    /// <summary>
+    /// Get student's completed homeworks
+    /// </summary>
+    /// 
+    /// <remarks>Requires in-header JWT-token with user id, bound to student</remarks>
+    ///
+    /// <response code="200">Success</response>
+    /// <response code="401">Unauthorized</response>
     [HttpGet("completed-homeworks")]
+    [ProducesResponseType(typeof(IList<CompletedHomeworkPresentationDataModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<IList<CompletedHomeworkPresentationDataModel>>> GetCompletedHomeworks()
     {
         var membersResponse = await _membersClient.GetStudentByUserId(UserId);
@@ -152,7 +171,17 @@ public class StudentController : BaseController
         return new WebApiResult(completedHomeworks);
     }
     
+    /// <summary>
+    /// Get student's uncompleted homeworks
+    /// </summary>
+    /// 
+    /// <remarks>Requires in-header JWT-token with user id, bound to student</remarks>
+    ///
+    /// <response code="200">Success</response>
+    /// <response code="401">Unauthorized</response>
     [HttpGet("uncompleted-homeworks")]
+    [ProducesResponseType(typeof(IList<UncompletedHomeworkPresentationDataModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<IList<UncompletedHomeworkPresentationDataModel>>> GetUncompletedHomeworks()
     {
         var membersResponse = await _membersClient.GetStudentByUserId(UserId);
@@ -167,7 +196,17 @@ public class StudentController : BaseController
         return new WebApiResult(uncompletedHomeworks);
     }
     
+    /// <summary>
+    /// Get student's all lessons activities
+    /// </summary>
+    /// 
+    /// <remarks>Requires in-header JWT-token with user id, bound to student</remarks>
+    ///
+    /// <response code="200">Success</response>
+    /// <response code="401">Unauthorized</response>
     [HttpGet("lessons-activities")]
+    [ProducesResponseType(typeof(IList<StudentLessonActivityPresentationDataModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<IList<StudentLessonActivityPresentationDataModel>>> GetLessonsActivities()
     {
         var membersResponse = await _membersClient.GetStudentByUserId(UserId);
@@ -182,7 +221,17 @@ public class StudentController : BaseController
         return new WebApiResult(lessonsActivities);
     }
     
+    /// <summary>
+    /// Complete given by teacher homework
+    /// </summary>
+    /// 
+    /// <remarks>Requires in-header JWT-token with user id, bound to student</remarks>
+    ///
+    /// <response code="200">Success / homework_not_found / completed_homework_already_exists</response>
+    /// <response code="401">Unauthorized</response>
     [HttpPost("complete-homework")]
+    [ProducesResponseType(typeof(CompletedHomework), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<CompletedHomework>> CompleteHomework([FromBody] CreateCompletedHomeworkRequestModel model)
     {
         var membersResponse = await _membersClient.GetStudentByUserId(UserId);
