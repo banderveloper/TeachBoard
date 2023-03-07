@@ -81,14 +81,27 @@ public class StudentController : BaseController
         return new WebApiResult(usersPresentationsList);
     }
 
-    // [HttpGet("all-lessons")]
-    // public async Task<ActionResult<IList<Lesson>>> GetStudentLessons()
-    // {
-    //     var studentGroup = await _membersClient.GetStudentGroupByUserId(UserId);
-    //     var groupLessons = await _educationClient.GetLessonsByGroupId(studentGroup.Id);
-    //
-    //     return groupLessons;
-    // }
+    /// <summary>
+    /// Get lesson bound to student's group
+    /// </summary>
+    /// 
+    /// <remarks>Requires in-header JWT-token with user id, bound to student</remarks>
+    ///
+    /// <response code="200">Success</response>
+    /// <response code="401">Unauthorized</response>
+    [HttpGet("all-lessons")]
+    [ProducesResponseType(typeof(IList<LessonPresentationDataModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    public async Task<ActionResult<IList<LessonPresentationDataModel>>> GetStudentLessons()
+    {
+        var membersResponse = await _membersClient.GetStudentGroupByUserId(UserId);
+        var studentGroup = membersResponse.Data;
+
+        var educationResponse = await _educationClient.GetGroupLessons(studentGroup.Id);
+        var groupLessons = educationResponse.Data;
+    
+        return new WebApiResult(groupLessons);
+    }
 
     /// <summary>
     /// Get student's profile data

@@ -47,4 +47,12 @@ public interface IEducationClient
     /// <returns>Completed homework</returns>
     [Post("/homeworks/complete")]
     Task<ServiceTypedResponse<CompletedHomework>> CompleteHomework([Body] CompleteHomeworkInternalRequestModel model);
+
+    /// <summary>
+    /// Get all lessons for given group
+    /// </summary>
+    /// <param name="groupId">Group id</param>
+    /// <returns>List of lessons to given group as presentation data</returns>
+    [Get("/lessons/by-group/{groupId}")]
+    Task<ServiceTypedResponse<IList<LessonPresentationDataModel>>> GetGroupLessons(int groupId);
 }
