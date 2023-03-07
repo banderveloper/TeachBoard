@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.Gateway.Application.Refit.Clients;
+using TeachBoard.Gateway.Application.Refit.RequestModels.Education;
 using TeachBoard.Gateway.Application.Refit.RequestModels.Identity;
 using TeachBoard.Gateway.Application.Refit.RequestModels.Members;
 using TeachBoard.Gateway.Application.Refit.ResponseModels.Education;
@@ -128,71 +129,40 @@ public class StudentController : BaseController
     
         return new WebApiResult(uncompletedHomeworks);
     }
-    //
-    // /// <summary>
-    // /// Get all student's lesson activities
-    // /// </summary>
-    // ///
-    // /// <remarks>Requires JWT-token with user id, binded to student</remarks>
-    // ///
-    // /// <response code="200">Success. Student's lessons activities returned</response>
-    // /// <response code="401">Unauthorized</response>
-    // /// <response code="404">
-    // /// Student with given user id not found (student_not_found) /
-    // /// Student's lesson activities (student_lesson_activities_not_found) /
-    // /// </response>
-    // /// <response code="406">Jwt-token does not contains user id (jwt_user_id_not_found)</response>
-    // /// <response code="503">One of the needed services is unavailable now</response>
-    // [HttpGet("lessons-activities")]
-    // [ProducesResponseType(typeof(StudentLessonActivityPublicListModel), StatusCodes.Status200OK)]
-    // [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
-    // [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    // [ProducesResponseType(typeof(IApiException), StatusCodes.Status406NotAcceptable)]
-    // [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
-    // public async Task<ActionResult<StudentLessonActivityPublicListModel>> GetLessonsActivities()
-    // {
-    //     var studentInfo = await _membersClient.GetStudentByUserId(UserId);
-    //
-    //     var lessonsActivities = await _educationClient.GetStudentLessonActivities(studentInfo.Id);
-    //     return lessonsActivities;
-    // }
-    //
-    // /// <summary>
-    // /// Create completed homework
-    // /// </summary>
-    // ///
-    // /// <remarks>Requires JWT-token with user id, binded to student</remarks>
-    // ///
-    // /// <response code="200">Success. Completed homework created</response>
-    // /// <response code="401">Unauthorized</response>
-    // /// <response code="404">
-    // /// Student with given user id not found (student_not_found) /
-    // /// Homework with given id not found (homework_not_found)
-    // /// Homework with given id to given group not found (homework_not_found)
-    // /// </response>
-    // /// <response code="406">Jwt-token does not contains user id (jwt_user_id_not_found)</response>
-    // /// <response code="409">Student already completed this homework (completed_homework_already_exists)</response>
-    // /// <response code="503">One of the needed services is unavailable now</response>
-    // [HttpPost("complete-homework")]
-    // [ProducesResponseType(typeof(StudentLessonActivityPublicListModel), StatusCodes.Status200OK)]
-    // [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
-    // [ProducesResponseType(typeof(IApiException), StatusCodes.Status404NotFound)]
-    // [ProducesResponseType(typeof(IApiException), StatusCodes.Status406NotAcceptable)]
-    // [ProducesResponseType(typeof(IApiException), StatusCodes.Status409Conflict)]
-    // [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
-    // public async Task<ActionResult<CompletedHomework>> CompleteHomework([FromBody] CreateCompletedHomeworkRequestModel model)
-    // {
-    //     var studentInfo = await _membersClient.GetStudentByUserId(UserId);
-    //
-    //     var completeRequest = new CompleteHomeworkRequestModel
-    //     {
-    //         StudentId = studentInfo.Id,
-    //         StudentGroupId = studentInfo.GroupId,
-    //         HomeworkId = model.HomeworkId,
-    //         StudentComment = model.StudentComment,
-    //         FilePath = model.FilePath
-    //     };
-    //     
-    //     return await _educationClient.CompleteHomework(completeRequest);
-    // }
+    
+    [HttpGet("lessons-activities")]
+    public async Task<ActionResult<IList<StudentLessonActivityPresentationDataModel>>> GetLessonsActivities()
+    {
+        var membersResponse = await _membersClient.GetStudentByUserId(UserId);
+        var student = membersResponse.Data;
+        
+        if(student?.Id == 0)
+            _logger.LogWarning($"GetUncompletedHomeworks warning. User id from token is [{UserId}], but student id is 0");
+    
+        var educationResponse = await _educationClient.GetLessonsActivity(student.Id);
+        var lessonsActivities = educationResponse.Data;
+
+        return new WebApiResult(lessonsActivities);
+    }
+    
+    [HttpPost("complete-homework")]
+    public async Task<ActionResult<CompletedHomework>> CompleteHomework([FromBody] CreateCompletedHomeworkRequestModel model)
+    {
+        var membersResponse = await _membersClient.GetStudentByUserId(UserId);
+        var student = membersResponse.Data;
+    
+        var completeHomeworkInternalRequest = new CompleteHomeworkInternalRequestModel
+        {
+            StudentId = student.Id,
+            StudentGroupId = student.GroupId,
+            HomeworkId = model.HomeworkId,
+            StudentComment = model.StudentComment,
+            FilePath = model.FilePath
+        };
+
+        var educationResponse = await _educationClient.CompleteHomework(completeHomeworkInternalRequest);
+        var completedHomework = educationResponse.Data;
+
+        return new WebApiResult(completedHomework);
+    }
 }

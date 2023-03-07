@@ -1,4 +1,5 @@
 ﻿using Refit;
+using TeachBoard.Gateway.Application.Refit.RequestModels.Education;
 using TeachBoard.Gateway.Application.Refit.ResponseModels.Education;
 
 namespace TeachBoard.Gateway.Application.Refit.Clients;
@@ -30,4 +31,20 @@ public interface IEducationClient
     [Get("/homeworks/uncompleted-homeworks/{studentId}/{groupId}")]
     Task<ServiceTypedResponse<IList<UncompletedHomeworkPresentationDataModel>>> GetUncompletedHomeworks(int studentId,
         int? groupId);
+
+    /// <summary>
+    /// Get student's lessons activities as presentation model
+    /// </summary>
+    /// <param name="studentId">Student id</param>
+    /// <returns>List of student's lessons activities as presentation model</returns>
+    [Get("/lessons/student-activities/{studentId}")]
+    Task<ServiceTypedResponse<IList<StudentLessonActivityPresentationDataModel>>> GetLessonsActivity(int studentId);
+
+    /// <summary>
+    /// Complete homework (create completed homework from existing homework)
+    /// </summary>
+    /// <param name="model">Completed homework data</param>
+    /// <returns>Completed homework</returns>
+    [Post("/homeworks/complete")]
+    Task<ServiceTypedResponse<CompletedHomework>> CompleteHomework([Body] CompleteHomeworkInternalRequestModel model);
 }
