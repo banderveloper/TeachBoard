@@ -41,7 +41,8 @@ builder.Services.AddControllers()
         };
     });
 
-var settings = new RefitSettings
+// Refit clients settings. Automatically throws exception if response from microservice has error field
+var refitSettings = new RefitSettings
 {
     ContentSerializer = new SystemTextJsonContentSerializer(),
     ExceptionFactory = async httpResponseMessage =>
@@ -57,7 +58,7 @@ var settings = new RefitSettings
 };
 
 // Register refit clients
-builder.Services.AddRefitClient<IIdentityClient>(settings)
+builder.Services.AddRefitClient<IIdentityClient>(refitSettings)
     .ConfigureHttpClient(client => client.BaseAddress = new Uri(builder.Configuration["ApiAddresses:Identity"]))
     .ConfigurePrimaryHttpMessageHandler(() =>
         new HttpClientHandler
@@ -65,11 +66,11 @@ builder.Services.AddRefitClient<IIdentityClient>(settings)
             UseCookies = false
         });
 
-builder.Services.AddRefitClient<IMembersClient>(settings)
+builder.Services.AddRefitClient<IMembersClient>(refitSettings)
     .ConfigureHttpClient(client => client.BaseAddress = new Uri(builder.Configuration["ApiAddresses:Members"]));
-//
-// builder.Services.AddRefitClient<IEducationClient>()
-//     .ConfigureHttpClient(client => client.BaseAddress = new Uri(builder.Configuration["ApiAddresses:Education"]));
+
+builder.Services.AddRefitClient<IEducationClient>(refitSettings)
+    .ConfigureHttpClient(client => client.BaseAddress = new Uri(builder.Configuration["ApiAddresses:Education"]));
 
 builder.Services.AddScoped<CookieService>();
 

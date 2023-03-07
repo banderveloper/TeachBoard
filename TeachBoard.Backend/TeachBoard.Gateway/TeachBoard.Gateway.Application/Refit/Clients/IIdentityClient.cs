@@ -12,7 +12,7 @@ public interface IIdentityClient
     /// <param name="model">Model with username and password</param>
     /// <returns>Access token, his expiration time and refresh token at cookie</returns>
     [Post("/auth/login")]
-    Task<ApiResponse<ServiceTypedResponse<AccessTokenResponseModel>>> Login(LoginRequestModel model);
+    Task<ApiResponse<ServiceTypedResponse<AccessTokenModel>>> Login(LoginRequestModel model);
 
     /// <summary>
     /// Refresh session and get new tokens
@@ -20,7 +20,7 @@ public interface IIdentityClient
     /// <param name="refreshCookie">Refresh cookie in format: cookie_name=cookie_value</param>
     /// <returns>Model with new access token</returns>
     [Put("/auth/refresh")]
-    Task<ApiResponse<ServiceTypedResponse<AccessTokenResponseModel>>> Refresh([Header("Cookie")] string refreshCookie);
+    Task<ApiResponse<ServiceTypedResponse<AccessTokenModel>>> Refresh([Header("Cookie")] string refreshCookie);
     
     /// <summary>
     /// Logout / end session
@@ -36,4 +36,21 @@ public interface IIdentityClient
     /// <returns>Created user from pending user</returns>
     [Post("/user/pending/approve")]
     Task<ServiceTypedResponse<User>> ApprovePendingUser(ApprovePendingUserRequestModel model);
+
+    /// <summary>
+    /// Get list of users presentation models (id, name, avatar)
+    /// </summary>
+    /// <param name="userIds">Users ids</param>
+    /// <returns>List of users presentation models</returns>
+    [Get("/user/presentation")]
+    Task<ServiceTypedResponse<IList<UserPresentationDataModel>>> GetUserPresentationDataModels(
+        [Query(CollectionFormat.Multi)] List<int> userIds);
+
+    /// <summary>
+    /// Get user public data (without password)
+    /// </summary>
+    /// <param name="userId">User id</param>
+    /// <returns>User public data (without password)</returns>
+    [Get("/user/{userId}")]
+    Task<ServiceTypedResponse<UserPublicData>> GetUserPublicData(int userId);
 }

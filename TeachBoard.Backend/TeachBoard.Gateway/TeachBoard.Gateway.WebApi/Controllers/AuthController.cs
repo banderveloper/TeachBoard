@@ -25,7 +25,7 @@ public class AuthController : BaseController
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<AccessTokenResponseModel>> Login([FromBody] LoginRequestModel model)
+    public async Task<ActionResult<AccessTokenModel>> Login([FromBody] LoginRequestModel model)
     {
         var identityServiceResponse = await _identityClient.Login(model);
 
@@ -44,7 +44,7 @@ public class AuthController : BaseController
     }
 
     [HttpPut("refresh")]
-    public async Task<ActionResult<AccessTokenResponseModel>> Refresh()
+    public async Task<ActionResult<AccessTokenModel>> Refresh()
     {
         // Get refresh token from cookies. if not passed - error
         if (!Request.Cookies.TryGetValue("TeachBoard-Refresh-Token", out var refreshTokenFromCookie))
