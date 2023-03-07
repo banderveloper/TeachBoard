@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.Gateway.Application.Refit.Clients;
 using TeachBoard.Gateway.Application.Refit.RequestModels.Education;
@@ -6,6 +7,7 @@ using TeachBoard.Gateway.Application.Refit.RequestModels.Identity;
 using TeachBoard.Gateway.Application.Refit.RequestModels.Members;
 using TeachBoard.Gateway.Application.Refit.ResponseModels.Education;
 using TeachBoard.Gateway.Application.Refit.ResponseModels.Identity;
+using TeachBoard.Gateway.Application.Validation;
 using TeachBoard.Gateway.WebApi.ActionResults;
 using TeachBoard.Gateway.WebApi.Models;
 
@@ -29,8 +31,23 @@ public class StudentController : BaseController
         _logger = logger;
     }
 
+   
+    /// <summary>
+    /// Approve pending user with student role
+    /// </summary>
+    /// 
+    /// <param name="model">Register code and user credentials</param>
+    ///
+    /// <response code="200">
+    /// Success /
+    /// pending_user_not_found / pending_user_expired / user_already_exists /
+    /// group_not_found / student_already_exists
+    /// </response>
+    /// <response code="422">Invalid model state</response>
     [AllowAnonymous]
     [HttpPost("approve-pending")]
+    [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     public async Task<IActionResult> ApproveStudent([FromBody] ApprovePendingUserRequestModel model)
     {
         var identityResponse = await _identityClient.ApprovePendingUser(model);
@@ -41,7 +58,17 @@ public class StudentController : BaseController
         return new WebApiResult();
     }
 
+    /// <summary>
+    /// Get presentation data (id, name, avatar) of student's group members
+    /// </summary>
+    /// 
+    /// <remarks>Requires in-header JWT-token with user id, bound to student</remarks>
+    ///
+    /// <response code="200">Success</response>
+    /// <response code="401">Unauthorized</response>
     [HttpGet("group-members")]
+    [ProducesResponseType(typeof(IList<UserPresentationDataModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<IList<UserPresentationDataModel>>> GetStudentGroupMembers()
     {
         // Get student group members user ids
@@ -64,7 +91,17 @@ public class StudentController : BaseController
     //     return groupLessons;
     // }
 
+    /// <summary>
+    /// Get student's profile data
+    /// </summary>
+    /// 
+    /// <remarks>Requires in-header JWT-token with user id, bound to student</remarks>
+    ///
+    /// <response code="200">Success</response>
+    /// <response code="401">Unauthorized</response>
     [HttpGet("profile-data")]
+    [ProducesResponseType(typeof(UserProfileDataResponseModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<UserProfileDataResponseModel>> GetStudentProfileData()
     {
         // Get user public data
