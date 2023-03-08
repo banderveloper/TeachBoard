@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.IdentityService.Application.Features.Commands;
 using TeachBoard.IdentityService.Application.Features.Queries;
+using TeachBoard.IdentityService.Application.Features.Queries.Common;
 using TeachBoard.IdentityService.WebApi.ActionResults;
 using TeachBoard.IdentityService.WebApi.Models.User;
 using TeachBoard.IdentityService.WebApi.Validation;
@@ -104,5 +105,22 @@ public class UserController : ControllerBase
         var usersModel = await _mediator.Send(query);
 
         return new WebApiResult(usersModel);
+    }
+
+    /// <summary>
+    /// Get users ids, names and photos by partial name
+    /// </summary>
+    /// 
+    /// <param name="partialName">Partial user's name, minimal length is 3</param>
+    ///
+    /// <response code="200">Success. Users ids, names and photos returned</response>
+    [HttpGet("presentation/{partialName}")]
+    public async Task<ActionResult<IList<UserPresentationDataModel>>> GetUserPresentationDatModelsByPartialName(
+        string partialName)
+    {
+        var query = new GetUsersPresentationDataByPartialNameQuery { PartialName = partialName };
+        var users = await _mediator.Send(query);
+
+        return new WebApiResult(users);
     }
 }

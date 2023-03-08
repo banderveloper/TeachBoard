@@ -1,6 +1,7 @@
 using System.Net;
 using System.Reflection;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using TeachBoard.IdentityService.Application;
 using TeachBoard.IdentityService.Application.Converters;
 using TeachBoard.IdentityService.Application.Mappings;
@@ -38,6 +39,8 @@ builder.Services.AddControllers()
         // lowercase for json keys
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+        options.JsonSerializerOptions.ReferenceHandler =ReferenceHandler.IgnoreCycles;
+        
         
         // UserRole enum to string converter
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter<UserRole>());

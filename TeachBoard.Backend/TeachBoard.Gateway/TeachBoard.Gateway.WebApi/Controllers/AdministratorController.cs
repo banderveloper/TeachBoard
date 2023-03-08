@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
+using Refit;
 using TeachBoard.Gateway.Application;
 using TeachBoard.Gateway.Application.Exceptions;
 using TeachBoard.Gateway.Application.Refit.Clients;
@@ -129,5 +130,21 @@ public class AdministratorController : BaseController
         var createdLesson = createLessonResponse.Data;
 
         return new WebApiResult(createdLesson);
+    }
+
+    /// <summary>
+    /// Get all users with given name (or part)
+    /// </summary>
+    /// 
+    /// <response code="200">Success</response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
+    [HttpGet("users-presentations/{partialName}")]
+    public async Task<ActionResult<IList<UserPresentationDataModel>>> GetUsersByPartialName(string partialName)
+    {
+        var response = await _identityClient.GetUserPresentationDataModelsByPartialName(partialName);
+        var users = response.Data;
+
+        return new WebApiResult(users);
     }
 }

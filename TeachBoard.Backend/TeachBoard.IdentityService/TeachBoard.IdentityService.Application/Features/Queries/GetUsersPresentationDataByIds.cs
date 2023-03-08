@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using TeachBoard.IdentityService.Application.Features.Queries.Common;
 using TeachBoard.IdentityService.Application.Interfaces;
 
 namespace TeachBoard.IdentityService.Application.Features.Queries;
@@ -11,17 +12,7 @@ public class GetUsersPresentationDataByIdsQuery : IRequest<IList<UserPresentatio
     public IList<int> Ids { get; set; }
 }
 
-// One item of returned list
-public class UserPresentationDataModel
-{
-    public int Id { get; set; }
 
-    public string? FirstName { get; set; }
-    public string? LastName { get; set; }
-    public string? Patronymic { get; set; }
-
-    public string? AvatarImagePath { get; set; }
-}
 
 public class GetUserNamesPhotosByIdsQueryHandler : IRequestHandler<GetUsersPresentationDataByIdsQuery,
     IList<UserPresentationDataModel>>

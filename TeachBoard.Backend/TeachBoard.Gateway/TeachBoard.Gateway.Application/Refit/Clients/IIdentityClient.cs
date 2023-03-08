@@ -21,14 +21,14 @@ public interface IIdentityClient
     /// <returns>Model with new access token</returns>
     [Put("/auth/refresh")]
     Task<ApiResponse<ServiceTypedResponse<AccessTokenModel>>> Refresh([Header("Cookie")] string refreshCookie);
-    
+
     /// <summary>
     /// Logout / end session
     /// </summary>
     /// <param name="refreshCookie">Refresh cookie in format cookie_name=cookie_value</param>
     [Delete("/auth/logout")]
     Task<ApiResponse<ServiceTypedResponse<object>>> Logout([Header("Cookie")] string refreshCookie);
-    
+
     /// <summary>
     /// Approve pending user by register code
     /// </summary>
@@ -61,4 +61,13 @@ public interface IIdentityClient
     /// <returns>Registration code and expiration time</returns>
     [Post("/user/pending")]
     Task<ServiceTypedResponse<RegisterCodeModel>> CreatePendingUser([Body] CreatePendingUserRequestModel model);
+
+    /// <summary>
+    /// Get list of users presentation models (id, name, avatar) by partial name
+    /// </summary>
+    /// <param name="partialName">Part of the name</param>
+    /// <returns>List of users presentation models</returns>
+    [Get("/user/presentation/{partialName}")]
+    Task<ServiceTypedResponse<IList<UserPresentationDataModel>>> GetUserPresentationDataModelsByPartialName(
+        string partialName);
 }
