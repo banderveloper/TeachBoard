@@ -55,4 +55,13 @@ public interface IEducationClient
     /// <returns>List of lessons to given group as presentation data</returns>
     [Get("/lessons/by-group/{groupId}")]
     Task<ServiceTypedResponse<IList<LessonPresentationDataModel>>> GetGroupLessons(int groupId);
+
+    /// <summary>
+    /// Create lesson as administrator
+    /// </summary>
+    /// <param name="model">Group id, subject id, teacher id, scheduled time</param>
+    /// <returns>Created lesson</returns>
+    [Post("/lessons")]
+    Task<ServiceTypedResponse<Lesson>>
+        CreateLessonAsAdministrator([Body] CreateLessonAsAdministratorRequestModel model);
 }

@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
 using TeachBoard.Gateway.Application;
 using TeachBoard.Gateway.Application.Exceptions;
 using TeachBoard.Gateway.Application.Refit.Clients;
+using TeachBoard.Gateway.Application.Refit.RequestModels.Education;
 using TeachBoard.Gateway.Application.Refit.RequestModels.Identity;
 using TeachBoard.Gateway.Application.Refit.RequestModels.Members;
+using TeachBoard.Gateway.Application.Refit.ResponseModels.Education;
 using TeachBoard.Gateway.Application.Refit.ResponseModels.Identity;
+using TeachBoard.Gateway.Application.Refit.ResponseModels.Members;
 using TeachBoard.Gateway.Application.Validation;
 using TeachBoard.Gateway.WebApi.ActionResults;
 
@@ -78,5 +82,52 @@ public class AdministratorController : BaseController
     {
         await _membersClient.SetStudentGroup(model);
         return new WebApiResult();
+    }
+
+    /// <summary>
+    /// Create lesson
+    /// </summary>
+    /// 
+    /// <param name="model">Group id, subject id, teacher id, scheduled time</param>
+    ///
+    /// <response code="200">Success / teacher_not_found / subject_not_found / group_not_found</response>
+    /// <response code="400">invalid_datetime</response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="422">Invalid model</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
+    [HttpPost("lesson")]
+    [ProducesResponseType(typeof(Teacher), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IBadRequestApiException), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
+    public async Task<ActionResult<Lesson>> CreateLesson([FromBody] CreateLessonAsAdministratorRequestModel model)
+    {
+        // get teacher by id and throw ex if it is not found
+        var getTeacherResponse = await _membersClient.GetTeacherById(model.TeacherId);
+        var teacher = getTeacherResponse.Data;
+        if (teacher is null)
+            throw new ExpectedApiException
+            {
+                ErrorCode = ErrorCode.TeacherNotFound,
+                PublicErrorMessage = "Teacher not found",
+                LogErrorMessage = $"Teacher with id [{model.TeacherId}] not found"
+            };
+
+        // get group by id and throw ex if it is not found
+        var getGroupResponse = await _membersClient.GetGroupById(model.GroupId);
+        var group = getGroupResponse.Data;
+        if (group is null)
+            throw new ExpectedApiException
+            {
+                ErrorCode = ErrorCode.GroupNotFound,
+                PublicErrorMessage = "Group not found",
+                LogErrorMessage = $"Group with id [{model.GroupId}] not found"
+            };
+        
+        var createLessonResponse = await _educationClient.CreateLessonAsAdministrator(model);
+        var createdLesson = createLessonResponse.Data;
+
+        return new WebApiResult(createdLesson);
     }
 }

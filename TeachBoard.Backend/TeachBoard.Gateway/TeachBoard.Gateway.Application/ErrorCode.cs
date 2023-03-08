@@ -15,5 +15,7 @@ public enum ErrorCode
     JwtUserIdNotFound,
     NeededServiceUnavailable,
     RefreshCookieNotFound,
-    SetRoleForbidden
+    SetRoleForbidden,
+    TeacherNotFound,
+    GroupNotFound
 }

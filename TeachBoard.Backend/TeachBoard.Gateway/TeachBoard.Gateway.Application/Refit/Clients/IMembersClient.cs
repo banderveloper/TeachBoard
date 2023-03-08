@@ -45,4 +45,20 @@ public interface IMembersClient
     /// <returns>Empty response</returns>
     [Put("/students/student-group")]
     Task<ServiceTypedResponse<object>> SetStudentGroup([Body] SetStudentGroupRequestModel model);
+
+    /// <summary>
+    /// Get teacher by id
+    /// </summary>
+    /// <param name="teacherId">Teacher id</param>
+    /// <returns>Teacher or null</returns>
+    [Get("/teachers/{teacherId}")]
+    Task<ServiceTypedResponse<Teacher?>> GetTeacherById(int teacherId);
+
+    /// <summary>
+    /// Get group by id
+    /// </summary>
+    /// <param name="groupId">Group id</param>
+    /// <returns>Group or null</returns>
+    [Get("/groups/{groupId}")]
+    Task<ServiceTypedResponse<Group?>> GetGroupById(int groupId);
 }
