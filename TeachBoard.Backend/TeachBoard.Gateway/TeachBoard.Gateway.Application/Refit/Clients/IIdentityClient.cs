@@ -52,7 +52,7 @@ public interface IIdentityClient
     /// <param name="userId">User id</param>
     /// <returns>User public data (without password)</returns>
     [Get("/user/{userId}")]
-    Task<ServiceTypedResponse<UserPublicData>> GetUserPublicData(int userId);
+    Task<ServiceTypedResponse<UserPublicData?>> GetUserPublicData(int userId);
 
     /// <summary>
     /// Create pending user

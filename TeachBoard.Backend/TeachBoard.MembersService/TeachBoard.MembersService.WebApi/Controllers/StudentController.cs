@@ -145,4 +145,19 @@ public class StudentController : ControllerBase
 
         return new WebApiResult();
     }
+
+    /// <summary>
+    /// Get student presentation data (with group) by user id
+    /// </summary>
+    /// <param name="userId">User id</param>
+    /// <response code="200">Success</response>
+    [HttpGet("presentation/{userId:int}")]
+    [ProducesResponseType(typeof(StudentPresentationDataModel), StatusCodes.Status200OK)]
+    public async Task<ActionResult<StudentPresentationDataModel?>> GetStudentPresentationModel(int userId)
+    {
+        var query = new GetStudentPresentationDataByUserIdQuery { UserId = userId };
+        var studentPresentation = await _mediator.Send(query);
+
+        return new WebApiResult(studentPresentation);
+    }
 }

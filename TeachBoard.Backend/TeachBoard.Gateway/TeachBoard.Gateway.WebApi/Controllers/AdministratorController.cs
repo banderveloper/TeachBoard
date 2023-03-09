@@ -12,6 +12,7 @@ using TeachBoard.Gateway.Application.Refit.ResponseModels.Identity;
 using TeachBoard.Gateway.Application.Refit.ResponseModels.Members;
 using TeachBoard.Gateway.Application.Validation;
 using TeachBoard.Gateway.WebApi.ActionResults;
+using TeachBoard.Gateway.WebApi.Models;
 
 namespace TeachBoard.Gateway.WebApi.Controllers;
 
@@ -125,7 +126,7 @@ public class AdministratorController : BaseController
                 PublicErrorMessage = "Group not found",
                 LogErrorMessage = $"Group with id [{model.GroupId}] not found"
             };
-        
+
         var createLessonResponse = await _educationClient.CreateLessonAsAdministrator(model);
         var createdLesson = createLessonResponse.Data;
 
@@ -140,11 +141,81 @@ public class AdministratorController : BaseController
     /// <response code="401">Unauthorized</response>
     /// <response code="503">One of the needed services is unavailable now</response>
     [HttpGet("users-presentations/{partialName}")]
+    [ProducesResponseType(typeof(IList<UserPresentationDataModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
     public async Task<ActionResult<IList<UserPresentationDataModel>>> GetUsersByPartialName(string partialName)
     {
         var response = await _identityClient.GetUserPresentationDataModelsByPartialName(partialName);
         var users = response.Data;
 
         return new WebApiResult(users);
+    }
+
+    /// <summary>
+    /// Get user's full data as member (user data + special data (student/teacher data)
+    /// </summary>
+    /// <response code="200">Success</response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
+    [HttpGet("memberData/{userId:int}")]
+    [ProducesResponseType(typeof(MemberFullDataResponseModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
+    public async Task<ActionResult<MemberFullDataResponseModel>> GetFullMemberData(int userId)
+    {
+        var userPublicDataResponse = await _identityClient.GetUserPublicData(userId);
+        var user = userPublicDataResponse.Data;
+
+        // if user by id does not exists client will return null - return empty result to client
+        if (user is null)
+            return new WebApiResult();
+
+        // admin can check only students and teachers, so throw ex if user is not student or teacher 
+        if (user.Role != UserRole.Student && user.Role != UserRole.Teacher)
+        {
+            throw new ExpectedApiException
+            {
+                ErrorCode = ErrorCode.GetUserInfoForbidden,
+                PublicErrorMessage = "Administrator can get info only about students and teachers",
+                LogErrorMessage =
+                    $"GetFullMemberData in controller error. Admin is allowed to check students and teachers, but requested user is {user.Role}"
+            };
+        }
+
+        // get special data (if student - student data, if teacher - teacher data)
+        object? memberData = null;
+        
+        switch (user.Role)
+        {
+            case UserRole.Student:
+                var studentPresentationResponse = await _membersClient.GetStudentPresentation(user.Id);
+                memberData = studentPresentationResponse.Data;
+                break;
+
+            case UserRole.Teacher:
+                var getTeacherResponse = await _membersClient.GetTeacherByUserId(user.Id);
+                memberData = getTeacherResponse.Data;
+                break;
+
+            case UserRole.Unspecified:
+            case UserRole.Administrator:
+            case UserRole.Director:
+            default:
+                throw new ExpectedApiException
+                {
+                    ErrorCode = ErrorCode.UnexpectedRole,
+                    PublicErrorMessage = "Got user has unexpected role, operation cancelled",
+                    LogErrorMessage = $"GetFullMemberData in controller error. Requested user has {user.Role} role"
+                };
+        }
+
+        return new WebApiResult(
+            new MemberFullDataResponseModel
+            {
+                User = user,
+                Member = memberData
+            }
+        );
     }
 }

@@ -17,5 +17,7 @@ public enum ErrorCode
     RefreshCookieNotFound,
     SetRoleForbidden,
     TeacherNotFound,
-    GroupNotFound
+    GroupNotFound,
+    GetUserInfoForbidden,
+    UnexpectedRole
 }

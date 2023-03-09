@@ -61,4 +61,20 @@ public interface IMembersClient
     /// <returns>Group or null</returns>
     [Get("/groups/{groupId}")]
     Task<ServiceTypedResponse<Group?>> GetGroupById(int groupId);
+
+    /// <summary>
+    /// Get student presentation model (with group info) by user id
+    /// </summary>
+    /// <param name="userId">Student's user id</param>
+    /// <returns>Student info with group info</returns>
+    [Get("/students/presentation/{userId}")]
+    Task<ServiceTypedResponse<StudentPresentationModel?>> GetStudentPresentation(int userId);
+
+    /// <summary>
+    /// Get teacher by user id
+    /// </summary>
+    /// <param name="userId">Teacher's user id</param>
+    /// <returns>Teacher or null</returns>
+    [Get("/teachers/by-user-id/{userId}")]
+    Task<ServiceTypedResponse<Teacher?>> GetTeacherByUserId(int userId);
 }

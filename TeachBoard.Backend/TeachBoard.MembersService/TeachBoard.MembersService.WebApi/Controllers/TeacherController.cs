@@ -87,12 +87,27 @@ public class TeacherController : ControllerBase
     /// <param name="teacherId">List of teachers ids</param>
     /// <response code="200">Success. Teachers returned</response>
     [HttpGet("by-ids")]
-    [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IList<Teacher>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IList<Teacher>>> GetTeachersByIds([FromQuery] List<int> teacherId)
     {
         var query = new GetTeachersByIdsQuery { Ids = teacherId };
         var teachers = await _mediator.Send(query);
 
         return new WebApiResult(teachers);
+    }
+
+    /// <summary>
+    /// Get teacher by user id
+    /// </summary>
+    /// <param name="userId">Teacher's user id</param>
+    /// <response code="200">Success. Teacher or null returned </response>
+    [HttpGet("by-user-id/{userId:int}")]
+    [ProducesResponseType(typeof(Teacher), StatusCodes.Status200OK)]
+    public async Task<ActionResult<Teacher?>> GetTeacherByUserId(int userId)
+    {
+        var query = new GetTeacherByUserIdQuery { UserId = userId };
+        var teacher = await _mediator.Send(query);
+
+        return new WebApiResult(teacher);
     }
 }
