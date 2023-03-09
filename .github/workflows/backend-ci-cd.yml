@@ -6,7 +6,7 @@ on:
       - master
 
 env:
-  COMPOSE_FILE: TeachBoard.Backend/docker-compose.yml
+  COMPOSE_FILE: src/TeachBoard.Backend/docker-compose.yml
   DOCKER_USERNAME: kpssnik
   DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
 
