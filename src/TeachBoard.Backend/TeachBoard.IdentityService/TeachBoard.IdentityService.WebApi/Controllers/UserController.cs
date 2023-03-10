@@ -115,6 +115,7 @@ public class UserController : ControllerBase
     ///
     /// <response code="200">Success. Users ids, names and photos returned</response>
     [HttpGet("presentation/{partialName}")]
+    [ProducesResponseType(typeof(IList<UserPresentationDataModel>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IList<UserPresentationDataModel>>> GetUserPresentationDatModelsByPartialName(
         string partialName)
     {
@@ -122,5 +123,24 @@ public class UserController : ControllerBase
         var users = await _mediator.Send(query);
 
         return new WebApiResult(users);
+    }
+
+    /// <summary>
+    /// Update user public data
+    /// </summary>
+    /// 
+    /// <param name="model">New user public data</param>
+    ///
+    /// <response code="200">Success / user_not_found</response>
+    [HttpPut]
+    [ProducesResponseType(typeof(UserPresentationDataModel), StatusCodes.Status200OK)]
+    public async Task<ActionResult<UserPublicDataResponseModel>> UpdateUser([FromBody] UpdateUserRequestModel model)
+    {
+        var command = _mapper.Map<UpdateUserCommand>(model);
+        var updatedUser = await _mediator.Send(command);
+
+        var userPublicData = _mapper.Map<UserPublicDataResponseModel>(updatedUser);
+
+        return new WebApiResult(userPublicData);
     }
 }

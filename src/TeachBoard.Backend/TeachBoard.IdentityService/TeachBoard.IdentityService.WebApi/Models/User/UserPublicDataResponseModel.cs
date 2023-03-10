@@ -15,9 +15,9 @@ public class UserPublicDataResponseModel : IMappable
     [JsonConverter(typeof(JsonStringEnumConverter<UserRole>))]
     public UserRole Role { get; set; } = UserRole.Unspecified;
     
-    public string? FirstName { get; set; }
-    public string? LastName { get; set; }
-    public string? Patronymic { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Patronymic { get; set; }
     
     public string? PhoneNumber { get; set; }
     public string? HomeAddress { get; set; }

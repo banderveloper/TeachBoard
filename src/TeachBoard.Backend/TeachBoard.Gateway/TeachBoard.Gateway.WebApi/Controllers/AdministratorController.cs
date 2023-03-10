@@ -185,7 +185,7 @@ public class AdministratorController : BaseController
 
         // get special data (if student - student data, if teacher - teacher data)
         object? memberData = null;
-        
+
         switch (user.Role)
         {
             case UserRole.Student:
@@ -217,5 +217,25 @@ public class AdministratorController : BaseController
                 Member = memberData
             }
         );
+    }
+
+    /// <summary>
+    /// Update user public data
+    /// </summary>
+    /// <response code="200">Success / user_not_found</response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="422">Invalid model</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
+    [HttpPut("user-public")]
+    [ProducesResponseType(typeof(UserPublicData), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
+    public async Task<ActionResult<UserPublicData>> UpdateUserPublicData([FromBody] UpdateUserRequestModel model)
+    {
+        var updateResponse = await _identityClient.UpdateUser(model);
+        var userPublicData = updateResponse.Data;
+
+        return new WebApiResult(userPublicData);
     }
 }

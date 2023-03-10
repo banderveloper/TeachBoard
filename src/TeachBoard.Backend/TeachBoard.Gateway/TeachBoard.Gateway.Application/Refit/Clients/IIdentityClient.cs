@@ -70,4 +70,12 @@ public interface IIdentityClient
     [Get("/user/presentation/{partialName}")]
     Task<ServiceTypedResponse<IList<UserPresentationDataModel>>> GetUserPresentationDataModelsByPartialName(
         string partialName);
+
+    /// <summary>
+    /// Update user public data
+    /// </summary>
+    /// <param name="model">New user public data</param>
+    /// <returns>Updated user public data</returns>
+    [Put("/user")]
+    Task<ServiceTypedResponse<UserPublicData>> UpdateUser([Body] UpdateUserRequestModel model);
 }
