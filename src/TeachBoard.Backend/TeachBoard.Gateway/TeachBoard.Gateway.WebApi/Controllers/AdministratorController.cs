@@ -238,4 +238,47 @@ public class AdministratorController : BaseController
 
         return new WebApiResult(userPublicData);
     }
+
+    /// <summary>
+    /// Get teachers and their count of unchecked homeworks 
+    /// </summary>
+    /// <response code="200">Success</response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
+    [HttpGet("teachers-unchecked-homeworks-count")]
+    public async Task<ActionResult<IList<TeacherUncheckedHomeworksCountPresentationModel>>>
+        GetTeachersUncheckedHomeworksCount()
+    {
+        // !!!! VERY BAD REALISATION BUT IT IS A PROBLEM OF ARCHITECTURE, IMPOSSIBLE TO MAKE BETTER WITHOUT CHANGING ARCHITECTURE
+        // !!!! VERY BAD REALISATION BUT IT IS A PROBLEM OF ARCHITECTURE, IMPOSSIBLE TO MAKE BETTER WITHOUT CHANGING ARCHITECTURE
+        // !!!! VERY BAD REALISATION BUT IT IS A PROBLEM OF ARCHITECTURE, IMPOSSIBLE TO MAKE BETTER WITHOUT CHANGING ARCHITECTURE
+        
+        // get list of models in format (teacherId - unchecked homeworks count)
+        var educationTeachersIdsCountsResponse = await _educationClient.GetTeachersUncheckedHomeworksCount();
+        var teachersIdsUncheckedCounts = educationTeachersIdsCountsResponse.Data;
+
+        // get only teacher ids
+        var teachersIds = teachersIdsUncheckedCounts.Select(t => t.TeacherId).ToList();
+
+        // sending teachers ids, get teachers info, such as user id
+        var teachersInfoResponse = await _membersClient.GetTeachersByIds(teachersIds);
+        var teachersInfo = teachersInfoResponse.Data;
+        var teachersUserId = teachersInfo.Select(t => t.UserId).ToList();
+
+        // get teacher's presentation data (name, avatar) using teachers user ids
+        var teachersUserPresentationDataResponse = await _identityClient.GetUserPresentationDataModels(teachersUserId);
+        var teachersUserPresentationData = teachersUserPresentationDataResponse.Data;
+
+        var response = teachersUserPresentationData
+            .Select(userData => new TeacherUncheckedHomeworksCountPresentationModel
+            {
+                UserId = userData.Id,
+                TeacherId = teachersInfo.FirstOrDefault(t => t.UserId == userData.Id).Id,
+                TeacherFullName = string.Join(' ', userData.LastName, userData.FirstName, userData.Patronymic),
+                HomeworksCount = teachersIdsUncheckedCounts.FirstOrDefault(t =>
+                    t.TeacherId == teachersInfo.FirstOrDefault(t => t.UserId == userData.Id).Id).Count
+            });
+
+        return new WebApiResult(response);
+    }
 }

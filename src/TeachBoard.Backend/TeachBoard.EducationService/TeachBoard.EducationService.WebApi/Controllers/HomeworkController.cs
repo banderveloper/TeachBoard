@@ -112,7 +112,8 @@ public class HomeworkController : ControllerBase
     /// <response code="200">Success. Completed homeworks full data by student returned</response>
     [HttpGet("completed/{studentId:int}")]
     [ProducesResponseType(typeof(IList<CompletedHomeworkPresentationDataModel>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IList<CompletedHomeworkPresentationDataModel>>> GetFullCompletedHomeworksByStudentId(int studentId)
+    public async Task<ActionResult<IList<CompletedHomeworkPresentationDataModel>>>
+        GetFullCompletedHomeworksByStudentId(int studentId)
     {
         var query = new GetCompletedHomeworksPresentationDataByStudentIdQuery { StudentId = studentId };
         var completedHomeworks = await _mediator.Send(query);
@@ -131,12 +132,32 @@ public class HomeworkController : ControllerBase
     /// <response code="200">Success. Uncompleted homeworks full data by student returned</response>
     [HttpGet("uncompleted-homeworks/{studentId:int}/{groupId:int}")]
     [ProducesResponseType(typeof(IList<UncompletedHomeworkPresentationDataModel>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IList<UncompletedHomeworkPresentationDataModel>>> GetUncompletedHomeworksByStudent(int studentId,
+    public async Task<ActionResult<IList<UncompletedHomeworkPresentationDataModel>>> GetUncompletedHomeworksByStudent(
+        int studentId,
         int groupId)
     {
-        var query = new GetUncompletedHomeworksPresentationDataByStudentQuery { StudentId = studentId, GroupId = groupId };
+        var query = new GetUncompletedHomeworksPresentationDataByStudentQuery
+            { StudentId = studentId, GroupId = groupId };
         var uncompletedHomeworks = await _mediator.Send(query);
 
         return new WebApiResult(uncompletedHomeworks);
+    }
+
+    /// <summary>
+    /// Get list of teacher's unchecked homeworks count
+    /// </summary>
+    /// 
+    /// <returns>List of teacher's unchecked homeworks count</returns>
+    ///
+    /// <response code="200">Success</response>
+    [HttpGet("teachers-unchecked-count")]
+    [ProducesResponseType(typeof(IList<TeacherUncheckedHomeworksCountModel>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IList<TeacherUncheckedHomeworksCountModel>>> GetTeachersUncheckedHomeworksCount()
+    {
+        var query = new GetTeachersUncheckedHomeworksCountQuery();
+
+        var teachersUncheckedCount = await _mediator.Send(query);
+
+        return new WebApiResult(teachersUncheckedCount);
     }
 }

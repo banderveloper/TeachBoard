@@ -64,4 +64,11 @@ public interface IEducationClient
     [Post("/lessons")]
     Task<ServiceTypedResponse<Lesson>>
         CreateLessonAsAdministrator([Body] CreateLessonAsAdministratorRequestModel model);
+
+    /// <summary>
+    /// Get list of teacher's unchecked homeworks count
+    /// </summary>
+    /// <returns>List of models (teacherId - uncheckedCount)</returns>
+    [Get("/homeworks/teachers-unchecked-count")]
+    Task<ServiceTypedResponse<IList<TeacherUncheckedHomeworksCountModel>>> GetTeachersUncheckedHomeworksCount();
 }
