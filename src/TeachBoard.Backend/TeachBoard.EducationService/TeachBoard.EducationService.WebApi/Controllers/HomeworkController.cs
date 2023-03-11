@@ -89,7 +89,7 @@ public class HomeworkController : ControllerBase
     /// <param name="model">Checking homework data</param>
     /// <returns>Checked completed homework</returns>
     ///
-    /// <response code="200">Success / completed_homework_not_found</response>
+    /// <response code="200">Success / completed_homework_not_found / completed_homework_invalid_teacher</response>
     /// <response code="422">Invalid model</response>
     [HttpPost("check-completed")]
     [ProducesResponseType(typeof(CompletedHomework), StatusCodes.Status200OK)]
