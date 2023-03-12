@@ -87,4 +87,12 @@ public interface IEducationClient
     /// <returns>List of completed unchecked homeworks</returns>
     [Get("/homeworks/teacher-unchecked-homeworks/{teacherId}")]
     Task<ServiceTypedResponse<IList<CompletedHomework>>> GetTeacherUncheckedHomeworks(int teacherId);
+
+    /// <summary>
+    /// Get future lessons by teacher id
+    /// </summary>
+    /// <param name="teacherId">Teacher id</param>
+    /// <returns>List of lessons</returns>
+    [Get("/lessons/future/{teacherId}")]
+    Task<ServiceTypedResponse<IList<Lesson>>> GetFutureLessonsByTeacherId(int teacherId);
 }

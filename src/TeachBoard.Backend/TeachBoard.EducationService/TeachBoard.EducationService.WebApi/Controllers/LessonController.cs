@@ -121,4 +121,20 @@ public class LessonController : ControllerBase
         var activities = await _mediator.Send(query);
         return new WebApiResult(activities);
     }
+
+    /// <summary>
+    /// Get future lessons by teacher id
+    /// </summary>
+    /// 
+    /// <returns>Future lessons</returns>
+    ///
+    /// <response code="200">Success. Lesson returned</response>
+    [HttpGet("future/{teacherId:int}")]
+    public async Task<ActionResult<IList<Lesson>>> GetFutureLessonsByTeacherId(int teacherId)
+    {
+        var query = new GetFutureLessonsByTeacherIdQuery { TeacherId = teacherId };
+        var futureLessons = await _mediator.Send(query);
+
+        return new WebApiResult(futureLessons);
+    }
 }

@@ -91,4 +91,23 @@ public class TeacherController : BaseController
 
         return new WebApiResult(uncheckedHomeworks);
     }
+
+    /// <summary>
+    /// Get teacher's future lessons
+    /// </summary>
+    ///
+    /// <response code="200">Success</response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
+    [HttpGet("future-lessons")]
+    public async Task<ActionResult<IList<Lesson>>> GetFutureLessons()
+    {
+        var teacherResponse = await _membersClient.GetTeacherByUserId(UserId);
+        var teacher = teacherResponse.Data;
+
+        var getLessonsResponse = await _educationClient.GetFutureLessonsByTeacherId(teacher.Id);
+        var futureLessonsByTeacher = getLessonsResponse.Data;
+
+        return new WebApiResult(futureLessonsByTeacher);
+    }
 }
