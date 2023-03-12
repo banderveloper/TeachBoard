@@ -79,4 +79,12 @@ public interface IEducationClient
     /// <returns>Completed homework with set mark</returns>
     [Post("/homeworks/check-completed")]
     Task<ServiceTypedResponse<CompletedHomework>> CheckHomework([Body] CheckHomeworkInternalRequestModel model);
+
+    /// <summary>
+    /// Get teacher's unchecked homeworks
+    /// </summary>
+    /// <param name="teacherId">Teacher id</param>
+    /// <returns>List of completed unchecked homeworks</returns>
+    [Get("/homeworks/teacher-unchecked-homeworks/{teacherId}")]
+    Task<ServiceTypedResponse<IList<CompletedHomework>>> GetTeacherUncheckedHomeworks(int teacherId);
 }

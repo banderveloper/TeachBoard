@@ -160,4 +160,21 @@ public class HomeworkController : ControllerBase
 
         return new WebApiResult(teachersUncheckedCount);
     }
+
+    /// <summary>
+    /// Get teacher's unchecked homeworks
+    /// </summary>
+    /// 
+    /// <returns>List of teacher's unchecked homeworks</returns>
+    ///
+    /// <response code="200">Success</response>
+    [HttpGet("teacher-unchecked-homeworks/{teacherId:int}")]
+    [ProducesResponseType(typeof(IList<CompletedHomework>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IList<CompletedHomework>>> GetTeacherUncheckedHomeworks(int teacherId)
+    {
+        var query = new GetTeacherUncheckedHomeworksQuery { TeacherId = teacherId };
+        var uncheckedHomeworks = await _mediator.Send(query);
+
+        return new WebApiResult(uncheckedHomeworks);
+    }
 }

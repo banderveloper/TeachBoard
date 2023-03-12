@@ -37,9 +37,13 @@ public class TeacherController : BaseController
     /// <response code="200">
     /// Success / teacher_not_found / completed_homework_not_found / completed_homework_invalid_teacher
     /// </response>
+    /// <response code="401">Unauthorized</response>
     /// <response code="422">Invalid model state</response>
     /// <response code="503">One of the needed services is unavailable now</response>
     [HttpPost("check-homework")]
+    [ProducesResponseType(typeof(CompletedHomework), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
     public async Task<ActionResult<CompletedHomework>> CheckHomework([FromBody] CheckHomeworkRequestModel model)
     {
         var teacherResponse = await _membersClient.GetTeacherByUserId(UserId);
@@ -64,5 +68,27 @@ public class TeacherController : BaseController
         var checkedCompletedHomework = checkHomeworkResponse.Data;
 
         return new WebApiResult(checkedCompletedHomework);
+    }
+
+    /// <summary>
+    /// Get teacher's unchecked homeworks
+    /// </summary>
+    ///
+    /// <response code="200">Success</response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
+    [HttpGet("unchecked-homeworks")]
+    [ProducesResponseType(typeof(IList<CompletedHomework>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
+    public async Task<ActionResult<IList<CompletedHomework>>> GetUncheckedHomeworks()
+    {
+        var teacherResponse = await _membersClient.GetTeacherByUserId(UserId);
+        var teacher = teacherResponse.Data;
+
+        var getHomeworksResponse = await _educationClient.GetTeacherUncheckedHomeworks(teacher.Id);
+        var uncheckedHomeworks = getHomeworksResponse.Data;
+
+        return new WebApiResult(uncheckedHomeworks);
     }
 }

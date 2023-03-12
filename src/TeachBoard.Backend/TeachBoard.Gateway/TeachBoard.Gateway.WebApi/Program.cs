@@ -144,4 +144,6 @@ app.UseSwaggerUI(config =>
 
 app.MapControllers();
 
+var a = new int();
+
 app.Run();
