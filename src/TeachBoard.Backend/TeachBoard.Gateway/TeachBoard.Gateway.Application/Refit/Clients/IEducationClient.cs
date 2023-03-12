@@ -122,4 +122,12 @@ public interface IEducationClient
     [Post("/lessons/student-activity")]
     Task<ServiceTypedResponse<StudentLessonActivity>> SetStudentLessonActivity(
         [Body] SetStudentLessonActivityRequestModel model);
+
+    /// <summary>
+    /// Create homework
+    /// </summary>
+    /// <param name="model">Homework info</param>
+    /// <returns>Created homework</returns>
+    [Post("/homeworks")]
+    Task<ServiceTypedResponse<Homework>> CreateHomework([Body] CreateHomeworkInternalRequestModel model);
 }

@@ -5,6 +5,7 @@ using TeachBoard.Gateway.Application.Exceptions;
 using TeachBoard.Gateway.Application.Refit.Clients;
 using TeachBoard.Gateway.Application.Refit.RequestModels.Education;
 using TeachBoard.Gateway.Application.Refit.ResponseModels.Education;
+using TeachBoard.Gateway.Application.Validation;
 using TeachBoard.Gateway.WebApi.ActionResults;
 using TeachBoard.Gateway.WebApi.Models;
 
@@ -196,6 +197,10 @@ public class TeacherController : BaseController
     /// <response code="422">Invalid model state</response>
     /// <response code="503">One of the needed services is unavailable now</response>
     [HttpPost("student-lesson-activity")]
+    [ProducesResponseType(typeof(StudentLessonActivity), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
     public async Task<ActionResult<StudentLessonActivity>> SetStudentLessonActivity(
         [FromBody] SetStudentLessonActivityRequestModel model)
     {
@@ -205,5 +210,48 @@ public class TeacherController : BaseController
         var activity = setActivityResponse.Data;
 
         return new WebApiResult(activity);
+    }
+
+    /// <summary>
+    /// Create homework for group
+    /// </summary>
+    /// 
+    /// <param name="model">Homework receiver info and file</param>
+    ///
+    /// <response code="200">
+    /// Success / teacher_not_found
+    /// </response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="422">Invalid model state</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
+    [HttpPost("homework")]
+    [ProducesResponseType(typeof(Homework), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
+    public async Task<ActionResult<Homework>> CreateHomework([FromBody] CreateHomeworkRequestModel model)
+    {
+        var getTeacherResponse = await _membersClient.GetTeacherByUserId(UserId);
+        var teacher = getTeacherResponse.Data;
+        
+        if (teacher is null)
+            throw new ExpectedApiException
+            {
+                ErrorCode = ErrorCode.TeacherNotFound,
+                PublicErrorMessage = "Teacher data bound to your user not found",
+                LogErrorMessage = $"CheckHomework at teacher controller error. No teacher found by user id [{UserId}]"
+            };
+
+        var internalRequest = new CreateHomeworkInternalRequestModel
+        {
+            FilePath = model.FilePath,
+            GroupId = model.GroupId,
+            TeacherId = teacher.Id,
+            SubjectId = model.SubjectId
+        };
+        var createHomeworkResponse = await _educationClient.CreateHomework(internalRequest);
+        var createdHomework = createHomeworkResponse.Data;
+
+        return new WebApiResult(createdHomework);
     }
 }
