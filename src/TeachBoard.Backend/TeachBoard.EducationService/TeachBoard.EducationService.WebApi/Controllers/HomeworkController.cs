@@ -89,7 +89,7 @@ public class HomeworkController : ControllerBase
     /// <param name="model">Checking homework data</param>
     /// <returns>Checked completed homework</returns>
     ///
-    /// <response code="200">Success / completed_homework_not_found</response>
+    /// <response code="200">Success / completed_homework_not_found / completed_homework_invalid_teacher</response>
     /// <response code="422">Invalid model</response>
     [HttpPost("check-completed")]
     [ProducesResponseType(typeof(CompletedHomework), StatusCodes.Status200OK)]
@@ -159,5 +159,22 @@ public class HomeworkController : ControllerBase
         var teachersUncheckedCount = await _mediator.Send(query);
 
         return new WebApiResult(teachersUncheckedCount);
+    }
+
+    /// <summary>
+    /// Get teacher's unchecked homeworks
+    /// </summary>
+    /// 
+    /// <returns>List of teacher's unchecked homeworks</returns>
+    ///
+    /// <response code="200">Success</response>
+    [HttpGet("teacher-unchecked-homeworks/{teacherId:int}")]
+    [ProducesResponseType(typeof(IList<CompletedHomework>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IList<CompletedHomework>>> GetTeacherUncheckedHomeworks(int teacherId)
+    {
+        var query = new GetTeacherUncheckedHomeworksQuery { TeacherId = teacherId };
+        var uncheckedHomeworks = await _mediator.Send(query);
+
+        return new WebApiResult(uncheckedHomeworks);
     }
 }

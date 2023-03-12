@@ -113,12 +113,62 @@ public class LessonController : ControllerBase
     /// <response code="200">Success. Student lesson activities returned</response>
     [HttpGet("student-activities/{studentId:int}")]
     [ProducesResponseType(typeof(IList<StudentLessonActivityPresentationDataModel>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IList<StudentLessonActivityPresentationDataModel>>> GetStudentLessonActivitiesByStudentId(
-        int studentId)
+    public async Task<ActionResult<IList<StudentLessonActivityPresentationDataModel>>>
+        GetStudentLessonActivitiesByStudentId(
+            int studentId)
     {
         var query = new GetStudentLessonActivitiesPresentationDataByStudentIdQuery { StudentId = studentId };
 
         var activities = await _mediator.Send(query);
         return new WebApiResult(activities);
+    }
+
+    /// <summary>
+    /// Get future lessons by teacher id
+    /// </summary>
+    /// 
+    /// <returns>Future lessons</returns>
+    ///
+    /// <response code="200">Success. Lesson returned</response>
+    [HttpGet("future/{teacherId:int}")]
+    public async Task<ActionResult<IList<Lesson>>> GetFutureLessonsByTeacherId(int teacherId)
+    {
+        var query = new GetFutureLessonsByTeacherIdQuery { TeacherId = teacherId };
+        var futureLessons = await _mediator.Send(query);
+
+        return new WebApiResult(futureLessons);
+    }
+
+    /// <summary>
+    /// Get lesson by id
+    /// </summary>
+    /// 
+    /// <returns>Lesson</returns>
+    ///
+    /// <response code="200">Success. Lesson returned</response>
+    [HttpGet("{lessonId:int}")]
+    public async Task<ActionResult<Lesson?>> GetLessonById(int lessonId)
+    {
+        var query = new GetLessonByIdQuery { LessonId = lessonId };
+        var lesson = await _mediator.Send(query);
+
+        return new WebApiResult(lesson);
+    }
+
+    /// <summary>
+    /// Get students lesson activities by lesson id students ids
+    /// </summary>
+    /// 
+    /// <returns>Lesson activities</returns>
+    ///
+    /// <response code="200">Success. Lesson activities returned</response>
+    [HttpGet("students-lesson-activities/{lessonId:int}")]
+    public async Task<ActionResult<IList<StudentLessonActivity>>> GetStudentsLessonActivities(int lessonId,
+        [FromQuery] List<int> studentId)
+    {
+        var query = new GetStudentsLessonActivitiesQuery { LessonId = lessonId, StudentIds = studentId };
+        var lessonActivities = await _mediator.Send(query);
+
+        return new WebApiResult(lessonActivities);
     }
 }

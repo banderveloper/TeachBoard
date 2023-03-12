@@ -85,4 +85,12 @@ public interface IMembersClient
     /// <returns>List of teachers</returns>
     [Get("/teachers/by-ids")]
     Task<ServiceTypedResponse<IList<Teacher>>> GetTeachersByIds([Query(CollectionFormat.Multi)] List<int> teacherId);
+
+    /// <summary>
+    /// Get students by group id
+    /// </summary>
+    /// <param name="groupId">Group id</param>
+    /// <returns>List of students</returns>
+    [Get("/students/by-group/{groupId}")]
+    Task<ServiceTypedResponse<IList<Student>>> GetStudentsByGroupId(int groupId);
 }

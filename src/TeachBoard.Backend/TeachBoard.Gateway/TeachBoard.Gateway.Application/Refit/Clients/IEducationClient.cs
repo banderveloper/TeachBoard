@@ -71,4 +71,63 @@ public interface IEducationClient
     /// <returns>List of models (teacherId - uncheckedCount)</returns>
     [Get("/homeworks/teachers-unchecked-count")]
     Task<ServiceTypedResponse<IList<TeacherUncheckedHomeworksCountModel>>> GetTeachersUncheckedHomeworksCount();
+
+    /// <summary>
+    /// Check completed homework as teacher
+    /// </summary>
+    /// <param name="model">Checking teacher id, grade and comment</param>
+    /// <returns>Completed homework with set mark</returns>
+    [Post("/homeworks/check-completed")]
+    Task<ServiceTypedResponse<CompletedHomework>> CheckHomework([Body] CheckHomeworkInternalRequestModel model);
+
+    /// <summary>
+    /// Get teacher's unchecked homeworks
+    /// </summary>
+    /// <param name="teacherId">Teacher id</param>
+    /// <returns>List of completed unchecked homeworks</returns>
+    [Get("/homeworks/teacher-unchecked-homeworks/{teacherId}")]
+    Task<ServiceTypedResponse<IList<CompletedHomework>>> GetTeacherUncheckedHomeworks(int teacherId);
+
+    /// <summary>
+    /// Get future lessons by teacher id
+    /// </summary>
+    /// <param name="teacherId">Teacher id</param>
+    /// <returns>List of lessons</returns>
+    [Get("/lessons/future/{teacherId}")]
+    Task<ServiceTypedResponse<IList<Lesson>>> GetFutureLessonsByTeacherId(int teacherId);
+
+    /// <summary>
+    /// Get lesson by id
+    /// </summary>
+    /// <param name="lessonId">Lesson id</param>
+    /// <returns>Lesson</returns>
+    [Get("/lessons/{lessonId}")]
+    Task<ServiceTypedResponse<Lesson?>> GetLessonById(int lessonId);
+
+    /// <summary>
+    /// Get lesson's students activities
+    /// </summary>
+    /// <param name="lessonId">Lesson id</param>
+    /// <param name="studentId">List of students ids/param>
+    /// <returns>List of student activities</returns>
+    [Get("/lessons/students-lesson-activities/{lessonId}")]
+    Task<ServiceTypedResponse<IList<StudentLessonActivity>>> GetLessonStudentsActivities(int lessonId,
+        [Query(CollectionFormat.Multi)] List<int> studentId);
+
+    /// <summary>
+    /// Set student's lesson activity
+    /// </summary>
+    /// <param name="model">Lesson id, student id, grade and attendance status</param>
+    /// <returns>Created/updated student' lesson activity</returns>
+    [Post("/lessons/student-activity")]
+    Task<ServiceTypedResponse<StudentLessonActivity>> SetStudentLessonActivity(
+        [Body] SetStudentLessonActivityRequestModel model);
+
+    /// <summary>
+    /// Create homework
+    /// </summary>
+    /// <param name="model">Homework info</param>
+    /// <returns>Created homework</returns>
+    [Post("/homeworks")]
+    Task<ServiceTypedResponse<Homework>> CreateHomework([Body] CreateHomeworkInternalRequestModel model);
 }
