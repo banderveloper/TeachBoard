@@ -95,4 +95,22 @@ public interface IEducationClient
     /// <returns>List of lessons</returns>
     [Get("/lessons/future/{teacherId}")]
     Task<ServiceTypedResponse<IList<Lesson>>> GetFutureLessonsByTeacherId(int teacherId);
+
+    /// <summary>
+    /// Get lesson by id
+    /// </summary>
+    /// <param name="lessonId">Lesson id</param>
+    /// <returns>Lesson</returns>
+    [Get("/lessons/{lessonId}")]
+    Task<ServiceTypedResponse<Lesson?>> GetLessonById(int lessonId);
+
+    /// <summary>
+    /// Get lesson's students activities
+    /// </summary>
+    /// <param name="lessonId">Lesson id</param>
+    /// <param name="studentId">List of students ids/param>
+    /// <returns>List of student activities</returns>
+    [Get("/lessons/students-lesson-activities/{lessonId}")]
+    Task<ServiceTypedResponse<IList<StudentLessonActivity>>> GetLessonStudentsActivities(int lessonId,
+        [Query(CollectionFormat.Multi)] List<int> studentId);
 }
