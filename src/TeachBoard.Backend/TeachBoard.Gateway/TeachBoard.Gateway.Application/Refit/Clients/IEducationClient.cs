@@ -113,4 +113,13 @@ public interface IEducationClient
     [Get("/lessons/students-lesson-activities/{lessonId}")]
     Task<ServiceTypedResponse<IList<StudentLessonActivity>>> GetLessonStudentsActivities(int lessonId,
         [Query(CollectionFormat.Multi)] List<int> studentId);
+
+    /// <summary>
+    /// Set student's lesson activity
+    /// </summary>
+    /// <param name="model">Lesson id, student id, grade and attendance status</param>
+    /// <returns>Created/updated student' lesson activity</returns>
+    [Post("/lessons/student-activity")]
+    Task<ServiceTypedResponse<StudentLessonActivity>> SetStudentLessonActivity(
+        [Body] SetStudentLessonActivityRequestModel model);
 }

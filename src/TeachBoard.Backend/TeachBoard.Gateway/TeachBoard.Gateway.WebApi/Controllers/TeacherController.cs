@@ -182,4 +182,28 @@ public class TeacherController : BaseController
 
         return new WebApiResult(lessonInfo);
     }
+
+    /// <summary>
+    /// Check completed student's homeworks
+    /// </summary>
+    /// 
+    /// <param name="model">Completed homework id, grade and comment</param>
+    ///
+    /// <response code="200">
+    /// Success / lesson_not_found / lesson_not_started
+    /// </response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="422">Invalid model state</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
+    [HttpPost("student-lesson-activity")]
+    public async Task<ActionResult<StudentLessonActivity>> SetStudentLessonActivity(
+        [FromBody] SetStudentLessonActivityRequestModel model)
+    {
+        // todo check student existence
+        
+        var setActivityResponse = await _educationClient.SetStudentLessonActivity(model);
+        var activity = setActivityResponse.Data;
+
+        return new WebApiResult(activity);
+    }
 }
