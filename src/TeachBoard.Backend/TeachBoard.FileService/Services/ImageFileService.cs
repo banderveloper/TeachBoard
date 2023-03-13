@@ -1,7 +1,7 @@
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
-using Microsoft.AspNetCore.Mvc;
 using TeachBoard.FileService.Configurations;
+using TeachBoard.FileService.Exceptions;
 using TeachBoard.FileService.Interfaces;
 
 namespace TeachBoard.FileService.Services;
@@ -10,28 +10,30 @@ public class ImageFileService : IImageFileService
 {
     private readonly Cloudinary _cloudinary;
 
-    public ImageFileService(ApiConfiguration configuration)
+    public ImageFileService(ImageApiConfiguration configuration)
     {
         _cloudinary = new Cloudinary(new Account(configuration.CloudName, configuration.Key, configuration.Secret));
     }
-    
-    public async Task<string> GetImageLinkAsync(string publicId)
+
+    public string GetImageLink(string publicId)
     {
         var transformation = new Transformation().Width(500).Crop("scale");
-        
+
         // generate the image URL using the public ID and transformation (if any)
-        string imageUrl = _cloudinary.Api.UrlImgUp.Transform(transformation)
+        var imageUrl = _cloudinary.Api.UrlImgUp.Transform(transformation)
             .BuildUrl(publicId);
 
         return imageUrl;
     }
 
-    [HttpPost]
-    public async Task<ImageUploadResult> UploadAsync(IFormFile file)
+    public async Task<ImageUploadResult> UploadImageAsync(IFormFile file, string publicId)
     {
-        var uploadResult = new ImageUploadResult();
-
-        if (file.Length <= 0) return uploadResult;
+        if (file.Length <= 0)
+            throw new BadRequestApiException
+            {
+                ErrorCode = ErrorCode.FileEmpty,
+                PublicErrorMessage = "Image is empty"
+            };
 
         await using var stream = file.OpenReadStream();
 
@@ -39,17 +41,16 @@ public class ImageFileService : IImageFileService
         {
             File = new FileDescription(file.FileName, stream), // (nameOfTheFile, its content in stream);
             Transformation = new Transformation().Height(500).Width(500).Crop("fill").Gravity("face"),
-            //Folder = "files", //  folder where it will be located on CloudinaryWebSite
-            PublicId = "hello"
+            PublicId = publicId
         };
 
-        uploadResult = await _cloudinary.UploadAsync(uploadParams);
-
-        return uploadResult;
+        return await _cloudinary.UploadAsync(uploadParams);
     }
 
-    public Task<DeletionResult> DeleteAsync(string publicId)
+    public async Task<DeletionResult> DeleteImageAsync(string publicId)
     {
-        throw new NotImplementedException();
+        var deletionParams = new DeletionParams(publicId);
+        var deletionResult = await _cloudinary.DestroyAsync(deletionParams);
+        return deletionResult;
     }
 }

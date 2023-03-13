@@ -9,9 +9,9 @@ builder.Services.AddControllers();
 
 builder.Services.AddScoped<IImageFileService, ImageFileService>();
 
-builder.Services.Configure<ApiConfiguration>(builder.Configuration.GetSection("Cloudinary"));
+builder.Services.Configure<ImageApiConfiguration>(builder.Configuration.GetSection("Cloudinary"));
 builder.Services.AddSingleton(resolver =>
-    resolver.GetRequiredService<IOptions<ApiConfiguration>>().Value);
+    resolver.GetRequiredService<IOptions<ImageApiConfiguration>>().Value);
 
 var app = builder.Build();
 

@@ -4,7 +4,7 @@ namespace TeachBoard.FileService.Interfaces;
 
 public interface IImageFileService
 {
-    Task<string> GetImageLinkAsync(string publicId);
-    Task<ImageUploadResult> UploadAsync(IFormFile file);
-    Task<DeletionResult> DeleteAsync(string publicId);
+    string GetImageLink(string publicId);
+    Task<ImageUploadResult> UploadImageAsync(IFormFile file, string publicId);
+    Task<DeletionResult> DeleteImageAsync(string publicId);
 }

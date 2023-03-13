@@ -1,6 +1,6 @@
 namespace TeachBoard.FileService.Configurations;
 
-public class ApiConfiguration
+public class ImageApiConfiguration
 {
     public string CloudName { get; set; }
     public string Key { get; set; }
