@@ -30,7 +30,7 @@ public class StudentController : ControllerBase
     /// <response code="200">Success</response>
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(Student), StatusCodes.Status200OK)]
-    public async Task<ActionResult<Student>> GetStudentById(int id)
+    public async Task<ActionResult<Student?>> GetStudentById(int id)
     {
         var query = new GetStudentByIdQuery { StudentId = id };
         var student = await _mediator.Send(query);

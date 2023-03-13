@@ -246,13 +246,14 @@ public class AdministratorController : BaseController
     /// <response code="401">Unauthorized</response>
     /// <response code="503">One of the needed services is unavailable now</response>
     [HttpGet("teachers-unchecked-homeworks-count")]
+    [ProducesResponseType(typeof(IList<TeacherUncheckedHomeworksCountPresentationModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
     public async Task<ActionResult<IList<TeacherUncheckedHomeworksCountPresentationModel>>>
         GetTeachersUncheckedHomeworksCount()
     {
-        // !!!! VERY BAD REALISATION BUT IT IS A PROBLEM OF ARCHITECTURE, IMPOSSIBLE TO MAKE BETTER WITHOUT CHANGING ARCHITECTURE
-        // !!!! VERY BAD REALISATION BUT IT IS A PROBLEM OF ARCHITECTURE, IMPOSSIBLE TO MAKE BETTER WITHOUT CHANGING ARCHITECTURE
-        // !!!! VERY BAD REALISATION BUT IT IS A PROBLEM OF ARCHITECTURE, IMPOSSIBLE TO MAKE BETTER WITHOUT CHANGING ARCHITECTURE
-        
+        // bad code
+
         // get list of models in format (teacherId - unchecked homeworks count)
         var educationTeachersIdsCountsResponse = await _educationClient.GetTeachersUncheckedHomeworksCount();
         var teachersIdsUncheckedCounts = educationTeachersIdsCountsResponse.Data;
@@ -280,5 +281,36 @@ public class AdministratorController : BaseController
             });
 
         return new WebApiResult(response);
+    }
+    
+    /// <summary>
+    /// Create examination
+    /// </summary>
+    /// <response code="200">Success / group_not_found / subject_not_found</response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="422">Invalid model</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
+    [HttpPost("examination")]
+    [ProducesResponseType(typeof(Examination), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
+    public async Task<ActionResult<Examination>> CreateExamination([FromBody] CreateExaminationRequestModel model)
+    {
+        // if group not found
+        var getGroupResponse = await _membersClient.GetGroupById(model.GroupId);
+        if (getGroupResponse.Data is null)
+            throw new ExpectedApiException
+            {
+                ErrorCode = ErrorCode.GroupNotFound,
+                PublicErrorMessage = "Group not found",
+                LogErrorMessage = $"Create examination at controller error. Group with id [{model.GroupId}] not found"
+            };
+
+        // create exam and return it
+        var createExamResponse = await _educationClient.CreateExamination(model);
+        var createdExamination = createExamResponse.Data;
+
+        return new WebApiResult(createdExamination);
     }
 }

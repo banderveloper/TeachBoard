@@ -254,4 +254,40 @@ public class TeacherController : BaseController
 
         return new WebApiResult(createdHomework);
     }
+
+    /// <summary>
+    /// Set student's examination activity
+    /// </summary>
+    /// 
+    /// <param name="model">Examination id, student id, grade and status</param>
+    ///
+    /// <response code="200">
+    /// Success / student_not_found / examination_not_found
+    /// </response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="422">Invalid model state</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
+    [HttpPost("student-examination-activity")]
+    [ProducesResponseType(typeof(StudentExaminationActivity), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
+    public async Task<ActionResult<StudentExaminationActivity>> SetStudentExaminationActivity(
+        [FromBody] SetStudentExaminationActivityRequestModel model)
+    {
+        var getStudentResponse = await _membersClient.GetStudentById(model.StudentId);
+        if (getStudentResponse.Data is null)
+            throw new ExpectedApiException
+            {
+                ErrorCode = ErrorCode.StudentNotFound,
+                PublicErrorMessage = "Student not found",
+                LogErrorMessage =
+                    $"SetStudentExaminationActivity at controller error. Student with id [{model.StudentId}] not found"
+            };
+
+        var setExamActivityResponse = await _educationClient.SetStudentExaminationActivity(model);
+        var examinationActivity = setExamActivityResponse.Data;
+
+        return new WebApiResult(examinationActivity);
+    }
 }
