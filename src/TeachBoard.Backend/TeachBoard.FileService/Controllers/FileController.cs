@@ -1,5 +1,6 @@
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Mvc;
+using TeachBoard.FileService.Interfaces;
 using TeachBoard.FileService.Services;
 
 namespace TeachBoard.FileService.Controllers;
@@ -15,8 +16,15 @@ public class FileController : ControllerBase
         _imageFileService = imageFileService;
     }
 
-    public async Task<ActionResult<UploadResult>> UploadFile(IFormFile file)
+    [HttpPost("image")]
+    public async Task<ActionResult<UploadResult>> UploadImage(IFormFile imageFile)
     {
-        return await _imageFileService.UploadAsync(file);
+        return await _imageFileService.UploadAsync(imageFile);
+    }
+
+    [HttpGet("image/{publicId}")]
+    public async Task<ActionResult<string>> GetImageLink(string publicId)
+    {
+        return await _imageFileService.GetImageLinkAsync(publicId);
     }
 }

@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Options;
 using TeachBoard.FileService.Configurations;
+using TeachBoard.FileService.Interfaces;
 using TeachBoard.FileService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
