@@ -93,4 +93,7 @@ public interface IMembersClient
     /// <returns>List of students</returns>
     [Get("/students/by-group/{groupId}")]
     Task<ServiceTypedResponse<IList<Student>>> GetStudentsByGroupId(int groupId);
+
+    [Get("/students/{studentId}")]
+    Task<ServiceTypedResponse<Student?>> GetStudentById(int studentId);
 }

@@ -19,5 +19,6 @@ public enum ErrorCode
     TeacherNotFound,
     GroupNotFound,
     GetUserInfoForbidden,
-    UnexpectedRole
+    UnexpectedRole,
+    StudentNotFound
 }

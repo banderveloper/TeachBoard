@@ -130,4 +130,11 @@ public interface IEducationClient
     /// <returns>Created homework</returns>
     [Post("/homeworks")]
     Task<ServiceTypedResponse<Homework>> CreateHomework([Body] CreateHomeworkInternalRequestModel model);
+
+    [Post("/examinations")]
+    Task<ServiceTypedResponse<Examination>> CreateExamination([Body] CreateExaminationRequestModel model);
+
+    [Post("/examinations/student-activity")]
+    Task<ServiceTypedResponse<StudentExaminationActivity>> SetStudentExaminationActivity(
+        [Body] SetStudentExaminationActivityRequestModel model);
 }
