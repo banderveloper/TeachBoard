@@ -20,5 +20,6 @@ public enum ErrorCode
     GroupNotFound,
     GetUserInfoForbidden,
     UnexpectedRole,
-    StudentNotFound
+    StudentNotFound,
+    ImageUploadError
 }

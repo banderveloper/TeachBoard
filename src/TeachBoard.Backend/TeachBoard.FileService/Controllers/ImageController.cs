@@ -1,7 +1,9 @@
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using TeachBoard.FileService.Interfaces;
 using TeachBoard.FileService.Models;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace TeachBoard.FileService.Controllers;
 
@@ -16,11 +18,13 @@ public class ImageController : ControllerBase
         _imageFileService = imageFileService;
     }
 
-    [HttpPost("avatar")]
-    public async Task<ActionResult<ImageUploadResult>> SetUserAvatarImage([FromForm] SetUserAvatarRequestModel model)
+    [HttpPost("avatar/{userId:int}")]
+    public async Task<ActionResult<ImageUploadResult>> SetUserAvatarImage(int userId, [FromForm] IFormFile imageFile)
     {
-        var imagePublicId = "user_avatar_" + model.UserId;
-        var result = await _imageFileService.UploadImageAsync(model.ImageFile, imagePublicId);
+        var imagePublicId = "user_avatar_" + userId;
+        var result = await _imageFileService.UploadImageAsync(imageFile, imagePublicId);
+
+        //Console.WriteLine("UploadImageResult: " + JsonSerializer.Serialize(result));
 
         return new WebApiResult(result);
     }

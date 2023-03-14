@@ -1,10 +1,12 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 using Refit;
 using TeachBoard.Gateway.Application;
 using TeachBoard.Gateway.Application.Exceptions;
 using TeachBoard.Gateway.Application.Refit.Clients;
 using TeachBoard.Gateway.Application.Refit.RequestModels.Education;
+using TeachBoard.Gateway.Application.Refit.RequestModels.Files;
 using TeachBoard.Gateway.Application.Refit.RequestModels.Identity;
 using TeachBoard.Gateway.Application.Refit.RequestModels.Members;
 using TeachBoard.Gateway.Application.Refit.ResponseModels.Education;
@@ -23,13 +25,15 @@ public class AdministratorController : BaseController
     private readonly IIdentityClient _identityClient;
     private readonly IMembersClient _membersClient;
     private readonly IEducationClient _educationClient;
+    private readonly IFilesClient _filesClient;
 
     public AdministratorController(IIdentityClient identityClient, IMembersClient membersClient,
-        IEducationClient educationClient)
+        IEducationClient educationClient, IFilesClient filesClient)
     {
         _identityClient = identityClient;
         _membersClient = membersClient;
         _educationClient = educationClient;
+        _filesClient = filesClient;
     }
 
     /// <summary>
@@ -312,5 +316,30 @@ public class AdministratorController : BaseController
         var createdExamination = createExamResponse.Data;
 
         return new WebApiResult(createdExamination);
+    }
+
+    [HttpPost("user-avatar/{userId:int}")]
+    public async Task<ActionResult<AvatarUploadResultResponseModel>> SetUserAvatar(int userId, [FromForm] IFormFile imageFile)
+    {
+        var stream = imageFile.OpenReadStream();
+        var streamPart = new StreamPart(stream, imageFile.FileName, "image/jpeg");
+
+        var setUserAvatarResponse = await _filesClient.SetUserAvatar(userId, streamPart);
+        var imageUploadResult = setUserAvatarResponse.Data;
+
+        if (imageUploadResult?.Error is not null)
+            throw new ExpectedApiException
+            {
+                ErrorCode = ErrorCode.ImageUploadError,
+                PublicErrorMessage = imageUploadResult.Error.Message
+            };
+
+        var updateUserResponse = await _identityClient.UpdateUserAvatar(new UpdateUserAvatarRequestModel
+        {
+            UserId = userId,
+            AvatarImagePath = imageUploadResult?.Url.ToString()
+        });
+
+        return new WebApiResult(updateUserResponse.Data);
     }
 }

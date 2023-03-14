@@ -72,6 +72,9 @@ builder.Services.AddRefitClient<IMembersClient>(refitSettings)
 builder.Services.AddRefitClient<IEducationClient>(refitSettings)
     .ConfigureHttpClient(client => client.BaseAddress = new Uri(builder.Configuration["ApiAddresses:Education"]));
 
+builder.Services.AddRefitClient<IFilesClient>(refitSettings)
+    .ConfigureHttpClient(client => client.BaseAddress = new Uri(builder.Configuration["ApiAddresses:Files"]));
+
 builder.Services.AddScoped<CookieService>();
 
 // Swagger

@@ -78,4 +78,7 @@ public interface IIdentityClient
     /// <returns>Updated user public data</returns>
     [Put("/user")]
     Task<ServiceTypedResponse<UserPublicData>> UpdateUser([Body] UpdateUserRequestModel model);
+
+    [Put("/user/avatar")]
+    Task<ServiceTypedResponse<UserPublicData>> UpdateUserAvatar([Body] UpdateUserAvatarRequestModel model);
 }

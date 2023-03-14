@@ -34,7 +34,7 @@ public class ImageFileService : IImageFileService
                 ErrorCode = ErrorCode.FileEmpty,
                 PublicErrorMessage = "Image is empty"
             };
-
+        
         await using var stream = file.OpenReadStream();
 
         var uploadParams = new ImageUploadParams

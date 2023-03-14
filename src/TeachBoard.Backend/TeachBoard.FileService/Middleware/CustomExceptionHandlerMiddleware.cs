@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.FileService.Exceptions;
 
@@ -29,6 +30,8 @@ public class CustomExceptionHandlerMiddleware
 
     private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
+        Console.WriteLine("EXCEPTION+++++++++++");
+        _logger.LogError(exception.ToString());
         context.Response.ContentType = "application/json";
         var response = new WebApiResult();
 
@@ -45,6 +48,7 @@ public class CustomExceptionHandlerMiddleware
                 break;
 
             case IBadRequestApiException badRequestException:
+                Console.WriteLine("Bad request: " + JsonSerializer.Serialize(badRequestException));
                 response.StatusCode = HttpStatusCode.BadRequest;
                 response.Error = new
                 {
