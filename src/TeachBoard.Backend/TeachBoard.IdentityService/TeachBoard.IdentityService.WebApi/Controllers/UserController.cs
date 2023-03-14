@@ -143,4 +143,15 @@ public class UserController : ControllerBase
 
         return new WebApiResult(userPublicData);
     }
+
+    [HttpPut("avatar")]
+    public async Task<ActionResult<UserPublicDataResponseModel>> UpdateUserAvatar(
+        [FromBody] UpdateUserAvatarRequestModel model)
+    {
+        var command = _mapper.Map<UpdateUserAvatarImagePathCommand>(model);
+        var updatedUser = await _mediator.Send(command);
+
+        var userPublicData = _mapper.Map<UserPublicDataResponseModel>(updatedUser);
+        return new WebApiResult(userPublicData);
+    }
 }

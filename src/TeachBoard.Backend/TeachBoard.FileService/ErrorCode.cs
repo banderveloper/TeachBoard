@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
-using TeachBoard.Gateway.Application.Converters;
+using TeachBoard.FileService.Converters;
 
-namespace TeachBoard.Gateway.Application;
+namespace TeachBoard.FileService;
 
 /// <summary>
 /// Exception error code, sent to client with error model as snake_case_string
@@ -11,15 +11,5 @@ namespace TeachBoard.Gateway.Application;
 public enum ErrorCode
 {
     Unknown,
-    
-    JwtUserIdNotFound,
-    NeededServiceUnavailable,
-    RefreshCookieNotFound,
-    SetRoleForbidden,
-    TeacherNotFound,
-    GroupNotFound,
-    GetUserInfoForbidden,
-    UnexpectedRole,
-    StudentNotFound,
-    ImageUploadError
+    FileEmpty
 }
