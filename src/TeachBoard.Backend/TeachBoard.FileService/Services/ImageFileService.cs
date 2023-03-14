@@ -12,6 +12,9 @@ public class ImageFileService : IImageFileService
 
     public ImageFileService(ImageApiConfiguration configuration)
     {
+        Console.WriteLine("IMage file service cloudname: " + configuration.CloudName);
+        Console.WriteLine("IMage file service key: " + configuration.Key);
+        Console.WriteLine("IMage file service secret: " + configuration.Secret);
         _cloudinary = new Cloudinary(new Account(configuration.CloudName, configuration.Key, configuration.Secret));
     }
 

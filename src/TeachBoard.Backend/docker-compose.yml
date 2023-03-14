@@ -28,7 +28,7 @@ services:
     restart: on-failure
 
   teachboard.educationservice:
-    container_name: bikeshop-service
+    container_name: teachboard-education
     build:
       context: TeachBoard.EducationService
       dockerfile: Dockerfile
@@ -39,7 +39,25 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=DockerDevelopment
     restart: on-failure
-
+    
+  teachboard.fileservice:
+    container_name: teachboard-file
+    build:
+      context: TeachBoard.FileService
+      dockerfile: Dockerfile
+      args:
+        - CLOUDINARY_KEY=arg_value
+        - CLOUDINARY_SECRET=arg_value
+        - CLOUDINARY_CLOUDNAME=arg_value
+    image: kpssnik/teachboard.fileservice
+    hostname: teachboard.fileservice
+    ports:
+      - 5004:80
+    environment:
+      - ASPNETCORE_ENVIRONMENT=DockerDevelopment
+    restart: on-failure
+      
+      
   teachboard.gateway:
     container_name: teachboard-gateway
     build:
