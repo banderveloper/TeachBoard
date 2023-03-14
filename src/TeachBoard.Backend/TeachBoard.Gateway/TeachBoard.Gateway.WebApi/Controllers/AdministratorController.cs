@@ -318,7 +318,20 @@ public class AdministratorController : BaseController
         return new WebApiResult(createdExamination);
     }
 
+    /// <summary>
+    /// Create examination
+    /// </summary>
+    /// <param name="userId">User's id</param>
+    /// <param name="imageFile">IFormFile image (user avatar)</param>
+    /// <response code="200">Success / image_upload_error / user_not_found</response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="422">Invalid model</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
     [HttpPost("user-avatar/{userId:int}")]
+    [ProducesResponseType(typeof(AvatarUploadResultResponseModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
     public async Task<ActionResult<AvatarUploadResultResponseModel>> SetUserAvatar(int userId, [FromForm] IFormFile imageFile)
     {
         var stream = imageFile.OpenReadStream();
