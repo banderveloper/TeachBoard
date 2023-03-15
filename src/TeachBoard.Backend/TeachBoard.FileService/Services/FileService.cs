@@ -2,6 +2,7 @@ using System.Text.Json;
 using Amazon;
 using Amazon.Runtime;
 using Amazon.S3;
+using Amazon.S3.Transfer;
 using TeachBoard.FileService.Configurations;
 using TeachBoard.FileService.Interfaces;
 
@@ -18,9 +19,21 @@ public class FileService : IFileService
         // Console.WriteLine("Secret: " + fileApiConfiguration.Secret);
     }
 
-    public Task UploadFileAsync(IFormFile file, string name)
+    public async Task UploadFileAsync(IFormFile file, string name)
     {
-        throw new NotImplementedException();
+        using var client = new AmazonS3Client(_credentials, RegionEndpoint.EUCentral1);
+        using var newMemoryStream = new MemoryStream();
+        await file.CopyToAsync(newMemoryStream);
+
+        var uploadRequest = new TransferUtilityUploadRequest
+        {
+            InputStream = newMemoryStream,
+            Key = name,
+            BucketName = "teachboard-bucket",
+        };
+
+        var fileTransferUtility = new TransferUtility(client);
+        await fileTransferUtility.UploadAsync(uploadRequest);
     }
 
     public async Task Test()

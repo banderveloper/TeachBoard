@@ -20,4 +20,11 @@ public class FileController : ControllerBase
         await _fileService.Test();
         return Ok();
     }
+
+    [HttpPost]
+    public async Task<IActionResult> UploadFile([FromForm] IFormFile file)
+    {
+        await _fileService.UploadFileAsync(file, "iloveyou");
+        return Ok();
+    }
 }
