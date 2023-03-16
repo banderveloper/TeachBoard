@@ -13,5 +13,6 @@ public enum ErrorCode
     Unknown,
     FileEmpty,
     HostingBadResponse,
-    FileNameEmpty
+    FileNameEmpty,
+    FileNotFound
 }
