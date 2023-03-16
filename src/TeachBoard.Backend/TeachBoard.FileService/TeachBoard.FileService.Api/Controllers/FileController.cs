@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using TeachBoard.FileService.Api.Models;
 using TeachBoard.FileService.Application;
 using TeachBoard.FileService.Application.Exceptions;
 using TeachBoard.FileService.Application.Interfaces;
@@ -32,6 +33,7 @@ public class FileController : ControllerBase
         // try upload file to hosting and get TRUE if success
         var isUploadSucceed = await _fileService.UploadFileAsync(file, cloudFileName);
 
+        // return created db solution if succeed
         var solution = isUploadSucceed
             ? await _cloudFileDatabaseService.CreateHomeworkSolution(studentId, homeworkId, file.FileName,
                 cloudFileName)
@@ -41,19 +43,27 @@ public class FileController : ControllerBase
     }
 
     [HttpGet("homework-solution/{studentId:int}/{homeworkId:int}")]
-    public async Task<FileContentResult> GetHomeworkSolutionFile(int studentId, int homeworkId)
+    public async Task<ActionResult<HomeworkFileResponseModel>> GetHomeworkSolutionFile(int studentId, int homeworkId)
     {
+        // get file info from db to get origin and cloud filename
         var solution = await _cloudFileDatabaseService.GetHomeworkSolution(studentId, homeworkId);
 
         if (solution is null)
             throw new ExpectedApiException
             {
-                ErrorCode = ErrorCode.FileNotFound,
+                ErrorCode = ErrorCode.FileInfoNotFound,
                 PublicErrorMessage = "Homework solution file not found"
             };
 
+        // download file from hosting and get bytes
         var solutionFileBytes = await _fileService.DownloadFileAsync(solution.CloudFileName);
+        
+        var response = new HomeworkFileResponseModel
+        {
+            FileName = solution.OriginFileName,
+            FileContent = solutionFileBytes
+        };
 
-        return File(solutionFileBytes, "application/octet-stream", solution.OriginFileName);
+        return new WebApiResult(response);
     }
 }

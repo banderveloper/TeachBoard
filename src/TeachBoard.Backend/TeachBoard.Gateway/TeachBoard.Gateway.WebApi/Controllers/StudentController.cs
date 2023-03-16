@@ -19,19 +19,20 @@ public class StudentController : BaseController
     private readonly IIdentityClient _identityClient;
     private readonly IMembersClient _membersClient;
     private readonly IEducationClient _educationClient;
+    private readonly IFilesClient _filesClient;
 
     private readonly ILogger<StudentController> _logger;
 
     public StudentController(IIdentityClient identityClient, IMembersClient membersClient,
-        IEducationClient educationClient, ILogger<StudentController> logger)
+        IEducationClient educationClient, ILogger<StudentController> logger, IFilesClient filesClient)
     {
         _identityClient = identityClient;
         _membersClient = membersClient;
         _educationClient = educationClient;
         _logger = logger;
+        _filesClient = filesClient;
     }
-
-
+    
     /// <summary>
     /// Approve pending user with student role
     /// </summary>
@@ -293,6 +294,32 @@ public class StudentController : BaseController
 
         return new WebApiResult(completedHomework);
     }
-    
-    
+
+    /// <summary>
+    /// Download file of completed homework
+    /// </summary>
+    /// 
+    /// <remarks>Requires in-header JWT-token with user id, bound to student</remarks>
+    ///
+    /// <param name="completedHomeworkId">Id of completed homework</param>
+    ///
+    /// <response code="200">Success / file_info_not_found / </response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="502">hosting_file_not_found</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
+    [HttpGet("homework-solution-file/{completedHomeworkId:int}")]
+    [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
+    public async Task<FileContentResult> GetHomeworkSolutionFile(int completedHomeworkId)
+    {
+        var getStudentResponse = await _membersClient.GetStudentByUserId(UserId);
+        var student = getStudentResponse.Data;
+
+        var getFileResponse = await _filesClient.GetHomeworkSolutionFile(student.Id, completedHomeworkId);
+        var file = getFileResponse.Data;
+        
+        return File(file.FileContent, "application/octet-stream", file.FileName);
+    }
 }

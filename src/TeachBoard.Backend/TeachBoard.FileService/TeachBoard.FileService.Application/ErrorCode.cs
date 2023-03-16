@@ -14,5 +14,6 @@ public enum ErrorCode
     FileEmpty,
     HostingBadResponse,
     FileNameEmpty,
-    FileNotFound
+    FileInfoNotFound,
+    HostingFileNotFound
 }

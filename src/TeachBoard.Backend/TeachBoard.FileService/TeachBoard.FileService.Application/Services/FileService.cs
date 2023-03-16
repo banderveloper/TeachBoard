@@ -69,7 +69,11 @@ public class FileService : IFileService
         }
 
         if (ms.ToArray().Length < 1)
-            throw new FileNotFoundException(string.Format("The document '{0}' is not found", fileName));
+            throw new HostingErrorException
+            {
+                ErrorCode = ErrorCode.HostingFileNotFound,
+                PublicErrorMessage = "File at hosting not found"
+            };
 
         return ms.ToArray();
     }
