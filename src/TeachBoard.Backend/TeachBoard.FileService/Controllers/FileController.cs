@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.FileService.Interfaces;
+using TeachBoard.FileService.Models;
 
 namespace TeachBoard.FileService.Controllers;
 
@@ -14,17 +15,27 @@ public class FileController : ControllerBase
         _fileService = fileService;
     }
 
-    [HttpGet]
-    public async Task<IActionResult> Test()
+    [HttpPost("homework-solution")]
+    public async Task<IActionResult> UploadHomeworkSolutionFile([FromForm] UploadHomeworkSolutionRequestModel model)
     {
-        await _fileService.Test();
-        return Ok();
-    }
+        // get upload file extension without dot
+        var fileExtension = model.HomeworkFile.FileName.Split('.').LastOrDefault();
 
-    [HttpPost]
-    public async Task<IActionResult> UploadFile([FromForm] IFormFile file)
+        // set filename (example: hws_5_10.txt). hws = homework solution 
+        var fileName = $"hws_{model.StudentId}_{model.HomeworkId}";
+        if (fileExtension is not null) fileName += $".{fileExtension}";
+
+        var isSucceed = await _fileService.UploadFileAsync(model.HomeworkFile, fileName);
+
+        return Ok(new { isSucceed });
+    }
+    
+    [HttpGet("homework-solution")]
+    public async Task<IActionResult> GetHomeworkSolutionFile()
     {
-        await _fileService.UploadFileAsync(file, "iloveyou");
-        return Ok();
+        var fileName = "5_10.png";
+        var bytes = await _fileService.DownloadFileAsync(fileName);
+
+        return File(bytes, "application/octet-stream", "iloveyou.png");
     }
 }
