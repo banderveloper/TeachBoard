@@ -52,7 +52,8 @@ builder.Services.AddControllers()
 
             return result;
         };
-    });;
+    });
+;
 
 // Database initialize if it is null
 try
