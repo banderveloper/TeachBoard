@@ -1,9 +1,12 @@
+using System.Net;
 using System.Text.Json;
 using Microsoft.Extensions.Options;
+using TeachBoard.FileService.Api;
 using TeachBoard.FileService.Api.Middleware;
 using TeachBoard.FileService.Application;
 using TeachBoard.FileService.Application.Configurations;
 using TeachBoard.FileService.Application.Converters;
+using TeachBoard.FileService.Application.Validation;
 using TeachBoard.FileService.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,7 +39,20 @@ builder.Services.AddControllers()
 
         // Error code enum to snake_case_string converter
         options.JsonSerializerOptions.Converters.Add(new SnakeCaseStringEnumConverter<ErrorCode>());
-    });
+    })
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var result = new WebApiResult
+            {
+                Error = new ValidationResultModel(context.ModelState),
+                StatusCode = HttpStatusCode.UnprocessableEntity
+            };
+
+            return result;
+        };
+    });;
 
 // Database initialize if it is null
 try

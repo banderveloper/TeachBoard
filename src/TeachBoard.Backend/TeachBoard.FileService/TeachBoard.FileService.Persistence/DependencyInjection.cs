@@ -14,7 +14,7 @@ public static class DependencyInjection
         var connectionConfiguration = scope.ServiceProvider.GetService<ConnectionConfiguration>();
 
         // register db context
-        services.AddDbContextPool<ApplicationDbContext>(options =>
+        services.AddDbContext<ApplicationDbContext>(options =>
         {
             options.UseSqlite(connectionConfiguration.Sqlite);
             
