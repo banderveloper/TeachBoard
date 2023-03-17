@@ -4,5 +4,5 @@ public class CreateHomeworkRequestModel
 {
     public int GroupId { get; set; }
     public int SubjectId { get; set; }
-    public string FilePath { get; set; }
+    public IFormFile File { get; set; }
 }

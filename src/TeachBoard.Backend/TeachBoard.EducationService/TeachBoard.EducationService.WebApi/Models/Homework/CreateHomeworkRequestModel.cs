@@ -10,7 +10,7 @@ public class CreateHomeworkRequestModel : IMappable
     [Required] public int GroupId { get; set; }
     [Required] public int SubjectId { get; set; }
     [Required] public int TeacherId { get; set; }
-    [Required] public string FilePath { get; set; }
+    public string? FilePath { get; set; }
 
     public void Mapping(Profile profile)
     {

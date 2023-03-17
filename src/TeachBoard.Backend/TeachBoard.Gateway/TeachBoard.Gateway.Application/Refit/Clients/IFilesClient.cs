@@ -14,10 +14,18 @@ public interface IFilesClient
     Task<ServiceTypedResponse<ImageUploadResult>> SetUserAvatar(int userId, [AliasAs("imageFile")] StreamPart stream);
 
     [Get("/file/homework-solution/{studentId}/{homeworkId}")]
-    Task<ServiceTypedResponse<HomeworkSolutionFile?>> GetHomeworkSolutionFile(int studentId, int homeworkId);
+    Task<ServiceTypedResponse<HomeworkFileNameContentModel?>> GetHomeworkSolutionFile(int studentId, int homeworkId);
 
     [Multipart]
     [Post("/file/homework-solution/{studentId}/{homeworkId}")]
     Task<ServiceTypedResponse<CloudHomeworkSolutionFileInfo>> UploadHomeworkSolutionFile(int studentId, int homeworkId,
+        [AliasAs("file")] StreamPart file);
+
+    [Get("/file/homework-task/{homeworkId}")]
+    Task<ServiceTypedResponse<HomeworkFileNameContentModel?>> GetHomeworkTaskFile(int homeworkId);
+
+    [Multipart]
+    [Post("/file/homework-task/{homeworkId}")]
+    Task<ServiceTypedResponse<CloudHomeworkTaskFileInfo>> UploadHomeworkTaskFile(int homeworkId,
         [AliasAs("file")] StreamPart file);
 }
