@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.FileService.Api.Models;
 using TeachBoard.FileService.Application;
@@ -33,11 +34,16 @@ public class FileController : ControllerBase
         // try upload file to hosting and get TRUE if success
         var isUploadSucceed = await _fileService.UploadFileAsync(file, cloudFileName);
 
+        if (!isUploadSucceed)
+            throw new HostingErrorException
+            {
+                ErrorCode = ErrorCode.HostingBadResponse,
+                PublicErrorMessage = "Error during uploading homework file"
+            };
+
         // return created db solution if succeed
-        var solution = isUploadSucceed
-            ? await _cloudFileDatabaseService.CreateHomeworkSolution(studentId, homeworkId, file.FileName,
-                cloudFileName)
-            : null;
+        var solution = await _cloudFileDatabaseService.CreateHomeworkSolution(studentId, homeworkId, file.FileName,
+            cloudFileName);
 
         return new WebApiResult(solution);
     }
@@ -57,7 +63,7 @@ public class FileController : ControllerBase
 
         // download file from hosting and get bytes
         var solutionFileBytes = await _fileService.DownloadFileAsync(solution.CloudFileName);
-        
+
         var response = new HomeworkFileResponseModel
         {
             FileName = solution.OriginFileName,

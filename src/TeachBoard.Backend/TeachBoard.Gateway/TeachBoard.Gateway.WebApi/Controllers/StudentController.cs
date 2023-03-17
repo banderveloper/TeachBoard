@@ -310,23 +310,23 @@ public class StudentController : BaseController
     /// 
     /// <remarks>Requires in-header JWT-token with user id, bound to student</remarks>
     ///
-    /// <param name="completedHomeworkId">Id of completed homework</param>
+    /// <param name="homeworkId">Id of homework</param>
     ///
     /// <response code="200">Success / file_info_not_found / </response>
     /// <response code="401">Unauthorized</response>
     /// <response code="502">hosting_file_not_found</response>
     /// <response code="503">One of the needed services is unavailable now</response>
-    [HttpGet("homework-solution-file/{completedHomeworkId:int}")]
+    [HttpGet("homework-solution-file/{homeworkId:int}")]
     [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
-    public async Task<FileContentResult> GetHomeworkSolutionFile(int completedHomeworkId)
+    public async Task<FileContentResult> GetHomeworkSolutionFile(int homeworkId)
     {
         var getStudentResponse = await _membersClient.GetStudentByUserId(UserId);
         var student = getStudentResponse.Data;
 
-        var getFileResponse = await _filesClient.GetHomeworkSolutionFile(student.Id, completedHomeworkId);
+        var getFileResponse = await _filesClient.GetHomeworkSolutionFile(student.Id, homeworkId);
         var file = getFileResponse.Data;
         
         return File(file.FileContent, "application/octet-stream", file.FileName);
