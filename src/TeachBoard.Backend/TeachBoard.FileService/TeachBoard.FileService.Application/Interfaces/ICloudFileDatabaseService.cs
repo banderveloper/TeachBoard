@@ -8,4 +8,6 @@ public interface ICloudFileDatabaseService
         string cloudFileName);
 
     Task<CloudHomeworkSolutionFileInfo?> GetHomeworkSolution(int studentId, int homeworkId);
+
+    Task<CloudHomeworkTaskFileInfo> CreateHomeworkTask(int homeworkId, string originFileName, string cloudFileName);
 }

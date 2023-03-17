@@ -72,4 +72,30 @@ public class FileController : ControllerBase
 
         return new WebApiResult(response);
     }
+
+    [HttpPost("homework-task/{homeworkId}")]
+    public async Task<ActionResult<CloudHomeworkTaskFileInfo>> UploadHomeworkTaskFile(int homeworkId,
+        [FromForm] IFormFile file)
+    {
+        // generate new fileName for cloud from GUID
+        var fileExtension = file.FileName.Split('.').LastOrDefault();
+        var cloudFileName = Guid.NewGuid().ToString();
+        if (fileExtension is not null) cloudFileName += "." + fileExtension;
+
+        // try upload file to hosting and get TRUE if success
+        var isUploadSucceed = await _fileService.UploadFileAsync(file, cloudFileName);
+
+        if (!isUploadSucceed)
+            throw new HostingErrorException
+            {
+                ErrorCode = ErrorCode.HostingBadResponse,
+                PublicErrorMessage = "Error during uploading homework task file"
+            };
+
+        // return created db task if succeed
+        var homeworkTaskInfo =
+            await _cloudFileDatabaseService.CreateHomeworkTask(homeworkId, file.FileName, cloudFileName);
+
+        return new WebApiResult(homeworkTaskInfo);
+    }
 }

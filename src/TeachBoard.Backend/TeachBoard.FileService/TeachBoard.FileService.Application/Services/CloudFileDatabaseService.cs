@@ -33,5 +33,19 @@ public class CloudFileDatabaseService : ICloudFileDatabaseService
         return await _context.HomeworkSolutions.FirstOrDefaultAsync(sln =>
             sln.HomeworkId == homeworkId && sln.StudentId == studentId);
     }
-   
+
+    public async Task<CloudHomeworkTaskFileInfo> CreateHomeworkTask(int homeworkId, string originFileName, string cloudFileName)
+    {
+        var newTask = new CloudHomeworkTaskFileInfo
+        {
+            HomeworkId = homeworkId,
+            OriginFileName = originFileName,
+            CloudFileName = cloudFileName
+        };
+
+        _context.HomeworkTasks.Add(newTask);
+        await _context.SaveChangesAsync(CancellationToken.None);
+
+        return newTask;
+    }
 }
