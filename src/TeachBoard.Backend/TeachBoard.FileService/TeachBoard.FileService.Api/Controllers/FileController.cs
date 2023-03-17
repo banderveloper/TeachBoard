@@ -73,7 +73,7 @@ public class FileController : ControllerBase
         return new WebApiResult(response);
     }
 
-    [HttpPost("homework-task/{homeworkId}")]
+    [HttpPost("homework-task/{homeworkId:int}")]
     public async Task<ActionResult<CloudHomeworkTaskFileInfo>> UploadHomeworkTaskFile(int homeworkId,
         [FromForm] IFormFile file)
     {
@@ -97,5 +97,30 @@ public class FileController : ControllerBase
             await _cloudFileDatabaseService.CreateHomeworkTask(homeworkId, file.FileName, cloudFileName);
 
         return new WebApiResult(homeworkTaskInfo);
+    }
+
+    [HttpGet("homework-task/{homeworkId:int}")]
+    public async Task<ActionResult<HomeworkFileResponseModel>> GetHomeworkTaskFile(int homeworkId)
+    {
+        // get file info from db to get origin and cloud filename
+        var solution = await _cloudFileDatabaseService.GetHomeworkTask(homeworkId);
+
+        if (solution is null)
+            throw new ExpectedApiException
+            {
+                ErrorCode = ErrorCode.FileInfoNotFound,
+                PublicErrorMessage = "Homework task file not found"
+            };
+
+        // download file from hosting and get bytes
+        var solutionFileBytes = await _fileService.DownloadFileAsync(solution.CloudFileName);
+
+        var response = new HomeworkFileResponseModel
+        {
+            FileName = solution.OriginFileName,
+            FileContent = solutionFileBytes
+        };
+
+        return new WebApiResult(response);
     }
 }

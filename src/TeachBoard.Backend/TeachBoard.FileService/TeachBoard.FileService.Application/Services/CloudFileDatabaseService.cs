@@ -13,7 +13,8 @@ public class CloudFileDatabaseService : ICloudFileDatabaseService
         _context = context;
     }
 
-    public async Task<CloudHomeworkSolutionFileInfo> CreateHomeworkSolution(int studentId, int homeworkId, string originFileName, string cloudFileName)
+    public async Task<CloudHomeworkSolutionFileInfo> CreateHomeworkSolution(int studentId, int homeworkId,
+        string originFileName, string cloudFileName)
     {
         var newSolution = new CloudHomeworkSolutionFileInfo
         {
@@ -34,7 +35,8 @@ public class CloudFileDatabaseService : ICloudFileDatabaseService
             sln.HomeworkId == homeworkId && sln.StudentId == studentId);
     }
 
-    public async Task<CloudHomeworkTaskFileInfo> CreateHomeworkTask(int homeworkId, string originFileName, string cloudFileName)
+    public async Task<CloudHomeworkTaskFileInfo> CreateHomeworkTask(int homeworkId, string originFileName,
+        string cloudFileName)
     {
         var newTask = new CloudHomeworkTaskFileInfo
         {
@@ -47,5 +49,10 @@ public class CloudFileDatabaseService : ICloudFileDatabaseService
         await _context.SaveChangesAsync(CancellationToken.None);
 
         return newTask;
+    }
+
+    public async Task<CloudHomeworkTaskFileInfo?> GetHomeworkTask(int homeworkId)
+    {
+        return await _context.HomeworkTasks.FirstOrDefaultAsync(task => task.HomeworkId == homeworkId);
     }
 }
