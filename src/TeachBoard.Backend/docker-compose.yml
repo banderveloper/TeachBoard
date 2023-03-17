@@ -49,6 +49,8 @@ services:
         - CLOUDINARY_KEY=arg_value
         - CLOUDINARY_SECRET=arg_value
         - CLOUDINARY_CLOUDNAME=arg_value
+        - S3_KEY=arg_value
+        - S3_SECRET=arg_value
     image: kpssnik/teachboard.fileservice
     hostname: teachboard.fileservice
     ports:

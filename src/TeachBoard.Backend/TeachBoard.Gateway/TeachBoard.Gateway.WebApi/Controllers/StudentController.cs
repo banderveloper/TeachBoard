@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Refit;
 using TeachBoard.Gateway.Application.Refit.Clients;
 using TeachBoard.Gateway.Application.Refit.RequestModels.Education;
 using TeachBoard.Gateway.Application.Refit.RequestModels.Identity;
@@ -13,25 +14,26 @@ using TeachBoard.Gateway.WebApi.Models;
 namespace TeachBoard.Gateway.WebApi.Controllers;
 
 [Route("api/student")]
-[Authorize(Roles = "Student")]
+[Microsoft.AspNetCore.Authorization.Authorize(Roles = "Student")]
 public class StudentController : BaseController
 {
     private readonly IIdentityClient _identityClient;
     private readonly IMembersClient _membersClient;
     private readonly IEducationClient _educationClient;
+    private readonly IFilesClient _filesClient;
 
     private readonly ILogger<StudentController> _logger;
 
     public StudentController(IIdentityClient identityClient, IMembersClient membersClient,
-        IEducationClient educationClient, ILogger<StudentController> logger)
+        IEducationClient educationClient, ILogger<StudentController> logger, IFilesClient filesClient)
     {
         _identityClient = identityClient;
         _membersClient = membersClient;
         _educationClient = educationClient;
         _logger = logger;
+        _filesClient = filesClient;
     }
-
-
+    
     /// <summary>
     /// Approve pending user with student role
     /// </summary>
@@ -274,25 +276,84 @@ public class StudentController : BaseController
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
     public async Task<ActionResult<CompletedHomework>> CompleteHomework(
-        [FromBody] CreateCompletedHomeworkRequestModel model)
+        [FromForm] CreateCompletedHomeworkRequestModel model)
     {
         var membersResponse = await _membersClient.GetStudentByUserId(UserId);
         var student = membersResponse.Data;
 
+        await using var stream = model.File.OpenReadStream();
+        var streamPart = new StreamPart(stream, model.File.FileName, "image/jpeg");
+
+        var uploadFileResponse =
+            await _filesClient.UploadHomeworkSolutionFile(student.Id, model.HomeworkId, streamPart);
+        var uploadedFile = uploadFileResponse.Data;
+        
         var completeHomeworkInternalRequest = new CompleteHomeworkInternalRequestModel
         {
             StudentId = student.Id,
             StudentGroupId = student.GroupId,
             HomeworkId = model.HomeworkId,
             StudentComment = model.StudentComment,
-            FilePath = model.FilePath
+            FilePath = uploadedFile.CloudFileName
         };
-
+        
         var educationResponse = await _educationClient.CompleteHomework(completeHomeworkInternalRequest);
         var completedHomework = educationResponse.Data;
-
+        
         return new WebApiResult(completedHomework);
     }
+
+    /// <summary>
+    /// Download file of completed homework
+    /// </summary>
+    /// 
+    /// <remarks>Requires in-header JWT-token with user id, bound to student</remarks>
+    ///
+    /// <param name="homeworkId">Id of homework</param>
+    ///
+    /// <response code="200">Success / file_info_not_found / </response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="502">hosting_file_not_found</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
+    [HttpGet("homework-solution-file/{homeworkId:int}")]
+    [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
+    public async Task<FileContentResult> GetHomeworkSolutionFile(int homeworkId)
+    {
+        var getStudentResponse = await _membersClient.GetStudentByUserId(UserId);
+        var student = getStudentResponse.Data;
+
+        var getFileResponse = await _filesClient.GetHomeworkSolutionFile(student.Id, homeworkId);
+        var file = getFileResponse.Data;
+        
+        return File(file.FileContent, "application/octet-stream", file.FileName);
+    }
     
+    /// <summary>
+    /// Download file of homework task
+    /// </summary>
+    /// 
+    /// <remarks>Requires in-header JWT-token with user id, bound to student</remarks>
+    ///
+    /// <param name="homeworkId">Id of homework</param>
+    ///
+    /// <response code="200">Success / file_info_not_found</response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="502">hosting_file_not_found</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
+    [HttpGet("homework-task-file/{homeworkId:int}")]
+    [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
+    public async Task<FileContentResult> GetHomeworkTaskFile(int homeworkId)
+    {
+        var getFileResponse = await _filesClient.GetHomeworkTaskFile(homeworkId);
+        var file = getFileResponse.Data;
+        
+        return File(file.FileContent, "application/octet-stream", file.FileName);
+    }
     
 }

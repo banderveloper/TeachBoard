@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Refit;
 using TeachBoard.Gateway.Application;
 using TeachBoard.Gateway.Application.Exceptions;
 using TeachBoard.Gateway.Application.Refit.Clients;
@@ -12,22 +12,24 @@ using TeachBoard.Gateway.WebApi.Models;
 namespace TeachBoard.Gateway.WebApi.Controllers;
 
 [Route("api/teacher")]
-[Authorize(Roles = "Teacher")]
+[Microsoft.AspNetCore.Authorization.Authorize(Roles = "Teacher")]
 public class TeacherController : BaseController
 {
     private readonly IIdentityClient _identityClient;
     private readonly IMembersClient _membersClient;
     private readonly IEducationClient _educationClient;
+    private readonly IFilesClient _filesClient;
 
     private readonly ILogger<TeacherController> _logger;
 
     public TeacherController(IIdentityClient identityClient, IMembersClient membersClient,
-        IEducationClient educationClient, ILogger<TeacherController> logger)
+        IEducationClient educationClient, ILogger<TeacherController> logger, IFilesClient filesClient)
     {
         _identityClient = identityClient;
         _membersClient = membersClient;
         _educationClient = educationClient;
         _logger = logger;
+        _filesClient = filesClient;
     }
 
     /// <summary>
@@ -223,13 +225,14 @@ public class TeacherController : BaseController
     /// </response>
     /// <response code="401">Unauthorized</response>
     /// <response code="422">Invalid model state</response>
+    /// <response code="502">hosting_bad_response</response>
     /// <response code="503">One of the needed services is unavailable now</response>
     [HttpPost("homework")]
     [ProducesResponseType(typeof(Homework), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
-    public async Task<ActionResult<Homework>> CreateHomework([FromBody] CreateHomeworkRequestModel model)
+    public async Task<ActionResult<Homework>> CreateHomework([FromForm] CreateHomeworkRequestModel model)
     {
         var getTeacherResponse = await _membersClient.GetTeacherByUserId(UserId);
         var teacher = getTeacherResponse.Data;
@@ -244,13 +247,19 @@ public class TeacherController : BaseController
 
         var internalRequest = new CreateHomeworkInternalRequestModel
         {
-            FilePath = model.FilePath,
             GroupId = model.GroupId,
             TeacherId = teacher.Id,
             SubjectId = model.SubjectId
         };
+
         var createHomeworkResponse = await _educationClient.CreateHomework(internalRequest);
         var createdHomework = createHomeworkResponse.Data;
+        
+        await using var stream = model.File.OpenReadStream();
+        var streamPart = new StreamPart(stream, model.File.FileName, "image/jpeg");
+
+        var uploadFileResponse =
+            await _filesClient.UploadHomeworkTaskFile(createdHomework.Id, streamPart);
 
         return new WebApiResult(createdHomework);
     }
@@ -289,5 +298,30 @@ public class TeacherController : BaseController
         var examinationActivity = setExamActivityResponse.Data;
 
         return new WebApiResult(examinationActivity);
+    }
+    
+    /// <summary>
+    /// Download file of homework task
+    /// </summary>
+    /// 
+    /// <remarks>Requires in-header JWT-token with user id, bound to student</remarks>
+    ///
+    /// <param name="homeworkId">Id of homework</param>
+    ///
+    /// <response code="200">Success / file_info_not_found</response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="502">hosting_file_not_found</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
+    [HttpGet("homework-task-file/{homeworkId:int}")]
+    [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
+    public async Task<FileContentResult> GetHomeworkTaskFile(int homeworkId)
+    {
+        var getFileResponse = await _filesClient.GetHomeworkTaskFile(homeworkId);
+        var file = getFileResponse.Data;
+        
+        return File(file.FileContent, "application/octet-stream", file.FileName);
     }
 }

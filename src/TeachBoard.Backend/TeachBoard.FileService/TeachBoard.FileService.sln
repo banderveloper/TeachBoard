@@ -1,16 +1,46 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeachBoard.FileService", "TeachBoard.FileService.csproj", "{CD448DDC-E47C-4A07-9064-ECD0467B89A2}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{D7FEE0EB-A20E-4F4F-8AA3-D1F368076CCD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{14D0AF3F-19E8-4722-BA62-717E637393D0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{D1442E38-AB04-470D-8C12-212D937447A9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeachBoard.FileService.Domain", "TeachBoard.FileService.Domain\TeachBoard.FileService.Domain.csproj", "{88B2959E-71D3-4540-8A59-FCB0F83C7B8E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeachBoard.FileService.Application", "TeachBoard.FileService.Application\TeachBoard.FileService.Application.csproj", "{208A5BE6-BBBB-4E73-9F68-9FCA42235656}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeachBoard.FileService.Persistence", "TeachBoard.FileService.Persistence\TeachBoard.FileService.Persistence.csproj", "{DAAB62BA-F8F0-4565-8D95-B5F59D9C4F8C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeachBoard.FileService.Api", "TeachBoard.FileService.Api\TeachBoard.FileService.Api.csproj", "{6BFE4E05-17BF-40CA-B097-6178E22A7BAA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{88B2959E-71D3-4540-8A59-FCB0F83C7B8E} = {D7FEE0EB-A20E-4F4F-8AA3-D1F368076CCD}
+		{208A5BE6-BBBB-4E73-9F68-9FCA42235656} = {D7FEE0EB-A20E-4F4F-8AA3-D1F368076CCD}
+		{DAAB62BA-F8F0-4565-8D95-B5F59D9C4F8C} = {14D0AF3F-19E8-4722-BA62-717E637393D0}
+		{6BFE4E05-17BF-40CA-B097-6178E22A7BAA} = {D1442E38-AB04-470D-8C12-212D937447A9}
+	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{CD448DDC-E47C-4A07-9064-ECD0467B89A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CD448DDC-E47C-4A07-9064-ECD0467B89A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CD448DDC-E47C-4A07-9064-ECD0467B89A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CD448DDC-E47C-4A07-9064-ECD0467B89A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88B2959E-71D3-4540-8A59-FCB0F83C7B8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88B2959E-71D3-4540-8A59-FCB0F83C7B8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88B2959E-71D3-4540-8A59-FCB0F83C7B8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88B2959E-71D3-4540-8A59-FCB0F83C7B8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{208A5BE6-BBBB-4E73-9F68-9FCA42235656}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{208A5BE6-BBBB-4E73-9F68-9FCA42235656}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{208A5BE6-BBBB-4E73-9F68-9FCA42235656}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{208A5BE6-BBBB-4E73-9F68-9FCA42235656}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAAB62BA-F8F0-4565-8D95-B5F59D9C4F8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAAB62BA-F8F0-4565-8D95-B5F59D9C4F8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAAB62BA-F8F0-4565-8D95-B5F59D9C4F8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAAB62BA-F8F0-4565-8D95-B5F59D9C4F8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BFE4E05-17BF-40CA-B097-6178E22A7BAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BFE4E05-17BF-40CA-B097-6178E22A7BAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BFE4E05-17BF-40CA-B097-6178E22A7BAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BFE4E05-17BF-40CA-B097-6178E22A7BAA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
