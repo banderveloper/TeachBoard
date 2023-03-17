@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Refit;
 using TeachBoard.Gateway.Application.Refit.Clients;
 using TeachBoard.Gateway.Application.Refit.RequestModels.Education;
 using TeachBoard.Gateway.Application.Refit.RequestModels.Identity;
@@ -13,7 +15,7 @@ using TeachBoard.Gateway.WebApi.Models;
 namespace TeachBoard.Gateway.WebApi.Controllers;
 
 [Route("api/student")]
-[Authorize(Roles = "Student")]
+[Microsoft.AspNetCore.Authorization.Authorize(Roles = "Student")]
 public class StudentController : BaseController
 {
     private readonly IIdentityClient _identityClient;
@@ -275,23 +277,30 @@ public class StudentController : BaseController
     [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
     [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
     public async Task<ActionResult<CompletedHomework>> CompleteHomework(
-        [FromBody] CreateCompletedHomeworkRequestModel model)
+        [FromForm] CreateCompletedHomeworkRequestModel model)
     {
         var membersResponse = await _membersClient.GetStudentByUserId(UserId);
         var student = membersResponse.Data;
 
+        await using var stream = model.File.OpenReadStream();
+        var streamPart = new StreamPart(stream, model.File.FileName, "image/jpeg");
+
+        var uploadFileResponse =
+            await _filesClient.UploadHomeworkSolutionFile(student.Id, model.HomeworkId, streamPart);
+        var uploadedFile = uploadFileResponse.Data;
+        
         var completeHomeworkInternalRequest = new CompleteHomeworkInternalRequestModel
         {
             StudentId = student.Id,
             StudentGroupId = student.GroupId,
             HomeworkId = model.HomeworkId,
             StudentComment = model.StudentComment,
-            FilePath = model.FilePath
+            FilePath = uploadedFile.CloudFileName
         };
-
+        
         var educationResponse = await _educationClient.CompleteHomework(completeHomeworkInternalRequest);
         var completedHomework = educationResponse.Data;
-
+        
         return new WebApiResult(completedHomework);
     }
 

@@ -15,4 +15,9 @@ public interface IFilesClient
 
     [Get("/file/homework-solution/{studentId}/{homeworkId}")]
     Task<ServiceTypedResponse<HomeworkSolutionFile?>> GetHomeworkSolutionFile(int studentId, int homeworkId);
+
+    [Multipart]
+    [Post("/file/homework-solution/{studentId}/{homeworkId}")]
+    Task<ServiceTypedResponse<CloudHomeworkSolutionFileInfo>> UploadHomeworkSolutionFile(int studentId, int homeworkId,
+        [AliasAs("file")] StreamPart file);
 }
