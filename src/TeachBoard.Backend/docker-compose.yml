@@ -68,12 +68,6 @@ services:
     build:
       context: TeachBoard.FileService
       dockerfile: Dockerfile
-      args:
-        - CLOUDINARY_KEY=arg_value
-        - CLOUDINARY_SECRET=arg_value
-        - CLOUDINARY_CLOUDNAME=arg_value
-        - S3_KEY=arg_value
-        - S3_SECRET=arg_value
     image: kpssnik/teachboard.fileservice
     hostname: teachboard.fileservice
     ports:
@@ -81,6 +75,11 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=DockerDevelopment
       - ConnectionStrings__Postgres=Host=teachboard.postgres;Database=filesDB;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - Cloudinary__CloudName=${CLOUDINARY_CLOUDNAME}
+      - Cloudinary__Key=${CLOUDINARY_KEY}
+      - Cloudinary__Secret=${CLOUDINARY_SECRET}
+      - S3__Key=${S3_KEY}
+      - S3__Secret=${S3_SECRET}
     depends_on:
       - postgres
     restart: on-failure

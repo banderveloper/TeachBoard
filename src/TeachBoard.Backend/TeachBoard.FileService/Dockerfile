@@ -2,18 +2,6 @@
 WORKDIR /app
 EXPOSE 80
 
-ARG CLOUDINARY_SECRET
-ARG CLOUDINARY_KEY
-ARG CLOUDINARY_CLOUDNAME
-ARG S3_KEY
-ARG S3_SECRET
-
-ENV Cloudinary__Secret=$CLOUDINARY_SECRET
-ENV Cloudinary__Key=$CLOUDINARY_KEY
-ENV Cloudinary__CloudName=$CLOUDINARY_CLOUDNAME
-ENV S3__Key=$S3_KEY
-ENV S3__Secret=$S3_SECRET
-
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["TeachBoard.FileService.Domain/TeachBoard.FileService.Domain.csproj", "TeachBoard.FileService.Domain/TeachBoard.FileService.Domain.csproj"]
