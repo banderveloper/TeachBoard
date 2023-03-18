@@ -1,6 +1,16 @@
 version: '3'
 services:
   
+  db:
+    container_name: teachboard-postgres-db
+    hostname: teachboard.postgres
+    image: postgres
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  
   teachboard.identityservice:
     container_name: teachboard-identityservice
     build: 
@@ -12,7 +22,10 @@ services:
       - 5001:80
     environment:
       - ASPNETCORE_ENVIRONMENT=DockerDevelopment
+      - ConnectionStrings__Postgres=Host=teachboard.postgres;Database=identityDB;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
     restart: on-failure
+    depends_on:
+      - db
 
   teachboard.membersservice:
     container_name: teachboard-members
@@ -71,4 +84,7 @@ services:
       - 5000:80
     environment:
       - ASPNETCORE_ENVIRONMENT=DockerDevelopment
-    restart: on-failure 
+    restart: on-failure
+      
+volumes:
+  db_data:

@@ -16,9 +16,12 @@ public static class DependencyInjection
         var connectionConfiguration = scope.ServiceProvider.GetService<ConnectionConfiguration>();
 
         // register db context
-        services.AddDbContextPool<ApplicationDbContext>(options =>
+        services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseSqlite(connectionConfiguration!.Sqlite);
+            Console.WriteLine("POSTGRES: " + connectionConfiguration.Postgres);
+            
+            //options.UseSqlite(connectionConfiguration!.Sqlite);
+            options.UseNpgsql(connectionConfiguration.Postgres);
             
             // for optimizing read-only queries, disabling caching of entities
             // in ef select queries before update should be added .AsTracking method  
