@@ -16,8 +16,8 @@ public static class DependencyInjection
         // register db context
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseSqlite(connectionConfiguration.Sqlite);
-            
+            options.UseNpgsql(connectionConfiguration.Postgres);
+                
             // for optimizing read-only queries, disabling caching of entities
             // in ef select queries before update should be added .AsTracking method  
             options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);

@@ -8,7 +8,6 @@ namespace TeachBoard.IdentityService.Persistence;
 // DI of persistence layer to services
 public static class DependencyInjection
 {
-    // builder.Services.AddPersistence()
     public static IServiceCollection AddPersistence(this IServiceCollection services)
     {
         // Get service configuration from services
@@ -18,8 +17,6 @@ public static class DependencyInjection
         // register db context
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            Console.WriteLine("POSTGRES: " + connectionConfiguration.Postgres);
-            
             //options.UseSqlite(connectionConfiguration!.Sqlite);
             options.UseNpgsql(connectionConfiguration.Postgres);
             

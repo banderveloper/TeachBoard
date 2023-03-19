@@ -8,8 +8,7 @@ public class DatabaseInitializer
 {
     public static void Initialize(ApplicationDbContext context)
     {
-        var isCreated = context.Database.EnsureCreated();
-        Console.WriteLine("IS DB CREATED: " + isCreated);
-        //context.Database.Migrate();
+        context.Database.EnsureCreated();
+        context.Database.Migrate();
     }
 }

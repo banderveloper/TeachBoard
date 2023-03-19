@@ -9,6 +9,9 @@ using TeachBoard.FileService.Application.Converters;
 using TeachBoard.FileService.Application.Validation;
 using TeachBoard.FileService.Persistence;
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddEnvironmentVariables();
