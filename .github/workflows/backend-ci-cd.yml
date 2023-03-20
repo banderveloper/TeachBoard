@@ -23,18 +23,18 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
         with:
           username: ${{ env.DOCKER_USERNAME }}
           password: ${{ env.DOCKER_PASSWORD }}
-          
+
       - name: Build and push Docker Compose
         run: |
           docker-compose -f ${{ env.COMPOSE_FILE }} build --build-arg CLOUDINARY_SECRET=${{ env.CLOUDINARY_SECRET }} --build-arg CLOUDINARY_KEY=${{ env.CLOUDINARY_KEY }} --build-arg CLOUDINARY_CLOUDNAME=${{ env.CLOUDINARY_CLOUDNAME }} --build-arg S3_KEY=${{ env.S3_KEY }} --build-arg S3_SECRET=${{ env.S3_SECRET }} --build-arg POSTGRES_DB_PASSWORD=${{ env.POSTGRES_DB_PASSWORD }} --build-arg POSTGRES_DB_USERNAME=${{ env.POSTGRES_DB_USERNAME }} 
-          docker-compose -f ${{ env.COMPOSE_FILE }} push ${{ env.DOCKER_HUB_REPO }}
-          
+          docker-compose -f ${{ env.COMPOSE_FILE }} push ${{ env.DOCKER_HUB_REPO }} identity members education files gateway
+
       - name: Clean up
         run: |
           docker-compose -f ${{ env.COMPOSE_FILE }} down
