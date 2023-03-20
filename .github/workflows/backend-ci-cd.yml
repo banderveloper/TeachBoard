@@ -14,6 +14,8 @@ env:
   CLOUDINARY_CLOUDNAME: ${{ secrets.CLOUDINARY_CLOUDNAME }}
   S3_KEY: ${{ secrets.S3_KEY }}
   S3_SECRET: ${{ secrets.S3_SECRET }}
+  POSTGRES_DB_PASSWORD: ${{ secrets.POSTGRES_DB_PASSWORD }}
+  POSTGRES_DB_USERNAME: ${{ secrets.POSTGRES_DB_USERNAME }}
 
 jobs:
   build:
@@ -30,7 +32,7 @@ jobs:
           
       - name: Build and push Docker Compose
         run: |
-          docker-compose -f ${{ env.COMPOSE_FILE }} build --build-arg CLOUDINARY_SECRET=${{ env.CLOUDINARY_SECRET }} --build-arg CLOUDINARY_KEY=${{ env.CLOUDINARY_KEY }} --build-arg CLOUDINARY_CLOUDNAME=${{ env.CLOUDINARY_CLOUDNAME }} --build-arg S3_KEY=${{ env.S3_KEY }} --build-arg S3_SECRET=${{ env.S3_SECRET }}
+          docker-compose -f ${{ env.COMPOSE_FILE }} build --build-arg CLOUDINARY_SECRET=${{ env.CLOUDINARY_SECRET }} --build-arg CLOUDINARY_KEY=${{ env.CLOUDINARY_KEY }} --build-arg CLOUDINARY_CLOUDNAME=${{ env.CLOUDINARY_CLOUDNAME }} --build-arg S3_KEY=${{ env.S3_KEY }} --build-arg S3_SECRET=${{ env.S3_SECRET }} --build-arg POSTGRES_DB_PASSWORD=${{ env.POSTGRES_DB_PASSWORD }} --build-arg POSTGRES_DB_USERNAME=${{ env.POSTGRES_DB_USERNAME }} 
           docker-compose -f ${{ env.COMPOSE_FILE }} push ${{ env.DOCKER_HUB_REPO }}
           
       - name: Clean up

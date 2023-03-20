@@ -17,10 +17,12 @@ AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddEnvironmentVariables();
+
 // Connection configuration registration
-builder.Services.Configure<ConnectionConfiguration>(builder.Configuration.GetSection("ConnectionStrings"));
+builder.Services.Configure<DatabaseConfiguration>(builder.Configuration.GetSection("Database"));
 builder.Services.AddSingleton(resolver =>
-    resolver.GetRequiredService<IOptions<ConnectionConfiguration>>().Value);
+    resolver.GetRequiredService<IOptions<DatabaseConfiguration>>().Value);
 
 // DI from another layers
 builder.Services.AddApplication().AddPersistence();

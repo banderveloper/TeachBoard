@@ -24,9 +24,9 @@ builder.Services.Configure<FileApiConfiguration>(builder.Configuration.GetSectio
 builder.Services.AddSingleton(resolver =>
     resolver.GetRequiredService<IOptions<FileApiConfiguration>>().Value);
 
-builder.Services.Configure<ConnectionConfiguration>(builder.Configuration.GetSection("ConnectionStrings"));
+builder.Services.Configure<DatabaseConfiguration>(builder.Configuration.GetSection("Database"));
 builder.Services.AddSingleton(resolver =>
-    resolver.GetRequiredService<IOptions<ConnectionConfiguration>>().Value);
+    resolver.GetRequiredService<IOptions<DatabaseConfiguration>>().Value);
 
 
 // DI from another layers

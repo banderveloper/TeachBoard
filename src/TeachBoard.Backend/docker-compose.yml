@@ -3,13 +3,16 @@ services:
   
   postgres:
     container_name: postgres
+    build:
+      context: TeachBoard.Postgres
+      dockerfile: Dockerfile
+      args:
+        - POSTGRES_DB_USERNAME=arg_value
+        - POSTGRES_DB_PASSWORD=arg_value
     hostname: teachboard.postgres
     image: postgres
     volumes:
       - db_data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
   
   
   identity:
@@ -17,13 +20,15 @@ services:
     build: 
       context: TeachBoard.IdentityService
       dockerfile: Dockerfile
+      args:
+        - POSTGRES_DB_USERNAME=arg_value
+        - POSTGRES_DB_PASSWORD=arg_value
     image: kpssnik/teachboard.identityservice
     hostname: teachboard.identityservice
     ports: 
       - 5001:80
     environment:
       - ASPNETCORE_ENVIRONMENT=DockerDevelopment
-      - ConnectionStrings__Postgres=Host=teachboard.postgres;Database=identityDB;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
     depends_on:
       - postgres
     restart: on-failure
@@ -34,13 +39,15 @@ services:
     build:
       context: TeachBoard.MembersService
       dockerfile: Dockerfile
+      args:
+        - POSTGRES_DB_USERNAME=arg_value
+        - POSTGRES_DB_PASSWORD=arg_value
     image: kpssnik/teachboard.membersservice
     hostname: teachboard.membersservice
     ports: 
       - 5002:80
     environment:
       - ASPNETCORE_ENVIRONMENT=DockerDevelopment
-      - ConnectionStrings__Postgres=Host=teachboard.postgres;Database=membersDB;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
     depends_on:
       - postgres
     restart: on-failure
@@ -51,13 +58,15 @@ services:
     build:
       context: TeachBoard.EducationService
       dockerfile: Dockerfile
+      args:
+        - POSTGRES_DB_USERNAME=arg_value
+        - POSTGRES_DB_PASSWORD=arg_value
     image: kpssnik/teachboard.educationservice
     hostname: teachboard.educationservice
     ports: 
       - 5003:80
     environment:
       - ASPNETCORE_ENVIRONMENT=DockerDevelopment
-      - ConnectionStrings__Postgres=Host=teachboard.postgres;Database=educationDB;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
     depends_on:
       - postgres
     restart: on-failure
@@ -68,13 +77,15 @@ services:
     build:
       context: TeachBoard.FileService
       dockerfile: Dockerfile
+      args:
+        - POSTGRES_DB_USERNAME=arg_value
+        - POSTGRES_DB_PASSWORD=arg_value
     image: kpssnik/teachboard.fileservice
     hostname: teachboard.fileservice
     ports:
       - 5004:80
     environment:
       - ASPNETCORE_ENVIRONMENT=DockerDevelopment
-      - ConnectionStrings__Postgres=Host=teachboard.postgres;Database=filesDB;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
       - Cloudinary__CloudName=${CLOUDINARY_CLOUDNAME}
       - Cloudinary__Key=${CLOUDINARY_KEY}
       - Cloudinary__Secret=${CLOUDINARY_SECRET}

@@ -19,9 +19,9 @@ AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
 var builder = WebApplication.CreateBuilder(args);
 
 // Connection configuration registration
-builder.Services.Configure<ConnectionConfiguration>(builder.Configuration.GetSection("ConnectionStrings"));
+builder.Services.Configure<DatabaseConfiguration>(builder.Configuration.GetSection("Database"));
 builder.Services.AddSingleton(resolver =>
-    resolver.GetRequiredService<IOptions<ConnectionConfiguration>>().Value);
+    resolver.GetRequiredService<IOptions<DatabaseConfiguration>>().Value);
 
 // Lesson configuration registration
 builder.Services.Configure<LessonConfiguration>(builder.Configuration.GetSection("Lesson"));
