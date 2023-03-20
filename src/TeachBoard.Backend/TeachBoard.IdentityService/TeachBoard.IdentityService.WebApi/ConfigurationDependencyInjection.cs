@@ -15,9 +15,9 @@ public static class ConfigurationDependencyInjection
             resolver.GetRequiredService<IOptions<JwtConfiguration>>().Value);
 
         // Connection configuration registration
-        services.Configure<ConnectionConfiguration>(configuration.GetSection("ConnectionStrings"));
+        services.Configure<DatabaseConfiguration>(configuration.GetSection("Database"));
         services.AddSingleton(resolver =>
-            resolver.GetRequiredService<IOptions<ConnectionConfiguration>>().Value);
+            resolver.GetRequiredService<IOptions<DatabaseConfiguration>>().Value);
 
         // Cookie configuration registration
         services.Configure<CookieConfiguration>(configuration.GetSection("Cookie"));

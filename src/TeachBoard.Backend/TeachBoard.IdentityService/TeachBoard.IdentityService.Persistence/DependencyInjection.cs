@@ -8,17 +8,21 @@ namespace TeachBoard.IdentityService.Persistence;
 // DI of persistence layer to services
 public static class DependencyInjection
 {
-    // builder.Services.AddPersistence()
     public static IServiceCollection AddPersistence(this IServiceCollection services)
     {
         // Get service configuration from services
         var scope = services.BuildServiceProvider().CreateScope();
-        var connectionConfiguration = scope.ServiceProvider.GetService<ConnectionConfiguration>();
+        var dbConfig = scope.ServiceProvider.GetService<DatabaseConfiguration>();
 
         // register db context
-        services.AddDbContextPool<ApplicationDbContext>(options =>
+        services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseSqlite(connectionConfiguration!.Sqlite);
+            var filledConnectionString = string.Format(dbConfig.ConnectionString, dbConfig.User, dbConfig.Password);
+
+            //Console.WriteLine("Filled conn string: " + filledConnectionString);
+            
+            //options.UseSqlite(connectionConfiguration!.Sqlite);
+            options.UseNpgsql(filledConnectionString);
             
             // for optimizing read-only queries, disabling caching of entities
             // in ef select queries before update should be added .AsTracking method  

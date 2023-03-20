@@ -44,6 +44,8 @@ public class ExaminationController : ControllerBase
         var createdExamination = await _mediator.Send(command);
 
         return new WebApiResult(createdExamination);
+        
+        
     }
 
     /// <summary>

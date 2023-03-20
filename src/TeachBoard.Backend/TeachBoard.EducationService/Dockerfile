@@ -2,6 +2,12 @@
 WORKDIR /app
 EXPOSE 80
 
+ARG POSTGRES_DB_USERNAME
+ARG POSTGRES_DB_PASSWORD
+
+ENV Database__User=$POSTGRES_DB_USERNAME
+ENV Database__Password=$POSTGRES_DB_PASSWORD
+
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["TeachBoard.EducationService.Domain/TeachBoard.EducationService.Domain.csproj", "TeachBoard.EducationService.Domain/TeachBoard.EducationService.Domain.csproj"]

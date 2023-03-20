@@ -9,6 +9,9 @@ using TeachBoard.FileService.Application.Converters;
 using TeachBoard.FileService.Application.Validation;
 using TeachBoard.FileService.Persistence;
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddEnvironmentVariables();
@@ -21,9 +24,9 @@ builder.Services.Configure<FileApiConfiguration>(builder.Configuration.GetSectio
 builder.Services.AddSingleton(resolver =>
     resolver.GetRequiredService<IOptions<FileApiConfiguration>>().Value);
 
-builder.Services.Configure<ConnectionConfiguration>(builder.Configuration.GetSection("ConnectionStrings"));
+builder.Services.Configure<DatabaseConfiguration>(builder.Configuration.GetSection("Database"));
 builder.Services.AddSingleton(resolver =>
-    resolver.GetRequiredService<IOptions<ConnectionConfiguration>>().Value);
+    resolver.GetRequiredService<IOptions<DatabaseConfiguration>>().Value);
 
 
 // DI from another layers

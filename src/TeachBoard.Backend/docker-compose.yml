@@ -1,67 +1,103 @@
 version: '3'
 services:
   
-  teachboard.identityservice:
-    container_name: teachboard-identityservice
+  postgres:
+    container_name: postgres
+    build:
+      context: TeachBoard.Postgres
+      dockerfile: Dockerfile
+      args:
+        - POSTGRES_DB_USERNAME=arg_value
+        - POSTGRES_DB_PASSWORD=arg_value
+    hostname: teachboard.postgres
+    image: postgres
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  
+  
+  identity:
+    container_name: identity-service
     build: 
       context: TeachBoard.IdentityService
       dockerfile: Dockerfile
+      args:
+        - POSTGRES_DB_USERNAME=arg_value
+        - POSTGRES_DB_PASSWORD=arg_value
     image: kpssnik/teachboard.identityservice
     hostname: teachboard.identityservice
     ports: 
       - 5001:80
     environment:
       - ASPNETCORE_ENVIRONMENT=DockerDevelopment
+    depends_on:
+      - postgres
     restart: on-failure
 
-  teachboard.membersservice:
-    container_name: teachboard-members
+
+  members:
+    container_name: members-service
     build:
       context: TeachBoard.MembersService
       dockerfile: Dockerfile
+      args:
+        - POSTGRES_DB_USERNAME=arg_value
+        - POSTGRES_DB_PASSWORD=arg_value
     image: kpssnik/teachboard.membersservice
     hostname: teachboard.membersservice
     ports: 
       - 5002:80
     environment:
       - ASPNETCORE_ENVIRONMENT=DockerDevelopment
+    depends_on:
+      - postgres
     restart: on-failure
 
-  teachboard.educationservice:
-    container_name: teachboard-education
+
+  education:
+    container_name: education-service
     build:
       context: TeachBoard.EducationService
       dockerfile: Dockerfile
+      args:
+        - POSTGRES_DB_USERNAME=arg_value
+        - POSTGRES_DB_PASSWORD=arg_value
     image: kpssnik/teachboard.educationservice
     hostname: teachboard.educationservice
     ports: 
       - 5003:80
     environment:
       - ASPNETCORE_ENVIRONMENT=DockerDevelopment
+    depends_on:
+      - postgres
     restart: on-failure
     
-  teachboard.fileservice:
-    container_name: teachboard-file
+    
+  files:
+    container_name: file-service
     build:
       context: TeachBoard.FileService
       dockerfile: Dockerfile
       args:
-        - CLOUDINARY_KEY=arg_value
-        - CLOUDINARY_SECRET=arg_value
-        - CLOUDINARY_CLOUDNAME=arg_value
-        - S3_KEY=arg_value
-        - S3_SECRET=arg_value
+        - POSTGRES_DB_USERNAME=arg_value
+        - POSTGRES_DB_PASSWORD=arg_value
     image: kpssnik/teachboard.fileservice
     hostname: teachboard.fileservice
     ports:
       - 5004:80
     environment:
       - ASPNETCORE_ENVIRONMENT=DockerDevelopment
+      - Cloudinary__CloudName=${CLOUDINARY_CLOUDNAME}
+      - Cloudinary__Key=${CLOUDINARY_KEY}
+      - Cloudinary__Secret=${CLOUDINARY_SECRET}
+      - S3__Key=${S3_KEY}
+      - S3__Secret=${S3_SECRET}
+    depends_on:
+      - postgres
     restart: on-failure
       
       
-  teachboard.gateway:
-    container_name: teachboard-gateway
+  gateway:
+    container_name: gateway
     build:
       context: TeachBoard.Gateway
       dockerfile: Dockerfile
@@ -71,4 +107,8 @@ services:
       - 5000:80
     environment:
       - ASPNETCORE_ENVIRONMENT=DockerDevelopment
-    restart: on-failure 
+    restart: on-failure
+      
+      
+volumes:
+  db_data:

@@ -11,13 +11,15 @@ public static class DependencyInjection
     {
         // Get service configuration from services
         var scope = services.BuildServiceProvider().CreateScope();
-        var connectionConfiguration = scope.ServiceProvider.GetService<ConnectionConfiguration>();
+        var dbConfig = scope.ServiceProvider.GetService<DatabaseConfiguration>();
 
+        var filledConnectionString = string.Format(dbConfig.ConnectionString, dbConfig.User, dbConfig.Password);
+        
         // register db context
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseSqlite(connectionConfiguration.Sqlite);
-            
+            options.UseNpgsql(filledConnectionString);
+                
             // for optimizing read-only queries, disabling caching of entities
             // in ef select queries before update should be added .AsTracking method  
             options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
