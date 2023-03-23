@@ -1,13 +1,12 @@
-import {Role} from "../types";
-import {ILoginRequest, ILoginResponse} from "../api/auth/types";
+import {EnumUserRole, ILoginRequest, ILoginResponse, IServerResponse} from "../../entities";
 import {create} from "zustand";
+import {$api, decodeJwtToken} from "../../shared";
+import ENDPOINTS from "../../shared/api/endpoints";
 import jwtDecode from "jwt-decode";
-import $api, {IApiResponse} from "../api/api";
-import Endpoints from "../api/endpoints";
 
 interface IAuthStore {
     isLoggedIn: boolean;
-    role: Role | null,
+    role: string | null;
     accessToken: string | null;
     isLoading: boolean;
     errorCode: string | null;
@@ -27,18 +26,18 @@ export const useAuthStore = create<IAuthStore>((set) => ({
     login: async (params: ILoginRequest) => {
         set({isLoading: true});
 
-        const response = await $api.post<IApiResponse<ILoginResponse>>(Endpoints.AUTH.LOGIN, params);
+        const response = await $api.post<IServerResponse<ILoginResponse>>(ENDPOINTS.AUTH.LOGIN, params);
 
         if (response.data.error) {
-            console.error('error logging');
             const error = response.data.error;
             set({errorCode: error.errorCode, errorMessage: error.message})
         } else {
             const data = response.data.data!;
             const token = data.accessToken;
+            const decodedJwtToken = decodeJwtToken(token);
 
             set({
-                role: decodeJwtToken(token) as Role | null,
+                role: decodedJwtToken?.userRole,
                 accessToken: token
             });
             localStorage.setItem('accessToken', token);
@@ -50,13 +49,3 @@ export const useAuthStore = create<IAuthStore>((set) => ({
     }
 }));
 
-
-// Function to decode JWT token and extract user's role
-function decodeJwtToken(token: string): { role: Role } | null {
-    try {
-        return jwtDecode(token) as { role: Role };
-    } catch (error) {
-        console.error('Error decoding JWT token:', error);
-        return null;
-    }
-}

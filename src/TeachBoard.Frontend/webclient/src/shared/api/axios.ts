@@ -1,9 +1,8 @@
 import axios, {AxiosResponse} from "axios";
-import {SERVER_URL} from "./endpoints";
+import {API_URL} from "./endpoints";
 
 const $api = axios.create({
-    baseURL: SERVER_URL,
-    //withCredentials: true
+    baseURL: API_URL,
 });
 
 export interface IApiResponse<T> {
