@@ -1,18 +1,29 @@
 import React, {useEffect} from 'react';
 import {useAuthStore} from "../useAuthStore";
+import {Navigate, useLocation} from "react-router-dom";
+import {EnumUserRole} from "../../../entities";
 
 
 export const LoginPage = () => {
 
-    const store = useAuthStore();
+    const {isLoading, login, role, isLoggedIn} = useAuthStore();
 
-    useEffect(() => {
-        console.log(store);
-    }, [store.isLoading])
+    if (isLoggedIn) {
+        switch (role) {
+            case EnumUserRole.student:
+                return <Navigate to='/student'/>
+            case EnumUserRole.teacher:
+                return <Navigate to='/teacher'/>
+            case EnumUserRole.administrator:
+                return <Navigate to='/administrator'/>
+            default:
+                console.error('Unexpected user role');
+        }
+    }
 
     const onClicked: React.MouseEventHandler<HTMLButtonElement> = (event) => {
         event.preventDefault();
-        store.login({userName: 'kalnitskiy', password: 'kalnitskiy'});
+        login({userName: 'kalnitskiy', password: 'kalnitskiy'});
     }
 
     return (
