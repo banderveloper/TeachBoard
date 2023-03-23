@@ -7,16 +7,18 @@ export const LoginPage = () => {
     const store = useAuthStore();
 
     useEffect(() => {
-        store.login({userName : 'kalnitskiy', password: 'kalnitskiy'});
-    }, []);
-
-    useEffect(() => {
         console.log(store);
     }, [store.isLoading])
 
+    const onClicked: React.MouseEventHandler<HTMLButtonElement> = (event) => {
+        event.preventDefault();
+        store.login({userName: 'kalnitskiy', password: 'kalnitskiy'});
+    }
+
     return (
         <div>
-            I love .NET but not react
+            <p>Login page</p>
+            <button onClick={onClicked}>Login</button>
         </div>
     );
 };

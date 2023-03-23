@@ -3,6 +3,7 @@ import {create} from "zustand";
 import {$api, decodeJwtToken} from "../../shared";
 import ENDPOINTS from "../../shared/api/endpoints";
 import jwtDecode from "jwt-decode";
+import {persist} from "zustand/middleware";
 
 interface IAuthStore {
     isLoggedIn: boolean;
@@ -15,7 +16,7 @@ interface IAuthStore {
     login: (params: ILoginRequest) => void;
 }
 
-export const useAuthStore = create<IAuthStore>((set) => ({
+export const useAuthStore = create<IAuthStore>()(persist((set) => ({
     isLoading: false,
     accessToken: null,
     role: null,
@@ -47,5 +48,5 @@ export const useAuthStore = create<IAuthStore>((set) => ({
 
         set({isLoading: false});
     }
-}));
+}), {name: 'useAuthUser', version: 1}));
 
