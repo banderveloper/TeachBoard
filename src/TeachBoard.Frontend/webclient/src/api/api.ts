@@ -6,7 +6,7 @@ const $api = axios.create({
     //withCredentials: true
 });
 
-interface IApiResponse<T> {
+export interface IApiResponse<T> {
     data?: T,
     error?: any;
 }

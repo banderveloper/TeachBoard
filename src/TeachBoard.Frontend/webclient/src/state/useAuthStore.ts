@@ -1,40 +1,60 @@
-import create from 'zustand'
 import {Role} from "../types";
+import {ILoginRequest, ILoginResponse} from "../api/auth/types";
+import {create} from "zustand";
 import jwtDecode from "jwt-decode";
+import $api, {IApiResponse} from "../api/api";
+import Endpoints from "../api/endpoints";
 
-interface IAuthState {
-    token: string | null;
-    role: Role | null;
+interface IAuthStore {
     isLoggedIn: boolean;
-    setToken: (token: string | null) => void;
-    setRole: (role: Role | null) => void;
+    role: Role | null,
+    accessToken: string | null;
+    isLoading: boolean;
+    errorCode: string | null;
+    errorMessage: string | null;
+
+    login: (params: ILoginRequest) => void;
 }
 
-export const useAuthStore = create<IAuthState>((set) => ({
-    token: null,
+export const useAuthStore = create<IAuthStore>((set) => ({
+    isLoading: false,
+    accessToken: null,
     role: null,
     isLoggedIn: false,
-    setToken: (token) => {
-        set((state) => ({...state, token}));
-        // Decode the JWT token and set the user's role in the store
-        if (token) {
-            const decodedToken = decodeJwtToken(token);
-            console.log("Decoded token:", decodedToken);
-            if (decodedToken) {
-                set((state) => ({...state, role: decodedToken.role, isLoggedIn: true}));
-            }
+    errorCode: null,
+    errorMessage: null,
+
+    login: async (params: ILoginRequest) => {
+        set({isLoading: true});
+
+        const response = await $api.post<IApiResponse<ILoginResponse>>(Endpoints.AUTH.LOGIN, params);
+
+        if (response.data.error) {
+            console.error('error logging');
+            const error = response.data.error;
+            set({errorCode: error.errorCode, errorMessage: error.message})
         } else {
-            set((state) => ({...state, role: null, isLoggedIn: false}));
+            const data = response.data.data!;
+            const token = data.accessToken;
+
+            set({
+                role: decodeJwtToken(token) as Role | null,
+                accessToken: token
+            });
+            localStorage.setItem('accessToken', token);
+
+            set({isLoggedIn: true});
         }
-    },
-    setRole: (role) => set((state) => ({...state, role}))
+
+        set({isLoading: false});
+    }
 }));
+
 
 // Function to decode JWT token and extract user's role
 function decodeJwtToken(token: string): { role: Role } | null {
     try {
-        const decoded = jwtDecode(token) as { role: Role };
-        return decoded;
+        return jwtDecode(token) as { role: Role };
     } catch (error) {
         console.error('Error decoding JWT token:', error);
         return null;

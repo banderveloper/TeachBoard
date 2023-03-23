@@ -1,17 +1,19 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useAuthStore} from "./state/useAuthStore";
-import {login} from "./api/auth";
 
 function App() {
 
-    const {isLoggedIn, role} = useAuthStore();
+    const store = useAuthStore();
 
-    const a = async() => {
-        const result = await login({userName:'hello', password:'hello'});
-        console.log(result.data);
-    }
+    useEffect(() => {
+        store.login({'userName': 'kalnitskiy', 'password': 'kalnitskiy'});
+    }, []);
 
-    a();
+    useEffect(() => {
+        console.log('Store:', store);
+    }, [store.isLoading])
+
+
 
     return (
         <div>hello world</div>
