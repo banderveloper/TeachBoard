@@ -3,7 +3,7 @@ import {SERVER_URL} from "./endpoints";
 
 const $api = axios.create({
     baseURL: SERVER_URL,
-    withCredentials: true
+    //withCredentials: true
 });
 
 interface IApiResponse<T> {
@@ -26,6 +26,8 @@ $api.interceptors.response.use(
 
 $api.interceptors.request.use(function (config) {
     config.headers.Authorization = `Bearer ${localStorage.getItem('accessToken')}`;
+    config.headers.set("Access-Control-Allow-Origin", "*");
+    config.headers.set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     return config;
 }, function (error) {
     // Do something with request error

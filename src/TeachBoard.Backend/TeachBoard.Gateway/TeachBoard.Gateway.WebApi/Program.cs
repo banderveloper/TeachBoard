@@ -17,6 +17,18 @@ using TeachBoard.Gateway.WebApi.ActionResults;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// CORS-policies for browser access
+builder.Services.AddCors(options =>
+{
+    // All clients (temporary)
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyHeader();
+        policy.AllowAnyMethod();
+        policy.AllowAnyOrigin();
+    });
+});
+
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -133,6 +145,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 var app = builder.Build();
+
+app.UseCors("AllowAll");
 
 app.UseCustomExceptionHandler();
 
