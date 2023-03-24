@@ -4,6 +4,17 @@ import {$api, decodeJwtToken} from "../../shared";
 import ENDPOINTS from "../../shared/api/endpoints";
 import jwtDecode from "jwt-decode";
 import {persist} from "zustand/middleware";
+import {AES, enc} from 'crypto-js'
+
+const encryptState = (state: any) => {
+    const encryptedState = AES.encrypt(JSON.stringify(state), "secret-key-from-environment");
+    return encryptedState.toString();
+};
+
+const decryptState = (encryptedState: any) => {
+    const decryptedState = AES.decrypt(encryptedState, "secret-key-from-environment");
+    return JSON.parse(decryptedState.toString(enc.Utf8));
+};
 
 interface IAuthStore {
     isLoggedIn: boolean;
@@ -48,5 +59,10 @@ export const useAuthStore = create<IAuthStore>()(persist((set) => ({
 
         set({isLoading: false});
     }
-}), {name: 'useAuthUser', version: 1}));
+}), {
+    name: 'useAuthUser',
+    version: 1,
+    serialize: state => encryptState(state),
+    deserialize: state => decryptState(state)
+}));
 
