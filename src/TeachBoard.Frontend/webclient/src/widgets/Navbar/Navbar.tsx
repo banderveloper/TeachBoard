@@ -1,9 +1,9 @@
 import React from 'react';
 
-export const StudentHomePage = () => {
+export const Navbar = () => {
     return (
         <div>
-            Student home page
+            Navbar
         </div>
     );
 };
