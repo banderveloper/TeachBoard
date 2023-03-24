@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {useAuthStore} from "../useAuthStore";
+import {useAuthStore} from "../../../entities";
 import {Navigate, useLocation} from "react-router-dom";
 import {EnumUserRole} from "../../../entities";
 

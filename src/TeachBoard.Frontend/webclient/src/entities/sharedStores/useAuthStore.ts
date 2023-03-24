@@ -1,4 +1,4 @@
-import {EnumUserRole, ILoginRequest, ILoginResponse, IServerResponse} from "../../entities";
+import {EnumUserRole, ILoginRequest, ILoginResponse, IServerResponse} from "../index";
 import {create} from "zustand";
 import {$api, decodeJwtToken} from "../../shared";
 import ENDPOINTS from "../../shared/api/endpoints";

@@ -1,5 +1,5 @@
 import {Navigate, Route, useLocation} from 'react-router-dom';
-import {useAuthStore} from "../../pages/auth/useAuthStore";
+import {useAuthStore} from "../../entities/sharedStores/useAuthStore";
 
 export const PrivateRoute = ({children, requiredRole}: {
     children: JSX.Element;

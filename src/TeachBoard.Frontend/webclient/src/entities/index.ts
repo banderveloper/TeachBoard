@@ -17,3 +17,9 @@ export type {ILoginRequest} from './requests/auth/ILoginRequest';
 export type {IServerResponse} from './responses/IServerResponse';
 export type {ILoginResponse} from './responses/auth/ILoginResponse';
 
+////////////////////////////////////
+//////////// SHARED STORES /////////////
+////////////////////////////////////
+
+export {useAuthStore} from './sharedStores/useAuthStore';
+
