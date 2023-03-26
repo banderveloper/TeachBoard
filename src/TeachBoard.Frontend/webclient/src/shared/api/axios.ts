@@ -12,13 +12,7 @@ export interface IApiResponse<T> {
 
 $api.interceptors.response.use(
     (response: AxiosResponse<any>): AxiosResponse<IApiResponse<any>> => {
-        if (response.data && response.data.hasOwnProperty('data') && response.data.hasOwnProperty('error')) {
-            return response;
-        }
-        return {
-            ...response,
-            data: {error: 'Unexpected response from server.'}
-        };
+        return response;
     },
     (error) => Promise.reject(error)
 );
@@ -27,6 +21,7 @@ $api.interceptors.request.use(function (config) {
     config.headers.Authorization = `Bearer ${localStorage.getItem('accessToken')}`;
     config.headers.set("Access-Control-Allow-Origin", "*");
     config.headers.set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    config.headers.set("Access-Control-Expose-Headers: *");
     return config;
 }, function (error) {
     // Do something with request error

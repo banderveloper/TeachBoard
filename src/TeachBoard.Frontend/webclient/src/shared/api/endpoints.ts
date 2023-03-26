@@ -5,6 +5,10 @@ export const ENDPOINTS = {
         LOGIN: `${API_URL}/auth/login`,
         REFRESH: `${API_URL}/auth/refresh`,
         LOGOUT: `${API_URL}/auth/logout`
+    },
+    STUDENT: {
+        GET_UNCOMPLETED_HOMEWORKS: `${API_URL}/student/uncompleted-homeworks`,
+        GET_HOMEWORK_TASK_FILE: `${API_URL}/student/homework-task-file/`
     }
 }
 

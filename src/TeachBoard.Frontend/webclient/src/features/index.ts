@@ -1,0 +1,1 @@
+export {GivenHomeworkCard} from './student/GivenHomeworkCard';

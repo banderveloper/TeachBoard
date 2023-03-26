@@ -23,7 +23,7 @@ builder.Services.AddCors(options =>
     // All clients (temporary)
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.AllowAnyHeader();
+        policy.AllowAnyHeader().WithExposedHeaders("Content-Disposition");
         policy.AllowAnyMethod();
         policy.AllowAnyOrigin();
     });

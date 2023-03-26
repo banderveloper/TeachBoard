@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Refit;
 using TeachBoard.Gateway.Application.Refit.Clients;
@@ -222,6 +223,10 @@ public class StudentController : BaseController
         var membersResponse = await _membersClient.GetStudentByUserId(UserId);
         var student = membersResponse.Data;
 
+        Console.WriteLine("USerID: " + UserId);
+        Console.WriteLine("Student: " + JsonSerializer.Serialize(student));
+        
+
         if (student?.Id == 0)
             _logger.LogWarning(
                 $"GetUncompletedHomeworks warning. User id from token is [{UserId}], but student id is 0");
@@ -229,6 +234,9 @@ public class StudentController : BaseController
         var educationResponse = await _educationClient.GetUncompletedHomeworks(student.Id, student.GroupId);
         var uncompletedHomeworks = educationResponse.Data;
 
+        Console.WriteLine("Uncompleted homeworks: " + uncompletedHomeworks);
+        Console.WriteLine("Uncompleted homeworks: " + JsonSerializer.Serialize(uncompletedHomeworks));
+        
         return new WebApiResult(uncompletedHomeworks);
     }
 
@@ -352,6 +360,8 @@ public class StudentController : BaseController
     {
         var getFileResponse = await _filesClient.GetHomeworkTaskFile(homeworkId);
         var file = getFileResponse.Data;
+        
+        Response.Headers.Add("Content-Disposition", file.FileName);
         
         return File(file.FileContent, "application/octet-stream", file.FileName);
     }

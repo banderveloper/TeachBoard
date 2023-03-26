@@ -23,3 +23,9 @@ export type {ILoginResponse} from './responses/auth/ILoginResponse';
 
 export {useAuthStore} from './sharedStores/useAuthStore';
 
+////////////////////////////////////
+//////////// MODELS /////////////
+////////////////////////////////////
+
+export type {IGivenHomework} from './models/student/IGivenHomework';
+
