@@ -23,7 +23,7 @@ interface INavItem {
 
 export function Navbar() {
 
-    const {role} = useAuthStore();
+    const {role, isLoggedIn} = useAuthStore();
 
     const [mainNavItems, setMainNavItems] = useState<INavItem[]>([]);
     const [profileNavItems, setProfileNavItems] = useState<INavItem[]>([
@@ -50,8 +50,13 @@ export function Navbar() {
         }
     }
 
-    useEffect(() => updateRoleNavbarItems, []);
-    useEffect(() => updateRoleNavbarItems, [role]);
+    useEffect(() => {
+        updateRoleNavbarItems();
+    }, []);
+
+    useEffect(() => {
+        updateRoleNavbarItems();
+    }, [role, isLoggedIn]);
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
@@ -79,23 +84,21 @@ export function Navbar() {
         <AppBar position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="a"
-                        href="/"
-                        sx={{
-                            mr: 2,
-                            display: {xs: "none", md: "flex"},
-                            fontFamily: "monospace",
-                            fontWeight: 700,
-                            letterSpacing: ".3rem",
-                            color: "inherit",
-                            textDecoration: "none",
-                        }}
-                    >
-                        TEACHBOARD
-                    </Typography>
+                        <Typography
+                            variant="h6"
+                            noWrap
+                            sx={{
+                                mr: 2,
+                                display: {xs: "none", md: "flex"},
+                                fontFamily: "monospace",
+                                fontWeight: 700,
+                                letterSpacing: ".3rem",
+                                color: "inherit",
+                                textDecoration: "none",
+                            }}
+                        >
+                            <Link to='/'>TEACHBOARD</Link>
+                        </Typography>
 
                     <Box sx={{flexGrow: 1, display: {xs: "flex", md: "none"}}}>
                         <IconButton

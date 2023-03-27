@@ -25,6 +25,7 @@ interface IAuthStore {
     errorMessage: string | null;
 
     login: (params: ILoginRequest) => void;
+    clearAuth: () => void;
 }
 
 export const useAuthStore = create<IAuthStore>()(persist((set) => ({
@@ -58,6 +59,9 @@ export const useAuthStore = create<IAuthStore>()(persist((set) => ({
         }
 
         set({isLoading: false});
+    },
+    clearAuth: () => {
+        set({role: null, isLoggedIn: false, accessToken: null});
     }
 }), {
     name: 'useAuthUser',

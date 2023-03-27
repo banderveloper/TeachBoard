@@ -24,6 +24,8 @@ export const LoginPage = () => {
     const onClicked: React.MouseEventHandler<HTMLButtonElement> = (event) => {
         event.preventDefault();
         login({userName: 'kalnitskiy', password: 'kalnitskiy'});
+        if (isLoggedIn)
+            window.location.href = '/';
     }
 
     return (

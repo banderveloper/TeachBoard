@@ -47,7 +47,7 @@ export const GivenHomeworkCard = (homework: IGivenHomework) => {
                     {homework.subjectName}
                 </Typography>
                 <Typography variant="body2" component="p">
-                    Created on: {homework.createdAt.toLocaleString()}
+                    Created on: {new Date(homework.createdAt).toLocaleTimeString()}
                 </Typography>
                 <Button onClick={handleDownloadClick}>Download</Button>
             </CardContent>

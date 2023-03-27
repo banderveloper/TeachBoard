@@ -146,9 +146,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
+app.UseCustomExceptionHandler();
+
 app.UseCors("AllowAll");
 
-app.UseCustomExceptionHandler();
+app.UseAuthentication();
+app.UseAuthorization();
+
 
 app.UseSwagger();
 app.UseSwaggerUI(config =>
@@ -160,7 +164,5 @@ app.UseSwaggerUI(config =>
 });
 
 app.MapControllers();
-
-var a = new int();
 
 app.Run();
