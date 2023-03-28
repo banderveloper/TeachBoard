@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {GivenHomeworkCard} from "../../../features";
 import {useHomeworksStore} from "./store";
-
+import './index.css'
 
 export const StudentHomeworksPage = () => {
 
@@ -12,7 +12,7 @@ export const StudentHomeworksPage = () => {
     }, []);
 
     return (
-        <div>
+        <div className='given-homework-card-container'>
             {
                 isLoading
                     ? <h1>Loading</h1>
