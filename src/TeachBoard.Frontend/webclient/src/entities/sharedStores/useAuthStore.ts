@@ -26,6 +26,7 @@ interface IAuthStore {
 
     login: (params: ILoginRequest) => void;
     clearAuth: () => void;
+    resetErrorInfo: () => void;
 }
 
 export const useAuthStore = create<IAuthStore>()(persist((set) => ({
@@ -62,7 +63,11 @@ export const useAuthStore = create<IAuthStore>()(persist((set) => ({
     },
     clearAuth: () => {
         set({role: null, isLoggedIn: false, accessToken: null});
+    },
+    resetErrorInfo: () => {
+        set({isLoading: false, errorCode: null, errorMessage: null});
     }
+
 }), {
     name: 'useAuthUser',
     version: 1,

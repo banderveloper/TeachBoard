@@ -151,7 +151,6 @@ export const GivenHomeworkCard: React.FC<IGivenHomework> = ({homeworkId, teacher
                             <CircularProgress/>
                         </Box>
                     }
-
                 </Grid>
             </CardContent>
         </Card>

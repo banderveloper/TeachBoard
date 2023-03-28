@@ -2,6 +2,7 @@ import React, {useEffect} from 'react';
 import {useAuthStore} from "../../../entities";
 import {Navigate, useLocation} from "react-router-dom";
 import {EnumUserRole} from "../../../entities";
+import {LoginForm} from "../../../features";
 
 
 export const LoginPage = () => {
@@ -21,17 +22,7 @@ export const LoginPage = () => {
         }
     }
 
-    const onClicked: React.MouseEventHandler<HTMLButtonElement> = (event) => {
-        event.preventDefault();
-        login({userName: 'kalnitskiy', password: 'kalnitskiy'});
-        if (isLoggedIn)
-            window.location.href = '/';
-    }
-
     return (
-        <div>
-            <p>Login page</p>
-            <button onClick={onClicked}>Login</button>
-        </div>
+        <LoginForm/>
     );
 };
