@@ -3,8 +3,6 @@ import {Navbar, Routing} from "../widgets";
 
 function App() {
 
-    console.log('help me')
-
     return (
         <div>
             <Navbar/>

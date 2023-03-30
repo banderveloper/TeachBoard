@@ -11,7 +11,8 @@ export const ENDPOINTS = {
         GET_HOMEWORK_TASK_FILE: `${API_URL}/student/homework-task-file/`,
         UPLOAD_HOMEWORK_FILE: `${API_URL}/student/complete-homework`,
         GET_SCHEDULE: `${API_URL}/student/all-lessons`,
-        GET_LESSON_ACTIVITIES: `${API_URL}/student/lessons-activities`
+        GET_LESSON_ACTIVITIES: `${API_URL}/student/lessons-activities`,
+        APPROVE_PENDING: `${API_URL}/student/approve-pending`,
     }
 }
 

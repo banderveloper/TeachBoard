@@ -10,6 +10,7 @@ export {EnumStudentLessonAttendanceStatus} from './enums/EnumStudentLessonAttend
 ////////////////////////////////////
 
 export type {ILoginRequest} from './requests/auth/ILoginRequest';
+export type {IApprovePendingStudentRequest} from './requests/auth/IApprovePendingStudentRequest'
 
 ////////////////////////////////////
 //////////// RESPONSES /////////////

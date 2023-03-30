@@ -1,4 +1,4 @@
-import {EnumUserRole, ILoginRequest, ILoginResponse, IServerResponse} from "../index";
+import {EnumUserRole, IApprovePendingStudentRequest, ILoginRequest, ILoginResponse, IServerResponse} from "../index";
 import {create} from "zustand";
 import {$api, decodeJwtToken} from "../../shared";
 import ENDPOINTS from "../../shared/api/endpoints";
@@ -24,7 +24,9 @@ interface IAuthStore {
     errorCode: string | null;
     errorMessage: string | null;
 
-    login: (params: ILoginRequest) => void;
+    login: (params: ILoginRequest) => Promise<void>;
+    register: (params: IApprovePendingStudentRequest) => Promise<void>;
+
     clearAuth: () => void;
     resetErrorInfo: () => void;
 }
@@ -61,6 +63,21 @@ export const useAuthStore = create<IAuthStore>()(persist((set) => ({
 
         set({isLoading: false});
     },
+
+    register: async (params: IApprovePendingStudentRequest) => {
+
+        set({isLoading: true});
+
+        const response = await $api.post<IServerResponse<any>>(ENDPOINTS.STUDENT.APPROVE_PENDING, params);
+
+        if (response.data.error) {
+            const error = response.data.error;
+            set({errorCode: error.errorCode, errorMessage: error.message})
+        }
+
+        set({isLoading: false});
+    },
+
     clearAuth: () => {
         set({role: null, isLoggedIn: false, accessToken: null});
     },
