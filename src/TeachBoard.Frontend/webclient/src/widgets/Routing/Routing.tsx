@@ -1,6 +1,6 @@
 import React from 'react';
 import {Route, Routes} from "react-router-dom";
-import {LoginPage, StudentSchedulePage} from "../../pages";
+import {LoginPage, StudentLessonActivitiesPage, StudentSchedulePage} from "../../pages";
 import {PrivateRoute} from "./PrivateRoute";
 import {EnumUserRole} from "../../entities";
 import {StudentHomePage} from "../../pages";
@@ -27,6 +27,12 @@ export const Routing = () => {
             <Route path="student/lessons" element={
                 <PrivateRoute requiredRole={EnumUserRole.student}>
                     <StudentSchedulePage/>
+                </PrivateRoute>
+            }/>
+
+            <Route path="student/activity" element={
+                <PrivateRoute requiredRole={EnumUserRole.student}>
+                    <StudentLessonActivitiesPage/>
                 </PrivateRoute>
             }/>
         </Routes>

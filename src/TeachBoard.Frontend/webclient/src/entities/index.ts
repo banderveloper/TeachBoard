@@ -3,6 +3,7 @@
 ////////////////////////////////////
 
 export {EnumUserRole} from './enums/EnumUserRole'
+export {EnumStudentLessonAttendanceStatus} from './enums/EnumStudentLessonAttendanceStatus'
 
 ////////////////////////////////////
 //////////// REQUESTS //////////////
@@ -29,4 +30,4 @@ export {useAuthStore} from './sharedStores/useAuthStore';
 
 export type {IGivenHomework} from './models/student/IGivenHomework';
 export type {IScheduleItem} from './models/student/IScheduleItem';
-
+export type {IStudentLessonActivityItem} from './models/student/IStudentLessonActivityItem'

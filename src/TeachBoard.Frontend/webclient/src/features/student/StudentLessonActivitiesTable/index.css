@@ -1,0 +1,15 @@
+.table-heading-item{
+    font-weight: bolder !important;
+}
+
+.absent-activity-block{
+    background-color: #FDC0C0FF;
+}
+
+.attended-activity-block{
+    background-color: #D6FFD1FF;
+}
+
+.late-activity-block{
+    background-color: #FFEFABFF;
+}
