@@ -33,7 +33,6 @@ export function LoginForm() {
     };
 
 
-
     return (
         <Container component="main" maxWidth="xs">
             <Box
@@ -89,8 +88,8 @@ export function LoginForm() {
                     </Button>
                     {
                         isLoading &&
-                        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                            <CircularProgress />
+                        <Box sx={{display: 'flex', justifyContent: 'center'}}>
+                            <CircularProgress/>
                         </Box>
                     }
                 </Box>

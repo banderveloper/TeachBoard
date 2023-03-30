@@ -2,6 +2,7 @@ import React, {useEffect} from 'react';
 import {GivenHomeworkCard} from "../../../features";
 import {useHomeworksStore} from "./store";
 import './index.css'
+import {Box, CircularProgress} from "@mui/material";
 
 export const StudentHomeworksPage = () => {
 
@@ -15,7 +16,10 @@ export const StudentHomeworksPage = () => {
         <div className='given-homework-card-container'>
             {
                 isLoading
-                    ? <h1>Loading</h1>
+                    ?
+                    <Box sx={{display: 'flex', margin: '25px'}}>
+                        <CircularProgress/>
+                    </Box>
                     :
                     homeworks.map(hw => (
                         < GivenHomeworkCard
