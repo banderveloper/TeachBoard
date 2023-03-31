@@ -6,6 +6,7 @@ import {EnumUserRole} from "../../entities";
 import {StudentHomePage} from "../../pages";
 import {StudentHomeworksPage} from "../../pages";
 import {RegisterPage} from "../../pages";
+import {LogoutPage} from "../../pages";
 
 export const Routing = () => {
     return (
@@ -13,6 +14,7 @@ export const Routing = () => {
             <Route path="/" element={<LoginPage/>}/>
             <Route path="login" element={<LoginPage/>}/>
             <Route path="register" element={<RegisterPage/>}/>
+            <Route path="logout" element={<LogoutPage/>}/>
 
             <Route path="student" element={
                 <PrivateRoute requiredRole={EnumUserRole.student}>

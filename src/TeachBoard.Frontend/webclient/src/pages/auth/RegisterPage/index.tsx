@@ -1,22 +1,27 @@
 import React from 'react';
 import {EnumUserRole, useAuthStore} from "../../../entities";
-import {Navigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {RegisterForm} from "../../../features";
 
 export const RegisterPage = () => {
 
     const {role, isLoggedIn} = useAuthStore();
+    const navigate = useNavigate();
 
     if (isLoggedIn) {
         switch (role) {
             case EnumUserRole.student:
-                return <Navigate to='/student'/>
+                navigate({pathname: '/student'});
+                break;
             case EnumUserRole.teacher:
-                return <Navigate to='/teacher'/>
+                navigate({pathname: '/teacher'});
+                break;
             case EnumUserRole.administrator:
-                return <Navigate to='/administrator'/>
+                navigate({pathname: '/administrator'});
+                break;
             default:
                 console.error('Unexpected user role');
+                break;
         }
     }
 

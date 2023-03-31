@@ -1,13 +1,13 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {useAuthStore} from "../../../entities";
-import {Navigate, useLocation} from "react-router-dom";
+import {Navigate} from "react-router-dom";
 import {EnumUserRole} from "../../../entities";
 import {LoginForm} from "../../../features";
 
 
 export const LoginPage = () => {
 
-    const {isLoading, login, role, isLoggedIn} = useAuthStore();
+    const {role, isLoggedIn} = useAuthStore();
 
     if (isLoggedIn) {
         switch (role) {
@@ -19,6 +19,7 @@ export const LoginPage = () => {
                 return <Navigate to='/administrator'/>
             default:
                 console.error('Unexpected user role');
+                break;
         }
     }
 

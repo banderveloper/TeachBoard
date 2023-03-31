@@ -4,6 +4,7 @@ import {useAuthStore} from "../../entities";
 
 const $api = axios.create({
     baseURL: API_URL,
+    withCredentials: true
 });
 
 export interface IApiResponse<T> {
@@ -30,10 +31,12 @@ $api.interceptors.response.use((response) => {
 });
 
 $api.interceptors.request.use(function (config) {
+    console.log('REQUEST', config);
     config.headers.Authorization = `Bearer ${localStorage.getItem('accessToken')}`;
     config.headers.set("Access-Control-Allow-Origin", "*");
     config.headers.set("Access-Control-Allow-Headers", "*");
     config.headers.set("Access-Control-Expose-Headers: *");
+    config.headers.set("Access-Control-Allow-Methods", "*");
     return config;
 }, function (error) {
     // Do something with request error

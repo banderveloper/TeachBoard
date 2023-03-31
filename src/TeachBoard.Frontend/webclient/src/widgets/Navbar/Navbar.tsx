@@ -84,21 +84,22 @@ export function Navbar() {
         <AppBar position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                        <Typography
-                            variant="h6"
-                            noWrap
-                            sx={{
-                                mr: 2,
-                                display: {xs: "none", md: "flex"},
-                                fontFamily: "monospace",
-                                fontWeight: 700,
-                                letterSpacing: ".3rem",
-                                color: "inherit",
-                                textDecoration: "none",
-                            }}
-                        >
-                            <Link to='/'>TEACHBOARD</Link>
-                        </Typography>
+                    <Typography
+                        className='logo'
+                        variant="h6"
+                        noWrap
+                        sx={{
+                            color: 'white',
+                            mr: 2,
+                            display: {xs: "none", md: "flex"},
+                            fontFamily: "monospace",
+                            fontWeight: 700,
+                            letterSpacing: ".3rem",
+                            textDecoration: "none",
+                        }}
+                    >
+                        <Link to='/' style={{color: 'white'}}>TEACHBOARD</Link>
+                    </Typography>
 
                     <Box sx={{flexGrow: 1, display: {xs: "flex", md: "none"}}}>
                         <IconButton
@@ -130,13 +131,16 @@ export function Navbar() {
                             }}
                         >
                             {mainNavItems.map((item) => (
-                                <MenuItem key={item.pathName} onClick={handleCloseNavMenu}>
-                                    <Typography textAlign="center">{item.pathName}</Typography>
-                                </MenuItem>
+                                <Link to={item.path} key={item.pathName}>
+                                    <MenuItem onClick={handleCloseNavMenu}>
+                                        <Typography textAlign="center">{item.pathName}</Typography>
+                                    </MenuItem>
+                                </Link>
                             ))}
                         </Menu>
                     </Box>
                     <Typography
+                        className='logo'
                         variant="h5"
                         noWrap
                         component="a"
@@ -192,8 +196,8 @@ export function Navbar() {
                         >
                             {profileNavItems.map((item) => (
                                 <MenuItem key={item.pathName} onClick={handleCloseUserMenu}>
-                                    <Link to={item.path}>
-                                        <Typography textAlign="center">{item.pathName}</Typography>
+                                    <Link to={item.path} key={item.path}>
+                                        {item.pathName}
                                     </Link>
                                 </MenuItem>
                             ))}

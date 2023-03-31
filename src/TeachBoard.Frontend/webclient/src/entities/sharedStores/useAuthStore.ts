@@ -26,12 +26,13 @@ interface IAuthStore {
 
     login: (params: ILoginRequest) => Promise<void>;
     register: (params: IApprovePendingStudentRequest) => Promise<void>;
+    logout: () => Promise<void>;
 
     clearAuth: () => void;
     resetErrorInfo: () => void;
 }
 
-export const useAuthStore = create<IAuthStore>()(persist((set) => ({
+export const useAuthStore = create<IAuthStore>()(persist((set, get) => ({
     isLoading: false,
     accessToken: null,
     role: null,
@@ -76,6 +77,14 @@ export const useAuthStore = create<IAuthStore>()(persist((set) => ({
         }
 
         set({isLoading: false});
+    },
+
+    logout: async () => {
+        await $api.delete<IServerResponse<any>>(ENDPOINTS.AUTH.LOGOUT, {
+            method: "DELETE"
+        });
+        const {clearAuth} = get();
+        clearAuth();
     },
 
     clearAuth: () => {
