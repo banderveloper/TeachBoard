@@ -1,0 +1,11 @@
+.given-homework-card{
+    width: 300px;
+    border: 1px solid lightgray;
+    border-radius: 30px;
+    margin: 20px;
+    padding: 5px;
+}
+
+.given-homework-card:hover{
+    background-color: #e4eff6;
+}

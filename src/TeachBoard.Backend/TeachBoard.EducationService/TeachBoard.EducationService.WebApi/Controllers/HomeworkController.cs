@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.Json;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.EducationService.Application.Exceptions;
@@ -139,8 +140,13 @@ public class HomeworkController : ControllerBase
         var query = new GetUncompletedHomeworksPresentationDataByStudentQuery
             { StudentId = studentId, GroupId = groupId };
         var uncompletedHomeworks = await _mediator.Send(query);
+        
+        Console.WriteLine("homeworks: " + JsonSerializer.Serialize(uncompletedHomeworks));
 
-        return new WebApiResult(uncompletedHomeworks);
+        var result = new WebApiResult(uncompletedHomeworks);
+        Console.WriteLine("Result: " + JsonSerializer.Serialize(result));
+        
+        return result;
     }
 
     /// <summary>
