@@ -1,6 +1,6 @@
 import React from 'react';
 import {Route, Routes} from "react-router-dom";
-import {LoginPage, StudentLessonActivitiesPage, StudentSchedulePage} from "../../pages";
+import {LoginPage, ProfilePage, StudentLessonActivitiesPage, StudentSchedulePage} from "../../pages";
 import {PrivateRoute} from "./PrivateRoute";
 import {EnumUserRole} from "../../entities";
 import {StudentHomePage} from "../../pages";
@@ -15,6 +15,7 @@ export const Routing = () => {
             <Route path="login" element={<LoginPage/>}/>
             <Route path="register" element={<RegisterPage/>}/>
             <Route path="logout" element={<LogoutPage/>}/>
+            <Route path="profile" element={<ProfilePage/>}/>
 
             <Route path="student" element={
                 <PrivateRoute requiredRole={EnumUserRole.student}>
