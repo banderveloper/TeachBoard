@@ -37,7 +37,8 @@ export function Navbar() {
                 setMainNavItems([
                     {path: '/student/homeworks', pathName: 'Homeworks'},
                     {path: '/student/lessons', pathName: 'Schedule'},
-                    {path: '/student/activity', pathName: 'Activity'}
+                    {path: '/student/activity', pathName: 'Activity'},
+                    {path: '/student/examinations', pathName: 'Examinations'}
                 ])
                 break;
             default:

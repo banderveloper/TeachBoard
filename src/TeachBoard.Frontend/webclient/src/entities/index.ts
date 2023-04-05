@@ -33,3 +33,4 @@ export {useAuthStore} from './sharedStores/useAuthStore';
 export type {IGivenHomework} from './models/student/IGivenHomework';
 export type {IScheduleItem} from './models/student/IScheduleItem';
 export type {IStudentLessonActivityItem} from './models/student/IStudentLessonActivityItem'
+export type {IStudentExaminationActivityItem} from './models/student/IStudentExaminationActivityItem'
