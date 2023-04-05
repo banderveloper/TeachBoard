@@ -18,6 +18,7 @@ export type {IApprovePendingStudentRequest} from './requests/auth/IApprovePendin
 
 export type {IServerResponse} from './responses/IServerResponse';
 export type {ILoginResponse} from './responses/auth/ILoginResponse';
+export type {IStudentProfileData} from './responses/student/IStudentProfileData'
 
 ////////////////////////////////////
 //////////// SHARED STORES /////////////
