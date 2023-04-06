@@ -13,6 +13,11 @@ export const ENDPOINTS = {
         GET_SCHEDULE: `${API_URL}/student/all-lessons`,
         GET_LESSON_ACTIVITIES: `${API_URL}/student/lessons-activities`,
         APPROVE_PENDING: `${API_URL}/student/approve-pending`,
+        GET_PROFILE_DATA: `${API_URL}/student/profile-data`,
+        GET_EXAMINATION_ACTIVITIES: `${API_URL}/student/exam-activities`
+    },
+    TEACHER: {
+        GET_SCHEDULE: `${API_URL}/teacher/future-lessons`
     }
 }
 

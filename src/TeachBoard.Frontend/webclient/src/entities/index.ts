@@ -18,6 +18,7 @@ export type {IApprovePendingStudentRequest} from './requests/auth/IApprovePendin
 
 export type {IServerResponse} from './responses/IServerResponse';
 export type {ILoginResponse} from './responses/auth/ILoginResponse';
+export type {IStudentProfileData} from './responses/student/IStudentProfileData'
 
 ////////////////////////////////////
 //////////// SHARED STORES /////////////
@@ -29,6 +30,8 @@ export {useAuthStore} from './sharedStores/useAuthStore';
 //////////// MODELS /////////////
 ////////////////////////////////////
 
+export type {ITeacherScheduleItem} from './models/teacher/ITeacherScheduleItem'
 export type {IGivenHomework} from './models/student/IGivenHomework';
 export type {IScheduleItem} from './models/student/IScheduleItem';
 export type {IStudentLessonActivityItem} from './models/student/IStudentLessonActivityItem'
+export type {IStudentExaminationActivityItem} from './models/student/IStudentExaminationActivityItem'

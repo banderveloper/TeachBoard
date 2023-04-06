@@ -1,9 +1,8 @@
 import React from 'react';
+import {Navigate} from 'react-router-dom'
 
 export const StudentHomePage = () => {
     return (
-        <div>
-            Student home page
-        </div>
+        <Navigate to='/student/homeworks'/>
     );
 };

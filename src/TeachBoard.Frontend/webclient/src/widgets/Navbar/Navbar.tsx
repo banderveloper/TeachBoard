@@ -37,7 +37,15 @@ export function Navbar() {
                 setMainNavItems([
                     {path: '/student/homeworks', pathName: 'Homeworks'},
                     {path: '/student/lessons', pathName: 'Schedule'},
-                    {path: '/student/activity', pathName: 'Activity'}
+                    {path: '/student/activity', pathName: 'Activity'},
+                    {path: '/student/examinations', pathName: 'Examinations'}
+                ])
+                break;
+            case EnumUserRole.teacher:
+                setMainNavItems([
+                    {path: '/teacher/current-lesson', pathName: 'Lesson'},
+                    {path: '/teacher/lessons', pathName: 'Schedule'},
+                    {path: '/teacher/homeworks', pathName: 'Homeworks'},
                 ])
                 break;
             default:
@@ -172,37 +180,41 @@ export function Navbar() {
                         ))}
                     </Box>
 
-                    <Box sx={{flexGrow: 0}}>
-                        <Tooltip title="Open settings">
-                            <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg"/>
-                            </IconButton>
-                        </Tooltip>
-                        <Menu
-                            sx={{mt: "45px"}}
-                            id="menu-appbar"
-                            anchorEl={anchorElUser}
-                            anchorOrigin={{
-                                vertical: "top",
-                                horizontal: "right",
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: "top",
-                                horizontal: "right",
-                            }}
-                            open={Boolean(anchorElUser)}
-                            onClose={handleCloseUserMenu}
-                        >
-                            {profileNavItems.map((item) => (
-                                <MenuItem key={item.pathName} onClick={handleCloseUserMenu}>
-                                    <Link to={item.path} key={item.path}>
-                                        {item.pathName}
-                                    </Link>
-                                </MenuItem>
-                            ))}
-                        </Menu>
-                    </Box>
+                    {
+                        isLoggedIn &&
+                        <Box sx={{flexGrow: 0}}>
+                            <Tooltip title="Open settings">
+                                <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
+                                    <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg"/>
+                                </IconButton>
+                            </Tooltip>
+                            <Menu
+                                sx={{mt: "45px"}}
+                                id="menu-appbar"
+                                anchorEl={anchorElUser}
+                                anchorOrigin={{
+                                    vertical: "top",
+                                    horizontal: "right",
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: "top",
+                                    horizontal: "right",
+                                }}
+                                open={Boolean(anchorElUser)}
+                                onClose={handleCloseUserMenu}
+                            >
+                                {profileNavItems.map((item) => (
+                                    <MenuItem key={item.pathName} onClick={handleCloseUserMenu}>
+                                        <Link to={item.path} key={item.path}>
+                                            {item.pathName}
+                                        </Link>
+                                    </MenuItem>
+                                ))}
+                            </Menu>
+                        </Box>
+                    }
+
                 </Toolbar>
             </Container>
         </AppBar>

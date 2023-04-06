@@ -1,6 +1,12 @@
 import React from 'react';
 import {Route, Routes} from "react-router-dom";
-import {LoginPage, StudentLessonActivitiesPage, StudentSchedulePage} from "../../pages";
+import {
+    LoginPage,
+    ProfilePage,
+    StudentExaminationActivitiesPage,
+    StudentLessonActivitiesPage,
+    StudentSchedulePage, TeacherHomePage, TeacherSchedulePage
+} from "../../pages";
 import {PrivateRoute} from "./PrivateRoute";
 import {EnumUserRole} from "../../entities";
 import {StudentHomePage} from "../../pages";
@@ -15,30 +21,46 @@ export const Routing = () => {
             <Route path="login" element={<LoginPage/>}/>
             <Route path="register" element={<RegisterPage/>}/>
             <Route path="logout" element={<LogoutPage/>}/>
+            <Route path="profile" element={<ProfilePage/>}/>
+
 
             <Route path="student" element={
                 <PrivateRoute requiredRole={EnumUserRole.student}>
                     <StudentHomePage/>
                 </PrivateRoute>
             }/>
-
             <Route path="student/homeworks" element={
                 <PrivateRoute requiredRole={EnumUserRole.student}>
                     <StudentHomeworksPage/>
                 </PrivateRoute>
             }/>
-
             <Route path="student/lessons" element={
                 <PrivateRoute requiredRole={EnumUserRole.student}>
                     <StudentSchedulePage/>
                 </PrivateRoute>
             }/>
-
             <Route path="student/activity" element={
                 <PrivateRoute requiredRole={EnumUserRole.student}>
                     <StudentLessonActivitiesPage/>
                 </PrivateRoute>
             }/>
+            <Route path="student/examinations" element={
+                <PrivateRoute requiredRole={EnumUserRole.student}>
+                    <StudentExaminationActivitiesPage/>
+                </PrivateRoute>
+            }/>
+
+            <Route path="teacher" element={
+                <PrivateRoute requiredRole={EnumUserRole.teacher}>
+                    <TeacherHomePage/>
+                </PrivateRoute>
+            }/>
+            <Route path="teacher/lessons" element={
+                <PrivateRoute requiredRole={EnumUserRole.teacher}>
+                    <TeacherSchedulePage/>
+                </PrivateRoute>
+            }/>
+
         </Routes>
     );
 };

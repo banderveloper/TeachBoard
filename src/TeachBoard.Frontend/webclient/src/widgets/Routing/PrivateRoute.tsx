@@ -1,5 +1,5 @@
 import {Navigate, Route, useLocation} from 'react-router-dom';
-import {useAuthStore} from "../../entities/sharedStores/useAuthStore";
+import {useAuthStore} from "../../entities";
 
 export const PrivateRoute = ({children, requiredRole}: {
     children: JSX.Element;
@@ -12,6 +12,7 @@ export const PrivateRoute = ({children, requiredRole}: {
         return <p className="container">Checking auth..</p>;
     }
     const userHasRequiredRole = requiredRole == role;
+    console.log('req role', userHasRequiredRole)
 
     if (!isLoggedIn || !userHasRequiredRole) {
         return <Navigate to="/login" state={{from: location}}/>;

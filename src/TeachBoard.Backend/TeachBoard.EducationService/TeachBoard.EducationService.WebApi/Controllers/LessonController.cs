@@ -131,7 +131,7 @@ public class LessonController : ControllerBase
     ///
     /// <response code="200">Success. Lesson returned</response>
     [HttpGet("future/{teacherId:int}")]
-    public async Task<ActionResult<IList<Lesson>>> GetFutureLessonsByTeacherId(int teacherId)
+    public async Task<ActionResult<IList<FutureLessonPresentationModel>>> GetFutureLessonsByTeacherId(int teacherId)
     {
         var query = new GetFutureLessonsByTeacherIdQuery { TeacherId = teacherId };
         var futureLessons = await _mediator.Send(query);
