@@ -41,6 +41,13 @@ export function Navbar() {
                     {path: '/student/examinations', pathName: 'Examinations'}
                 ])
                 break;
+            case EnumUserRole.teacher:
+                setMainNavItems([
+                    {path: '/teacher/current-lesson', pathName: 'Lesson'},
+                    {path: '/teacher/lessons', pathName: 'Schedule'},
+                    {path: '/teacher/homeworks', pathName: 'Homeworks'},
+                ])
+                break;
             default:
                 setMainNavItems([
                     {path: '/login', pathName: 'Login'},

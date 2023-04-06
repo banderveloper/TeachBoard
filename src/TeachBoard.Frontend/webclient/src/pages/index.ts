@@ -7,3 +7,5 @@ export {StudentExaminationActivitiesPage} from './student/StudentExaminationActi
 export {RegisterPage} from './auth/RegisterPage'
 export {LogoutPage} from './auth/LogoutPage'
 export {ProfilePage} from './auth/ProfilePage'
+export {TeacherSchedulePage} from './teacher/TeacherSchedulePage'
+export {TeacherHomePage} from './teacher/TeacherHomePage'

@@ -5,3 +5,4 @@ export {StudentLessonActivitiesTable} from './student/StudentLessonActivitiesTab
 export {RegisterForm} from './auth/RegisterForm';
 export {StudentProfileBlock} from './student/StudentProfileBlock'
 export {StudentExaminationActivitiesTable} from './student/StudentExaminationActivitiesTable'
+export {TeacherScheduleTable} from './teacher/TeacherScheduleTable'

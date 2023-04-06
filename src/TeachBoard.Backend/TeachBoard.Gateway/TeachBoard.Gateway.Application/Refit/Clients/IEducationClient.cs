@@ -94,7 +94,7 @@ public interface IEducationClient
     /// <param name="teacherId">Teacher id</param>
     /// <returns>List of lessons</returns>
     [Get("/lessons/future/{teacherId}")]
-    Task<ServiceTypedResponse<IList<Lesson>>> GetFutureLessonsByTeacherId(int teacherId);
+    Task<ServiceTypedResponse<IList<FutureLessonPresentationModel>>> GetFutureLessonsByTeacherId(int teacherId);
 
     /// <summary>
     /// Get lesson by id
