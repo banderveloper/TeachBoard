@@ -17,7 +17,11 @@ export const ENDPOINTS = {
         GET_EXAMINATION_ACTIVITIES: `${API_URL}/student/exam-activities`
     },
     TEACHER: {
-        GET_SCHEDULE: `${API_URL}/teacher/future-lessons`
+        GET_SCHEDULE: `${API_URL}/teacher/future-lessons`,
+        GET_HOMEWORK_TASK_FILE: `${API_URL}/teacher/homework-task-file/`,
+        GET_HOMEWORK_SOLUTION_FILE: `${API_URL}/teacher/homework-solution-file/`,
+        GET_UNCHECKED_HOMEWORKS: `${API_URL}/teacher/unchecked-homeworks`,
+        CHECK_HOMEWORK: `${API_URL}/teacher/check-homework`
     }
 }
 

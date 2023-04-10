@@ -5,7 +5,7 @@ import {
     ProfilePage,
     StudentExaminationActivitiesPage,
     StudentLessonActivitiesPage,
-    StudentSchedulePage, TeacherHomePage, TeacherSchedulePage
+    StudentSchedulePage, TeacherHomePage, TeacherHomeworksPage, TeacherSchedulePage
 } from "../../pages";
 import {PrivateRoute} from "./PrivateRoute";
 import {EnumUserRole} from "../../entities";
@@ -58,6 +58,11 @@ export const Routing = () => {
             <Route path="teacher/lessons" element={
                 <PrivateRoute requiredRole={EnumUserRole.teacher}>
                     <TeacherSchedulePage/>
+                </PrivateRoute>
+            }/>
+            <Route path="teacher/homeworks" element={
+                <PrivateRoute requiredRole={EnumUserRole.teacher}>
+                    <TeacherHomeworksPage/>
                 </PrivateRoute>
             }/>
 

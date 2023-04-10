@@ -324,4 +324,30 @@ public class TeacherController : BaseController
         
         return File(file.FileContent, "application/octet-stream", file.FileName);
     }
+    
+    /// <summary>
+    /// Download file of completed homework
+    /// </summary>
+    /// 
+    /// <remarks>Requires in-header JWT-token with user id, bound to teacher</remarks>
+    ///
+    /// <param name="homeworkId">Id of homework</param>
+    /// <param name="studentId">Id of student who completed the homework</param>
+    ///
+    /// <response code="200">Success / file_info_not_found / </response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="502">hosting_file_not_found</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
+    [HttpGet("homework-solution-file/{homeworkId:int}/{studentId:int}")]
+    [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ValidationResultModel), StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
+    public async Task<FileContentResult> GetHomeworkSolutionFile(int homeworkId, int studentId)
+    {
+        var getFileResponse = await _filesClient.GetHomeworkSolutionFile(studentId, homeworkId);
+        var file = getFileResponse.Data;
+        
+        return File(file.FileContent, "application/octet-stream", file.FileName);
+    }
 }

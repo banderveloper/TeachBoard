@@ -11,6 +11,7 @@ export {EnumStudentLessonAttendanceStatus} from './enums/EnumStudentLessonAttend
 
 export type {ILoginRequest} from './requests/auth/ILoginRequest';
 export type {IApprovePendingStudentRequest} from './requests/auth/IApprovePendingStudentRequest'
+export type {ICheckHomework} from './requests/teacher/ICheckHomework'
 
 ////////////////////////////////////
 //////////// RESPONSES /////////////
@@ -31,6 +32,7 @@ export {useAuthStore} from './sharedStores/useAuthStore';
 ////////////////////////////////////
 
 export type {ITeacherScheduleItem} from './models/teacher/ITeacherScheduleItem'
+export type {ITeacherUncheckedHomework} from './models/teacher/ITeacherUncheckedHomework'
 export type {IGivenHomework} from './models/student/IGivenHomework';
 export type {IScheduleItem} from './models/student/IScheduleItem';
 export type {IStudentLessonActivityItem} from './models/student/IStudentLessonActivityItem'
