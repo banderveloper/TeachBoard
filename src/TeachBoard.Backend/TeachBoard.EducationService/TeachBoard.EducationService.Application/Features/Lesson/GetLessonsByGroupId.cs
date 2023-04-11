@@ -33,7 +33,9 @@ public class GetLessonsPresentationDataByGroupIdQueryHandler : IRequestHandler<G
                 Classroom = l.Classroom,
                 Topic = l.Topic,
                 StartsAt = l.StartsAt,
-                EndsAt = l.EndsAt
+                EndsAt = l.EndsAt,
+                Id = l.Id,
+                GroupId = l.GroupId
             })
             .ToListAsync(cancellationToken);
 

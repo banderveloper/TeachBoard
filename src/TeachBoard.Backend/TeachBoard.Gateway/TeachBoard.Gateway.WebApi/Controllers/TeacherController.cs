@@ -350,4 +350,76 @@ public class TeacherController : BaseController
         
         return File(file.FileContent, "application/octet-stream", file.FileName);
     }
+    
+    
+    /// <summary>
+    /// Get current teacher's lesson info (lesson + students)
+    /// </summary>
+    ///
+    /// <response code="200">Success</response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="503">One of the needed services is unavailable now</response>
+    [HttpGet("current-lesson")]
+    [ProducesResponseType(typeof(FullLessonInfoResponseModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status503ServiceUnavailable)]
+    public async Task<ActionResult<CurrentLessonResponseModel>> GetCurrentLesson()
+    {
+        // so bad code
+
+        var teacherResponse = await _membersClient.GetTeacherByUserId(UserId);
+        var teacherId = teacherResponse.Data.Id;
+
+        // get lesson info
+        var getLessonResponse = await _educationClient.GetTeacherCurrentLesson(teacherId);
+        var lesson = getLessonResponse.Data;
+
+        if (lesson is null)
+            return new WebApiResult();
+
+        // get students of the lesson
+        var groupId = lesson.GroupId;
+        var getGroupStudentResponse = await _membersClient.GetStudentsByGroupId(groupId);
+        var groupStudents = getGroupStudentResponse.Data;
+
+        // get students ids and user ids
+        var studentsUserIds = groupStudents.Select(student => student.UserId).ToList();
+        var studentIds = groupStudents.Select(student => student.Id).ToList();
+
+        // get students presentationModels (name, avatar)
+        var getStudentsPresentationsResponse = await _identityClient.GetUserPresentationDataModels(studentsUserIds);
+        var studentsPresentationModels = getStudentsPresentationsResponse.Data;
+
+        // get students lesson activities
+        var getStudentsLessonActivitiesResponse =
+            await _educationClient.GetLessonStudentsActivities(lesson.Id, studentIds);
+        var studentsLessonActivities = getStudentsLessonActivitiesResponse.Data;
+
+        // union students presentation data and activity to one model
+        var studentPresentationWithActivityModels = from student in groupStudents
+            join studentPresentation in studentsPresentationModels on student.UserId equals studentPresentation.Id into
+                sp
+            from studentPresentation in sp.DefaultIfEmpty()
+            join studentActivity in studentsLessonActivities on student.Id equals studentActivity.StudentId into sa
+            from studentActivity in sa.DefaultIfEmpty()
+            select new StudentPresentationWithActivityModel
+            {
+                StudentId = student.Id,
+                UserId = student.UserId,
+                FirstName = studentPresentation?.FirstName,
+                LastName = studentPresentation?.LastName,
+                Patronymic = studentPresentation?.Patronymic,
+                AvatarImagePath = studentPresentation?.AvatarImagePath,
+                Grade = studentActivity?.Grade,
+                AttendanceStatus = studentActivity?.AttendanceStatus
+            };
+
+        var lessonInfo = new CurrentLessonResponseModel
+        {
+            Lesson = lesson,
+            Students = studentPresentationWithActivityModels
+        };
+
+        return new WebApiResult(lessonInfo);
+    }
 }

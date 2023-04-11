@@ -137,4 +137,7 @@ public interface IEducationClient
     [Post("/examinations/student-activity")]
     Task<ServiceTypedResponse<StudentExaminationActivity>> SetStudentExaminationActivity(
         [Body] SetStudentExaminationActivityRequestModel model);
+
+    [Get("/lessons/teacher-current-lesson/{teacherId}")]
+    Task<ServiceTypedResponse<LessonPresentationDataModel>> GetTeacherCurrentLesson(int teacherId);
 }
