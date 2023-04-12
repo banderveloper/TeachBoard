@@ -1,0 +1,7 @@
+.current-lesson-student-avatar {
+    width: 70px;
+}
+
+.current-lesson-student *{
+    font-size: 18px !important;
+}

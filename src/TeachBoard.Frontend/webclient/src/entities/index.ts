@@ -20,6 +20,7 @@ export type {ICheckHomework} from './requests/teacher/ICheckHomework'
 export type {IServerResponse} from './responses/IServerResponse';
 export type {ILoginResponse} from './responses/auth/ILoginResponse';
 export type {IStudentProfileData} from './responses/student/IStudentProfileData'
+export type {ITeacherCurrentLessonFullInfo} from './responses/teacher/ITeacherCurrentLessonFullInfo'
 
 ////////////////////////////////////
 //////////// SHARED STORES /////////////
@@ -37,3 +38,5 @@ export type {IGivenHomework} from './models/student/IGivenHomework';
 export type {IScheduleItem} from './models/student/IScheduleItem';
 export type {IStudentLessonActivityItem} from './models/student/IStudentLessonActivityItem'
 export type {IStudentExaminationActivityItem} from './models/student/IStudentExaminationActivityItem'
+export type {IStudentCurrentLessonActivityItem} from './models/teacher/IStudentCurrentLessonActivityItem'
+export type {ITeacherCurrentLesson} from './models/teacher/ITeacherCurrentLesson'
