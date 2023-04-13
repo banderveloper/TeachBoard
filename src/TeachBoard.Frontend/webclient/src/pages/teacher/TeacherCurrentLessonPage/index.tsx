@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useCurrentLessonStore} from "./store";
 import {
     Box,
-    Button,
+    Button, CircularProgress,
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
     TextField
 }
@@ -13,39 +13,44 @@ import './index.css'
 
 export const TeacherCurrentLessonPage = () => {
 
-    const {current, loadCurrentLesson, isLoading} = useCurrentLessonStore();
+    const {current, loadCurrentLesson, isLoading, sendUpdatedTopic} = useCurrentLessonStore();
     const [topic, setTopic] = useState('');
 
     const handleTopicChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setTopic(event.target.value);
     };
-    const handleTopicSend = async () => {
-        console.log('send to server topic', topic);
-    }
-
 
     useEffect(() => {
         loadCurrentLesson();
     }, []);
+    useEffect(() => {
+        setTopic(current?.lesson.topic ?? '');
+    }, [current]);
 
     if (isLoading)
-        return <h1>Loading</h1>;
+        return (
+            <Box sx={{display: 'flex', margin: '25px'}}>
+                <CircularProgress/>
+            </Box>
+        );
     else if (current == null)
         return <h1>You have not lesson now</h1>
 
     return (
         <Box>
-            <Box>
+            <Box className='current-lesson-subject-block'>
                 <h1>{current.lesson.subjectName}</h1>
                 <TextField
+                    className='current-lesson-subject-block-input'
                     label="Lesson Topic"
                     value={topic}
                     onChange={handleTopicChange}
+
                 />
                 <Button
                     variant="contained"
                     color="primary"
-                    onClick={handleTopicSend}
+                    onClick={() => sendUpdatedTopic(topic)}
                 >
                     Send
                 </Button>

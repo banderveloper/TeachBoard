@@ -140,4 +140,7 @@ public interface IEducationClient
 
     [Get("/lessons/teacher-current-lesson/{teacherId}")]
     Task<ServiceTypedResponse<LessonPresentationDataModel>> GetTeacherCurrentLesson(int teacherId);
+
+    [Put("/lessons/topic")]
+    Task<ServiceTypedResponse<Lesson>> UpdateLessonTopic([Body] UpdateLessonTopicRequestModel model);
 }

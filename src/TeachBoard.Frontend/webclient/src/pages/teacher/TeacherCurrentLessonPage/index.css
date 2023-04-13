@@ -2,3 +2,11 @@
     font-size: 22px !important;
     font-weight: bold !important;
 }
+.current-lesson-subject-block{
+    padding-left: 50px;
+    margin-bottom: 50px;
+}
+
+.current-lesson-subject-block-input{
+    margin-right: 15px !important;
+}

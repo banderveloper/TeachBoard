@@ -23,7 +23,8 @@ export const ENDPOINTS = {
         GET_UNCHECKED_HOMEWORKS: `${API_URL}/teacher/unchecked-homeworks`,
         CHECK_HOMEWORK: `${API_URL}/teacher/check-homework`,
         GET_CURRENT_LESSON: `${API_URL}/teacher/current-lesson`,
-        SET_STUDENT_LESSON_ACTIVITY: `${API_URL}/teacher/student-lesson-activity`
+        SET_STUDENT_LESSON_ACTIVITY: `${API_URL}/teacher/student-lesson-activity`,
+        UPDATE_LESSON_TOPIC: `${API_URL}/teacher/lesson-topic`
     }
 }
 

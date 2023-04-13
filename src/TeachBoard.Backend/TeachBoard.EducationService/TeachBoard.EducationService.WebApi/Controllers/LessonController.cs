@@ -181,4 +181,13 @@ public class LessonController : ControllerBase
 
         return new WebApiResult(lesson);
     }
+
+    [HttpPut("topic")]
+    public async Task<ActionResult<Lesson>> UpdateLessonTopic([FromBody] UpdateLessonTopicRequestModel model)
+    {
+        var command = _mapper.Map<UpdateLessonTopicCommand>(model);
+
+        var updatedLesson = await _mediator.Send(command);
+        return new WebApiResult(updatedLesson);
+    }
 }

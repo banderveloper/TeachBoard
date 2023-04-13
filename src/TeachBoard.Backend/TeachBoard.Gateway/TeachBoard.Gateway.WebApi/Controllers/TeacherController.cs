@@ -422,4 +422,13 @@ public class TeacherController : BaseController
 
         return new WebApiResult(lessonInfo);
     }
+
+    [HttpPut("lesson-topic")]
+    public async Task<ActionResult<Lesson>> UpdateLessonTopic([FromBody] UpdateLessonTopicRequestModel model)
+    {
+        var response = await _educationClient.UpdateLessonTopic(model);
+        var updatedLesson = response.Data;
+
+        return new WebApiResult(updatedLesson);
+    }
 }

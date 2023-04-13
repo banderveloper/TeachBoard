@@ -6,10 +6,11 @@ import {IServerResponse, ITeacherCurrentLessonFullInfo} from "../../../entities"
 interface ICurrentLessonStore{
     current: ITeacherCurrentLessonFullInfo | null,
     isLoading: boolean,
-    loadCurrentLesson: () => Promise<void>
+    loadCurrentLesson: () => Promise<void>,
+    sendUpdatedTopic: (topic: string) => Promise<void>
 }
 
-export const useCurrentLessonStore = create<ICurrentLessonStore>(set => ({
+export const useCurrentLessonStore = create<ICurrentLessonStore>((set, get) => ({
     isLoading: false,
     current: null,
 
@@ -20,5 +21,17 @@ export const useCurrentLessonStore = create<ICurrentLessonStore>(set => ({
         set({current: apiCurrent.data.data});
 
         set({isLoading: false});
+    },
+
+    sendUpdatedTopic: async(topic) => {
+
+        const {current} = get();
+
+        const request = {
+            lessonId: current?.lesson.id,
+            topic: topic
+        };
+
+        await $api.put(Endpoints.TEACHER.UPDATE_LESSON_TOPIC, request);
     }
 }));
