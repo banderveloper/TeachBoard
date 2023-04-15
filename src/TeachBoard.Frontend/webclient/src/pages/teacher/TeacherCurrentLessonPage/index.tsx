@@ -23,6 +23,7 @@ export const TeacherCurrentLessonPage = () => {
     useEffect(() => {
         loadCurrentLesson();
     }, []);
+
     useEffect(() => {
         setTopic(current?.lesson.topic ?? '');
     }, [current]);

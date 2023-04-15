@@ -12,6 +12,7 @@ export {EnumStudentLessonAttendanceStatus} from './enums/EnumStudentLessonAttend
 export type {ILoginRequest} from './requests/auth/ILoginRequest';
 export type {IApprovePendingStudentRequest} from './requests/auth/IApprovePendingStudentRequest'
 export type {ICheckHomework} from './requests/teacher/ICheckHomework'
+export type {ICreatePendingUserRequestModel} from './requests/administrator/ICreatePendingUserRequestModel'
 
 ////////////////////////////////////
 //////////// RESPONSES /////////////
@@ -21,6 +22,7 @@ export type {IServerResponse} from './responses/IServerResponse';
 export type {ILoginResponse} from './responses/auth/ILoginResponse';
 export type {IStudentProfileData} from './responses/student/IStudentProfileData'
 export type {ITeacherCurrentLessonFullInfo} from './responses/teacher/ITeacherCurrentLessonFullInfo'
+export type {ICreatePendingUserResponse} from './responses/administrator/ICreatePendingUserResponse'
 
 ////////////////////////////////////
 //////////// SHARED STORES /////////////

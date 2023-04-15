@@ -1,6 +1,7 @@
 import React from 'react';
 import {Route, Routes} from "react-router-dom";
 import {
+    CreatePendingUserPage,
     LoginPage,
     ProfilePage,
     StudentExaminationActivitiesPage,
@@ -50,6 +51,7 @@ export const Routing = () => {
                 </PrivateRoute>
             }/>
 
+
             <Route path="teacher" element={
                 <PrivateRoute requiredRole={EnumUserRole.teacher}>
                     <TeacherHomePage/>
@@ -68,6 +70,13 @@ export const Routing = () => {
             <Route path="teacher/current-lesson" element={
                 <PrivateRoute requiredRole={EnumUserRole.teacher}>
                     <TeacherCurrentLessonPage/>
+                </PrivateRoute>
+            }/>
+
+
+            <Route path="administrator/create-pending" element={
+                <PrivateRoute requiredRole={EnumUserRole.administrator}>
+                    <CreatePendingUserPage/>
                 </PrivateRoute>
             }/>
 
