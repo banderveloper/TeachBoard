@@ -54,7 +54,7 @@ export function Navbar() {
                     {path: '/administrator/create-lesson', pathName: 'Create lesson'},
                     {path: '/administrator/create-examination', pathName: 'Create examination'},
                     {path: '/administrator/users', pathName: 'Users'},
-                    {path: '/administrator/homeworks', pathName: 'Unchecked homeworks'}
+                    {path: '/administrator/unchecked-homeworks', pathName: 'Unchecked homeworks'}
                 ])
                 break;
             default:

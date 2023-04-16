@@ -29,7 +29,8 @@ export const ENDPOINTS = {
     ADMINISTRATOR: {
         CREATE_PENDING_USER: `${API_URL}/administrator/pending-user`,
         CREATE_LESSON: `${API_URL}/administrator/lesson`,
-        GET_CREATE_LESSON_SELECT_DATA: `${API_URL}/administrator/groups-teachers-subjects`
+        GET_CREATE_LESSON_SELECT_DATA: `${API_URL}/administrator/groups-teachers-subjects`,
+        GET_UNCHECKED_HOMEWORKS_COUNT: `${API_URL}/administrator/teachers-unchecked-homeworks-count`
     }
 }
 
