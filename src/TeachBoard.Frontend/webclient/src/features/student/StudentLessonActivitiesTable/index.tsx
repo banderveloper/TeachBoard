@@ -2,6 +2,7 @@ import React from 'react';
 import {IStudentLessonActivityItem} from "../../../entities";
 import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import './index.css'
+import {UTCToLocalStringTime} from "../../../shared";
 
 interface IStudentLessonActivitiesTableProps{
     lessonActivities: IStudentLessonActivityItem[];
@@ -35,7 +36,7 @@ export const StudentLessonActivitiesTable: React.FC<IStudentLessonActivitiesTabl
                             <TableCell>{item.lessonTopic}</TableCell>
                             <TableCell>{item.attendanceStatus}</TableCell>
                             <TableCell>{item.grade}</TableCell>
-                            <TableCell>{new Date(item.activityCreatedAt).toUTCString()}</TableCell>
+                            <TableCell>{UTCToLocalStringTime(item.activityCreatedAt)}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

@@ -2,8 +2,6 @@ import {ICreateLessonRequest, IGroup, IServerResponse, ISubject, ITeacherPresent
 import {create} from "zustand";
 import {$api} from "../../../shared";
 import Endpoints from "../../../shared/api/endpoints";
-import {now} from "moment";
-import dayjs from "dayjs";
 
 interface IGroupsSubjectsUserPresentationsBundle {
     groups: IGroup[];
@@ -85,7 +83,7 @@ export const useCreateLessonStore = create<ICreateLessonStore>((set, get) => ({
 
         const request: ICreateLessonRequest = {
             classroom,
-            startsAt,
+            startsAt: startsAt,
             groupId: selectedGroupId,
             subjectId: selectedSubjectId,
             teacherId: selectedTeacherId

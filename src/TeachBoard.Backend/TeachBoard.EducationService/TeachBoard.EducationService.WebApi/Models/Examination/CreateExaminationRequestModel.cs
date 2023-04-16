@@ -8,6 +8,7 @@ namespace TeachBoard.EducationService.WebApi.Models.Examination;
 public class CreateExaminationRequestModel : IMappable
 {
     [Required] public int SubjectId { get; set; }
+    [Required] public int CheckingTeacherId { get; set; }
     [Required] public int GroupId { get; set; }
     [Required] public DateTime StartsAt { get; set; }
     [Required] public DateTime EndsAt { get; set; }

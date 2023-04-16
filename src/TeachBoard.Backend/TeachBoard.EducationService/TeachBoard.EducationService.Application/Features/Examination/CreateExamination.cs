@@ -9,6 +9,7 @@ public class CreateExaminationCommand : IRequest<Domain.Entities.Examination>
 {
     public int SubjectId { get; set; }
     public int GroupId { get; set; }
+    public int CheckingTeacherId { get; set; }
     public DateTime StartsAt { get; set; }
     public DateTime EndsAt { get; set; }
 }
@@ -50,7 +51,8 @@ public class CreateExaminationCommandHandler : IRequestHandler<CreateExamination
             EndsAt = request.EndsAt,
             StarsAt = request.StartsAt,
             SubjectId = request.SubjectId,
-            GroupId = request.GroupId
+            GroupId = request.GroupId,
+            CheckingTeacherId = request.CheckingTeacherId
         };
         _context.Examinations.Add(examination);
         await _context.SaveChangesAsync(cancellationToken);

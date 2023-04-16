@@ -3,9 +3,8 @@ import React, {useEffect} from 'react';
 import {useCreateLessonStore} from "./store";
 import './index.css'
 import '@bevacqua/rome'
-import {DatePicker, DateTimePicker} from "@mui/x-date-pickers";
-import {now} from "moment";
-import dayjs from "dayjs";
+import {DateTimePicker} from "@mui/x-date-pickers";
+
 
 export const CreateLessonPage = () => {
 
@@ -83,7 +82,10 @@ export const CreateLessonPage = () => {
                 <DateTimePicker
                     label="Start time"
                     value={store.startsAt}
-                    onChange={(e) => store.setStartAt(e)}
+                    onChange={(e) => {
+                        store.setStartAt(e);
+                        console.log('Changed time to', e);
+                    }}
                     className='create-pending-block-input'
                 />
             </Grid>

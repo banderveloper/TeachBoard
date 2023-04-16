@@ -3,5 +3,5 @@ export interface IGivenHomework {
     subjectName: string;
     teacherId: number;
     filePath: string;
-    createdAt: string;
+    createdAt: Date;
 }
