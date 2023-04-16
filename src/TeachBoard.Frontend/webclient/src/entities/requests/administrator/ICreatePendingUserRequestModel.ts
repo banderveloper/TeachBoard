@@ -6,5 +6,5 @@ export interface ICreatePendingUserRequestModel{
     phoneNumber: string;
     homeAddress: string;
     email: string;
-    dateOfBirth: string | null;
+    dateOfBirth: Date | null;
 }

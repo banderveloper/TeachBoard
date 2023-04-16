@@ -42,3 +42,7 @@ export type {IStudentLessonActivityItem} from './models/student/IStudentLessonAc
 export type {IStudentExaminationActivityItem} from './models/student/IStudentExaminationActivityItem'
 export type {IStudentCurrentLessonActivityItem} from './models/teacher/IStudentCurrentLessonActivityItem'
 export type {ITeacherCurrentLesson} from './models/teacher/ITeacherCurrentLesson'
+export type {IGroup} from './models/administrator/IGroup'
+export type {ISubject} from './models/administrator/ISubject'
+export type {ITeacherPresentation} from './models/administrator/ITeacherPresentation'
+export type {ICreateLessonRequest} from './requests/administrator/ICreateLessonRequest'

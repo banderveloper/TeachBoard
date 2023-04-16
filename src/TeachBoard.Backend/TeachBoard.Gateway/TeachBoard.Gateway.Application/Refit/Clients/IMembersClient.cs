@@ -96,4 +96,12 @@ public interface IMembersClient
 
     [Get("/students/{studentId}")]
     Task<ServiceTypedResponse<Student?>> GetStudentById(int studentId);
+    
+    
+    [Get("/groups")]
+    Task<ServiceTypedResponse<IList<Group>>> GetAllGroups();
+    
+    
+    [Get("/teachers")]
+    Task<ServiceTypedResponse<IList<Teacher>>> GetAllTeachers();
 }

@@ -1,6 +1,7 @@
 ﻿using Refit;
 using TeachBoard.Gateway.Application.Refit.RequestModels.Education;
 using TeachBoard.Gateway.Application.Refit.ResponseModels.Education;
+using TeachBoard.Gateway.Application.Refit.ResponseModels.Members;
 
 namespace TeachBoard.Gateway.Application.Refit.Clients;
 
@@ -143,4 +144,8 @@ public interface IEducationClient
 
     [Put("/lessons/topic")]
     Task<ServiceTypedResponse<Lesson>> UpdateLessonTopic([Body] UpdateLessonTopicRequestModel model);
+
+    [Get("/subjects")]
+    Task<ServiceTypedResponse<IList<Subject>>> GetAllSubjects();
+
 }

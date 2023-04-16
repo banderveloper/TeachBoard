@@ -15,6 +15,8 @@ import {ICreatePendingUserRequestModel, ICreatePendingUserResponse, IServerRespo
 import './index.css'
 import {$api} from "../../../shared";
 import ENDPOINTS from "../../../shared/api/endpoints";
+import dayjs from "dayjs";
+import {DatePicker, DateTimePicker} from "@mui/x-date-pickers";
 
 type Role = "Student" | "Teacher";
 
@@ -28,7 +30,7 @@ export const CreatePendingUserPage = () => {
         phoneNumber: "",
         homeAddress: "",
         email: "",
-        dateOfBirth: "",
+        dateOfBirth: dayjs("2002-04-03").toDate(),
     });
     const [error, setError] = useState<string | null>(null);
     const [registerCode, setRegisterCode] = useState<string | null>(null);
@@ -48,7 +50,7 @@ export const CreatePendingUserPage = () => {
         });
     };
 
-    const handleDateChange = (date: string | null) => {
+    const handleDateChange = (date: Date | null) => {
         setUser({
             ...user,
             dateOfBirth: date,
@@ -142,12 +144,10 @@ export const CreatePendingUserPage = () => {
                         onChange={handleInputChange}
                         className='create-pending-block-input'
                     />
-                    <TextField
-                        fullWidth
-                        label="BirthDate"
-                        name="dateOfBirth"
+                    <DatePicker
+                        label="Date of birth"
                         value={user.dateOfBirth}
-                        onChange={handleInputChange}
+                        onChange={handleDateChange}
                         className='create-pending-block-input'
                     />
                 </Grid>

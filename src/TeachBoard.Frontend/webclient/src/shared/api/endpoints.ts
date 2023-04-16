@@ -27,7 +27,9 @@ export const ENDPOINTS = {
         UPDATE_LESSON_TOPIC: `${API_URL}/teacher/lesson-topic`
     },
     ADMINISTRATOR: {
-        CREATE_PENDING_USER: `${API_URL}/administrator/pending-user`
+        CREATE_PENDING_USER: `${API_URL}/administrator/pending-user`,
+        CREATE_LESSON: `${API_URL}/administrator/lesson`,
+        GET_CREATE_LESSON_SELECT_DATA: `${API_URL}/administrator/groups-teachers-subjects`
     }
 }
 

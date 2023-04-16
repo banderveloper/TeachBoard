@@ -12,7 +12,6 @@ export const PrivateRoute = ({children, requiredRole}: {
         return <p className="container">Checking auth..</p>;
     }
     const userHasRequiredRole = requiredRole == role;
-    console.log('req role', userHasRequiredRole)
 
     if (!isLoggedIn || !userHasRequiredRole) {
         return <Navigate to="/login" state={{from: location}}/>;

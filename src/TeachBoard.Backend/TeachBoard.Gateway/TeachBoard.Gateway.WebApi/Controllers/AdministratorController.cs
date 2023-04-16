@@ -1,12 +1,9 @@
-﻿using System.Text.Json;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http.Headers;
+﻿using Microsoft.AspNetCore.Mvc;
 using Refit;
 using TeachBoard.Gateway.Application;
 using TeachBoard.Gateway.Application.Exceptions;
 using TeachBoard.Gateway.Application.Refit.Clients;
 using TeachBoard.Gateway.Application.Refit.RequestModels.Education;
-using TeachBoard.Gateway.Application.Refit.RequestModels.Files;
 using TeachBoard.Gateway.Application.Refit.RequestModels.Identity;
 using TeachBoard.Gateway.Application.Refit.RequestModels.Members;
 using TeachBoard.Gateway.Application.Refit.ResponseModels.Education;
@@ -19,7 +16,7 @@ using TeachBoard.Gateway.WebApi.Models;
 namespace TeachBoard.Gateway.WebApi.Controllers;
 
 [Route("api/administrator")]
-// [Authorize(Roles = "Administrator")]
+[Microsoft.AspNetCore.Authorization.Authorize(Roles = "Administrator")]
 public class AdministratorController : BaseController
 {
     private readonly IIdentityClient _identityClient;
@@ -354,5 +351,41 @@ public class AdministratorController : BaseController
         });
 
         return new WebApiResult(updateUserResponse.Data);
+    }
+
+    [HttpGet("groups-teachers-subjects")]
+    public async Task<ActionResult<GroupsTeachersSubjectsResponseModel>> GetAllGroupsTeachersSubjects()
+    {
+        var result = new GroupsTeachersSubjectsResponseModel();
+
+        // groups
+        var getAllSubjectsResponse = await _educationClient.GetAllSubjects();
+        var subjects = getAllSubjectsResponse.Data;
+        result.Subjects = subjects;
+
+        // groups
+        var getAllGroupsResponse = await _membersClient.GetAllGroups();
+        var groups = getAllGroupsResponse.Data;
+        result.Groups = groups;
+        
+        
+        // teachers
+        var getAllTeachersResponse = await _membersClient.GetAllTeachers();
+        var teachersData = getAllTeachersResponse.Data;
+        var teacherUserIds = teachersData.Select(t => t.UserId).ToList();
+
+        var getTeachersPresentationDataResponse = await _identityClient.GetUserPresentationDataModels(teacherUserIds);
+        var teachersPresentationData = getTeachersPresentationDataResponse.Data;
+        result.Teachers = teachersPresentationData.Select(t => new TeacherPresentation()
+        {
+            TeacherId = teachersData.FirstOrDefault(teacherData => teacherData.UserId == t.Id).Id,
+            UserId = t.Id,
+            AvatarImagePath = t.AvatarImagePath,
+            Patronymic = t.Patronymic,
+            FirstName = t.FirstName,
+            LastName = t.LastName
+        }).ToList();
+
+        return new WebApiResult(result);
     }
 }

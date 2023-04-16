@@ -1,0 +1,24 @@
+.create-lesson-block {
+    width: 70% !important;
+    margin: 50px auto 0 !important;
+}
+
+.create-lesson-block-input {
+    margin: 10px !important;
+}
+
+.create-lesson-send-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.create-lesson-send-label{
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.create-lesson-label{
+    margin-top: -15px;
+}
