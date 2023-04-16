@@ -1,7 +1,7 @@
 import React from 'react';
 import {Route, Routes} from "react-router-dom";
 import {
-    AdministratorHomePage,
+    AdministratorHomePage, CreateExaminationPage,
     CreateLessonPage,
     CreatePendingUserPage,
     LoginPage,
@@ -99,6 +99,11 @@ export const Routing = () => {
             <Route path="administrator/unchecked-homeworks" element={
                 <PrivateRoute requiredRole={EnumUserRole.administrator}>
                     <UncheckedHomeworksCountPage/>
+                </PrivateRoute>
+            }/>
+            <Route path="administrator/create-examination" element={
+                <PrivateRoute requiredRole={EnumUserRole.administrator}>
+                    <CreateExaminationPage/>
                 </PrivateRoute>
             }/>
 
