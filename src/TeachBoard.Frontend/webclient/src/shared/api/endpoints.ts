@@ -31,7 +31,10 @@ export const ENDPOINTS = {
         CREATE_LESSON: `${API_URL}/administrator/lesson`,
         GET_CREATE_LESSON_SELECT_DATA: `${API_URL}/administrator/groups-teachers-subjects`,
         GET_UNCHECKED_HOMEWORKS_COUNT: `${API_URL}/administrator/teachers-unchecked-homeworks-count`,
-        CREATE_EXAMINATION: `${API_URL}/administrator/examination`
+        CREATE_EXAMINATION: `${API_URL}/administrator/examination`,
+        GET_USERS_BY_PARTIAL_NAME: `${API_URL}/administrator/users-presentations/`,
+        GET_MEMBER_DATA: `${API_URL}/administrator/memberData/`,
+        UPDATE_USER_PUBLIC_DATA: `${API_URL}/administrator/user-public`
     }
 }
 

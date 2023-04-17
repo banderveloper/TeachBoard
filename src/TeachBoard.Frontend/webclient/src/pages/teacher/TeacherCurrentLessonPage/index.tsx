@@ -4,7 +4,7 @@ import {
     Box,
     Button, CircularProgress,
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-    TextField
+    TextField, Typography
 }
     from '@mui/material';
 import {CurrentLessonStudentActivityItem} from "../../../features";
@@ -35,7 +35,7 @@ export const TeacherCurrentLessonPage = () => {
             </Box>
         );
     else if (current == null)
-        return <h1>You have not lesson now</h1>
+        return <Typography variant='h4' sx={{textAlign: 'center', marginTop: 5}}>You don't have a lesson right now</Typography>
 
     return (
         <Box>

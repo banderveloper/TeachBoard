@@ -13,6 +13,7 @@ export type {ILoginRequest} from './requests/auth/ILoginRequest';
 export type {IApprovePendingStudentRequest} from './requests/auth/IApprovePendingStudentRequest'
 export type {ICheckHomework} from './requests/teacher/ICheckHomework'
 export type {ICreatePendingUserRequestModel} from './requests/administrator/ICreatePendingUserRequestModel'
+export type {IUpdateUserPublicRequest} from './requests/administrator/IUpdateUserPublicRequest'
 
 ////////////////////////////////////
 //////////// RESPONSES /////////////
@@ -48,3 +49,6 @@ export type {ITeacherPresentation} from './models/administrator/ITeacherPresenta
 export type {ICreateLessonRequest} from './requests/administrator/ICreateLessonRequest'
 export type {IUncheckedHomeworksCountItem} from './models/administrator/IUncheckedHomeworksCountItem'
 export type {ICreateExaminationRequest} from './requests/administrator/ICreateExaminationRequest'
+export type {ISearchedUserPresentation} from './models/administrator/ISearchedUserPresentation'
+export type {IUserPresentationData} from './models/administrator/IUserPresentationData'
+export type {IStudentGroupData, IStudentMemberData} from './models/administrator/IStudentMemberData'

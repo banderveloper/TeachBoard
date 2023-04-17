@@ -13,7 +13,7 @@ import {
     TeacherHomePage,
     TeacherHomeworksPage,
     TeacherSchedulePage,
-    UncheckedHomeworksCountPage
+    UncheckedHomeworksCountPage, UserEditPage, UsersSearchPage
 } from "../../pages";
 import {PrivateRoute} from "./PrivateRoute";
 import {EnumUserRole} from "../../entities";
@@ -104,6 +104,16 @@ export const Routing = () => {
             <Route path="administrator/create-examination" element={
                 <PrivateRoute requiredRole={EnumUserRole.administrator}>
                     <CreateExaminationPage/>
+                </PrivateRoute>
+            }/>
+            <Route path="administrator/users" element={
+                <PrivateRoute requiredRole={EnumUserRole.administrator}>
+                    <UsersSearchPage/>
+                </PrivateRoute>
+            }/>
+            <Route path="administrator/user/:userId" element={
+                <PrivateRoute requiredRole={EnumUserRole.administrator}>
+                    <UserEditPage/>
                 </PrivateRoute>
             }/>
 
