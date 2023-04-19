@@ -388,4 +388,13 @@ public class AdministratorController : BaseController
 
         return new WebApiResult(result);
     }
+
+    [HttpGet("groups")]
+    public async Task<ActionResult<IList<Group>>> GetAllGroups()
+    {
+        var getAllGroupsResponse = await _membersClient.GetAllGroups();
+        var groups = getAllGroupsResponse.Data;
+
+        return new WebApiResult(groups);
+    }
 }

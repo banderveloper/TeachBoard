@@ -1,0 +1,8 @@
+.user-edit-avatar-block{
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+}
+.user-edit-avatar:hover{
+    cursor: pointer;
+}

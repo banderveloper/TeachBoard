@@ -34,7 +34,10 @@ export const ENDPOINTS = {
         CREATE_EXAMINATION: `${API_URL}/administrator/examination`,
         GET_USERS_BY_PARTIAL_NAME: `${API_URL}/administrator/users-presentations/`,
         GET_MEMBER_DATA: `${API_URL}/administrator/memberData/`,
-        UPDATE_USER_PUBLIC_DATA: `${API_URL}/administrator/user-public`
+        UPDATE_USER_PUBLIC_DATA: `${API_URL}/administrator/user-public`,
+        UPDATE_USER_AVATAR: `${API_URL}/administrator/user-avatar/`,
+        GET_ALL_GROUPS: `${API_URL}/administrator/groups`,
+        UPDATE_STUDENT_GROUP: `${API_URL}/administrator/student-group`
     }
 }
 

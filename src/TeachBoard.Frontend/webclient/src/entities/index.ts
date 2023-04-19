@@ -24,6 +24,7 @@ export type {ILoginResponse} from './responses/auth/ILoginResponse';
 export type {IStudentProfileData} from './responses/student/IStudentProfileData'
 export type {ITeacherCurrentLessonFullInfo} from './responses/teacher/ITeacherCurrentLessonFullInfo'
 export type {ICreatePendingUserResponse} from './responses/administrator/ICreatePendingUserResponse'
+export type {IUpdateUserAvatarResponse} from './responses/administrator/IUpdateUserAvatarResponse'
 
 ////////////////////////////////////
 //////////// SHARED STORES /////////////

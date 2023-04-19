@@ -84,7 +84,6 @@ export const CreateLessonPage = () => {
                     value={store.startsAt}
                     onChange={(e) => {
                         store.setStartAt(e);
-                        console.log('Changed time to', e);
                     }}
                     className='create-pending-block-input'
                 />
