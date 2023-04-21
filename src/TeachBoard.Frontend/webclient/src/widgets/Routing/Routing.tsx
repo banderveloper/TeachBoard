@@ -13,6 +13,7 @@ import {
     TeacherHomePage,
     TeacherHomeworksPage,
     TeacherSchedulePage,
+    TeacherSetHomeworkPage,
     UncheckedHomeworksCountPage, UserEditPage, UsersSearchPage
 } from "../../pages";
 import {PrivateRoute} from "./PrivateRoute";
@@ -77,6 +78,11 @@ export const Routing = () => {
             <Route path="teacher/current-lesson" element={
                 <PrivateRoute requiredRole={EnumUserRole.teacher}>
                     <TeacherCurrentLessonPage/>
+                </PrivateRoute>
+            }/>
+            <Route path="teacher/set-homework" element={
+                <PrivateRoute requiredRole={EnumUserRole.teacher}>
+                    <TeacherSetHomeworkPage/>
                 </PrivateRoute>
             }/>
 

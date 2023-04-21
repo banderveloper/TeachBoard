@@ -46,6 +46,7 @@ export function Navbar() {
                     {path: '/teacher/current-lesson', pathName: 'Lesson'},
                     {path: '/teacher/lessons', pathName: 'Schedule'},
                     {path: '/teacher/homeworks', pathName: 'Homeworks'},
+                    {path: '/teacher/set-homework', pathName: 'Set homework'}
                 ])
                 break;
             case EnumUserRole.administrator:

@@ -358,7 +358,7 @@ public class AdministratorController : BaseController
     {
         var result = new GroupsTeachersSubjectsResponseModel();
 
-        // groups
+        // subjects
         var getAllSubjectsResponse = await _educationClient.GetAllSubjects();
         var subjects = getAllSubjectsResponse.Data;
         result.Subjects = subjects;

@@ -431,4 +431,22 @@ public class TeacherController : BaseController
 
         return new WebApiResult(updatedLesson);
     }
+
+    [HttpGet("groups-subjects")]
+    public async Task<ActionResult<GroupsSubjectsResponseModel>> GetGroupsSubjects()
+    {
+        var result = new GroupsSubjectsResponseModel();
+
+        // subjects
+        var getAllSubjectsResponse = await _educationClient.GetAllSubjects();
+        var subjects = getAllSubjectsResponse.Data;
+        result.Subjects = subjects;
+
+        // groups
+        var getAllGroupsResponse = await _membersClient.GetAllGroups();
+        var groups = getAllGroupsResponse.Data;
+        result.Groups = groups;
+
+        return new WebApiResult(result);
+    }
 }

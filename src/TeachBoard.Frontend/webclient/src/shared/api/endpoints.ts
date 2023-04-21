@@ -24,7 +24,9 @@ export const ENDPOINTS = {
         CHECK_HOMEWORK: `${API_URL}/teacher/check-homework`,
         GET_CURRENT_LESSON: `${API_URL}/teacher/current-lesson`,
         SET_STUDENT_LESSON_ACTIVITY: `${API_URL}/teacher/student-lesson-activity`,
-        UPDATE_LESSON_TOPIC: `${API_URL}/teacher/lesson-topic`
+        UPDATE_LESSON_TOPIC: `${API_URL}/teacher/lesson-topic`,
+        GET_SUBJECTS_GROUPS: `${API_URL}/teacher/groups-subjects`,
+        CREATE_HOMEWORK: `${API_URL}/teacher/homework`
     },
     ADMINISTRATOR: {
         CREATE_PENDING_USER: `${API_URL}/administrator/pending-user`,
