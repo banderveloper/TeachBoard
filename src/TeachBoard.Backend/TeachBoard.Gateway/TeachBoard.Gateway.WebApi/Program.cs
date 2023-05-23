@@ -25,7 +25,7 @@ builder.Services.AddCors(options =>
     {
         policy.AllowAnyHeader().WithExposedHeaders("Content-Disposition");
         policy.AllowAnyMethod();
-        policy.WithOrigins("http://localhost:3000");
+        policy.WithOrigins("http://localhost:3000", "https://teach-board.vercel.app", "http://teach-board.vercel.app");
         policy.AllowCredentials();
     });
 });
