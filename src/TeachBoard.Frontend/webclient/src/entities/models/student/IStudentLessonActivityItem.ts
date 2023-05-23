@@ -5,5 +5,5 @@ export interface IStudentLessonActivityItem {
     subjectName: string;
     attendanceStatus: string;
     grade: number | null;
-    activityCreatedAt: string;
+    activityCreatedAt: Date;
 }

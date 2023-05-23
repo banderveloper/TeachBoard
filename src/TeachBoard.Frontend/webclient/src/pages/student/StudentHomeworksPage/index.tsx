@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import {GivenHomeworkCard} from "../../../features";
 import {useHomeworksStore} from "./store";
 import './index.css'
-import {Box, CircularProgress} from "@mui/material";
+import {Box, CircularProgress, Typography} from "@mui/material";
 
 export const StudentHomeworksPage = () => {
 
@@ -11,6 +11,9 @@ export const StudentHomeworksPage = () => {
     useEffect(() => {
         loadHomeworks();
     }, []);
+
+    if(!isLoading && homeworks.length === 0)
+        return <Typography variant='h4' sx={{textAlign: 'center', marginTop: 5}}>You completed all your homeworks</Typography>
 
     return (
         <div className='given-homework-card-container'>

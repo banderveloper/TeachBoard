@@ -1,6 +1,7 @@
 ﻿using Refit;
 using TeachBoard.Gateway.Application.Refit.RequestModels.Education;
 using TeachBoard.Gateway.Application.Refit.ResponseModels.Education;
+using TeachBoard.Gateway.Application.Refit.ResponseModels.Members;
 
 namespace TeachBoard.Gateway.Application.Refit.Clients;
 
@@ -137,4 +138,14 @@ public interface IEducationClient
     [Post("/examinations/student-activity")]
     Task<ServiceTypedResponse<StudentExaminationActivity>> SetStudentExaminationActivity(
         [Body] SetStudentExaminationActivityRequestModel model);
+
+    [Get("/lessons/teacher-current-lesson/{teacherId}")]
+    Task<ServiceTypedResponse<LessonPresentationDataModel>> GetTeacherCurrentLesson(int teacherId);
+
+    [Put("/lessons/topic")]
+    Task<ServiceTypedResponse<Lesson>> UpdateLessonTopic([Body] UpdateLessonTopicRequestModel model);
+
+    [Get("/subjects")]
+    Task<ServiceTypedResponse<IList<Subject>>> GetAllSubjects();
+
 }

@@ -46,6 +46,16 @@ export function Navbar() {
                     {path: '/teacher/current-lesson', pathName: 'Lesson'},
                     {path: '/teacher/lessons', pathName: 'Schedule'},
                     {path: '/teacher/homeworks', pathName: 'Homeworks'},
+                    {path: '/teacher/set-homework', pathName: 'Set homework'}
+                ])
+                break;
+            case EnumUserRole.administrator:
+                setMainNavItems([
+                    {path: '/administrator/create-pending', pathName: 'Create user'},
+                    {path: '/administrator/create-lesson', pathName: 'Create lesson'},
+                    {path: '/administrator/create-examination', pathName: 'Create examination'},
+                    {path: '/administrator/users', pathName: 'Users'},
+                    {path: '/administrator/unchecked-homeworks', pathName: 'Unchecked homeworks'}
                 ])
                 break;
             default:

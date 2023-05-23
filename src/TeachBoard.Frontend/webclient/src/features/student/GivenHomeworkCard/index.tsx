@@ -15,7 +15,7 @@ import {
 import DownloadIcon from '@mui/icons-material/Download';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import './index.css'
-import {$api} from "../../../shared";
+import {$api, UTCToLocalStringTime} from "../../../shared";
 import Endpoints from "../../../shared/api/endpoints";
 import fileDownload from 'js-file-download';
 
@@ -80,9 +80,6 @@ export const GivenHomeworkCard: React.FC<IGivenHomework> = ({homeworkId, teacher
             const parent = document.querySelector('.given-homework-card-container');
             const child = document.getElementById('hw-' + homeworkId.toString());
 
-            console.log('parent', parent);
-            console.log('child', child);
-
             if (parent && child) {
                 parent.removeChild(child);
             }
@@ -96,7 +93,7 @@ export const GivenHomeworkCard: React.FC<IGivenHomework> = ({homeworkId, teacher
                 <Typography variant="h6">
                     {subjectName}
                 </Typography>
-                <Typography variant="body1">{new Date(createdAt).toUTCString()}</Typography>
+                <Typography variant="body1">{UTCToLocalStringTime(createdAt)}</Typography>
                 <Grid container justifyContent='space-between'>
                     <Button
                         variant="contained"

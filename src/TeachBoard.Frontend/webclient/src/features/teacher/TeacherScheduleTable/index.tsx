@@ -2,6 +2,7 @@ import React from 'react';
 import {ITeacherScheduleItem} from "../../../entities";
 import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import './index.css'
+import {UTCToLocalStringTime} from "../../../shared";
 
 interface ITeacherScheduleTableProps {
     lessons: ITeacherScheduleItem[]
@@ -34,8 +35,8 @@ export const TeacherScheduleTable: React.FC<ITeacherScheduleTableProps> = ({less
                             <TableCell>{item.subjectName}</TableCell>
                             <TableCell>{item.groupId}</TableCell>
                             <TableCell>{item.classroom}</TableCell>
-                            <TableCell>{new Date(item.startsAt).toUTCString()}</TableCell>
-                            <TableCell>{new Date(item.endsAt).toUTCString()}</TableCell>
+                            <TableCell>{UTCToLocalStringTime(item.startsAt)}</TableCell>
+                            <TableCell>{UTCToLocalStringTime(item.endsAt)}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

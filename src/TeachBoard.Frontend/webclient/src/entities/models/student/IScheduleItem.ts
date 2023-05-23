@@ -3,6 +3,6 @@ export interface IScheduleItem{
     teacherId: number;
     topic: string;
     classroom: string;
-    startsAt: string;
-    endsAt: string;
+    startsAt: Date;
+    endsAt: Date;
 }

@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.Json;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TeachBoard.EducationService.Application.Exceptions;
@@ -170,5 +171,23 @@ public class LessonController : ControllerBase
         var lessonActivities = await _mediator.Send(query);
 
         return new WebApiResult(lessonActivities);
+    }
+
+    [HttpGet("teacher-current-lesson/{teacherId:int}")]
+    public async Task<ActionResult<LessonPresentationDataModel?>> GetCurrentTeacherLesson(int teacherId)
+    {
+        var query = new GetCurrentLessonPresentationByTeacherIdQuery { TeacherId = teacherId };
+        var lesson = await _mediator.Send(query);
+
+        return new WebApiResult(lesson);
+    }
+
+    [HttpPut("topic")]
+    public async Task<ActionResult<Lesson>> UpdateLessonTopic([FromBody] UpdateLessonTopicRequestModel model)
+    {
+        var command = _mapper.Map<UpdateLessonTopicCommand>(model);
+
+        var updatedLesson = await _mediator.Send(command);
+        return new WebApiResult(updatedLesson);
     }
 }
